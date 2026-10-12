@@ -47,7 +47,7 @@
       "submit": "Log in",
       "submitting": "Logging in…",
       "botCheckPending": "Complete the bot check above to log in.",
-      "botCheckUnavailable": "The bot check couldn't load. Check your connection and reload the page.",
+      "botCheckUnavailable": "The bot check didn't pass. Reload the page and try again. If it keeps failing, try another browser or network.",
       "forgotPassword": "Forgot your password? Ask a Super Admin to reset it.",
       "errors": {
         "email": "Enter a valid email address.",
