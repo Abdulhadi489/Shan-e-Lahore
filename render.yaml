@@ -1,0 +1,58 @@
+# Render Blueprint: one static site, built once and served from Render's CDN. No server runs, so nothing sleeps.
+# Switching Supabase projects (for example to production) means changing VITE_SUPABASE_URL,
+# VITE_SUPABASE_PUBLISHABLE_KEY and the Supabase URL in the Content-Security-Policy below, together.
+services:
+  - type: web
+    runtime: static
+    name: shan-e-lahore
+    branch: main
+    # Deploys a commit only after its GitHub Actions checks pass. Pushing to main is therefore deploying.
+    autoDeployTrigger: checksPass
+    # --ignore-scripts: no package install scripts run during the build.
+    buildCommand: npm ci --ignore-scripts && npm run build
+    staticPublishPath: dist
+    envVars:
+      # Public values: Vite bundles them into the website, where anyone can read them.
+      - key: VITE_SUPABASE_URL
+        value: https://gdjvulhrumxwjmnaywnn.supabase.co
+      - key: VITE_SUPABASE_PUBLISHABLE_KEY
+        value: sb_publishable_vdR90ilK1jg4EfUNQQmh9Q_9H15xcSV
+      - key: VITE_TURNSTILE_SITE_KEY
+        value: 0x4AAAAAAFUjrlxajrhVCE3G
+    routes:
+      # Every address loads index.html and React Router shows the page. Render serves real files (assets) first.
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    headers:
+      # Only our own files, our Supabase project and Cloudflare Turnstile. Add OpenStreetMap tiles with the map (Milestone 2).
+      - path: /*
+        name: Content-Security-Policy
+        value: >-
+          default-src 'self';
+          script-src 'self' https://challenges.cloudflare.com;
+          frame-src https://challenges.cloudflare.com;
+          connect-src 'self' https://gdjvulhrumxwjmnaywnn.supabase.co;
+          img-src 'self';
+          style-src 'self';
+          font-src 'self';
+          object-src 'none';
+          base-uri 'self';
+          form-action 'self';
+          frame-ancestors 'none'
+      - path: /*
+        name: Strict-Transport-Security
+        value: max-age=31536000; includeSubDomains
+      - path: /*
+        name: X-Content-Type-Options
+        value: nosniff
+      - path: /*
+        name: Referrer-Policy
+        value: strict-origin-when-cross-origin
+      - path: /*
+        name: Permissions-Policy
+        value: geolocation=(self), camera=(), microphone=()
+      # Vite puts a content hash in every asset filename, so a changed file always gets a new name.
+      - path: /assets/*
+        name: Cache-Control
+        value: public, max-age=31536000, immutable
