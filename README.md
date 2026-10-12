@@ -71,3 +71,15 @@ If no Super Admin can log in (both passwords lost), a developer with access to t
    ```
 
 Never share one account between people. Changing someone's email is not possible (a database trigger blocks it); create a new account and deactivate the old one instead.
+
+## Troubleshooting
+
+**Staff login says "The bot check failed. Try again."** Supabase has the wrong Turnstile key. Dashboard > Authentication > Attack Protection needs the widget's **Secret key** from Cloudflare, not its Site key (the public one in `VITE_TURNSTILE_SITE_KEY`). To check without logging in, send a request with a fake token:
+
+```bash
+curl -s -X POST '<project URL>/auth/v1/token?grant_type=password' -H 'apikey: <publishable key>' -H 'Content-Type: application/json' -d '{"email":"nobody@example.invalid","password":"x","gotrue_meta_security":{"captcha_token":"fake"}}'
+```
+
+`invalid-input-secret` means the saved secret is wrong; `invalid-input-response` means the secret is right (only the fake token was rejected). Changes take about a minute to apply.
+
+**The bot check fails with a 600xxx code.** Cloudflare decided the browser is automated. This always happens in Claude's built-in browser panel; use a normal browser.
