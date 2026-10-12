@@ -23,3 +23,4 @@ One line each: date, decision, why.
 - 2026-10-12: Added `items.is_featured` for the home page's featured deals and popular items, chosen by the Super Admin.
 - 2026-10-12: Default privileges revoked for postgres-created objects, including EXECUTE on new functions from PUBLIC. Anything new needs an explicit GRANT.
 - 2026-10-12: Customer and rider phones must be mobiles (`^923\d{9}$`) because they receive WhatsApp messages; branch phones also allow landlines and UAN numbers.
+- 2026-10-12: Dev project `shan-e-lahore-dev` (Mumbai) created and linked. Migrations applied; email confirmation off, 8-character passwords, Turnstile CAPTCHA on (secret set in the dashboard only, never in git). Local email-OTP settings matched to the hosted defaults so `config push` changes only what we intend.
