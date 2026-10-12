@@ -45,6 +45,21 @@ Only public values go in the frontend. The Supabase secret key and the Turnstile
 
 To log in locally, create accounts in the local dashboard (http://127.0.0.1:54323) with the same steps as "Creating a Super Admin" below.
 
+## Checks and deploys
+
+GitHub Actions runs on every push to `main` and every pull request:
+
+- **CI:** typecheck, lint, unit tests and build; `npm audit`; gitleaks over the whole git history.
+- **Database** (only when `supabase/` changes): the pgTAP access tests, `supabase db lint` and the Security Advisor, failing on any warning.
+
+Dependabot opens weekly update pull requests, waiting 14 days after a release (security fixes come straight away).
+
+The website is a Render static site described in `render.yaml`: build command, the public `VITE_` values, the rewrite that lets React Router handle every address, and the security headers. Render deploys a commit on `main` only after its checks pass, so **pushing to `main` is deploying**.
+
+- **First-time setup:** Render Dashboard > New > Blueprint > choose this repo (the repo owner approves Render's GitHub app) > Apply. Then add the site's `onrender.com` address to the Turnstile widget's hostnames in Cloudflare.
+- **Switching Supabase projects** (for example to production): change `VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY` and the Supabase URL in the Content-Security-Policy in `render.yaml`, in the same commit.
+- **Adding an outside service** (map tiles, images from Storage, Realtime): add its address to the matching CSP directive, or the browser blocks it. Check the browser console for "violates the following Content Security Policy directive".
+
 ## Creating a Super Admin
 
 Public signup is off, so accounts are created by hand. Keep **at least two** Super Admins (the owner and one developer) so either can reset the other's password. Repeat these steps for each one:
