@@ -92,7 +92,7 @@ Note: React Native is for mobile apps. This is a **web** app in React. A future 
    ├─ functions/
    │  ├─ _shared/            # pricing.ts, distance.ts, opening-hours.ts, schemas.ts, rate-limit.ts, turnstile.ts (pure + tested)
    │  ├─ quote-order/  place-order/  get-order-by-token/  cancel-order-by-token/
-   │  ├─ update-order-status/  log-call-attempt/  verify-payment/
+   │  ├─ edit-order/          # staff change items or address on the call; server re-prices
    │  └─ admin-users/        # create staff, reset customer password (super_admin only)
    └─ seed.sql               # placeholder dev data only, never real customer data
 ```
@@ -108,11 +108,11 @@ Exactly three logins:
 | Role | Access |
 | --- | --- |
 | `super_admin` | Everything: menu, prices, delivery pricing, discount codes, reports, staff accounts, riders, settings, all branches |
-| `order_staff` | Live orders for **their branch only**: confirm/cancel, log unanswered calls, verify payments, update statuses, assign riders, mark items/variants sold out, print kitchen tickets. **Cannot** change prices, menu structure, delivery pricing, discount codes, staff, or see reports. |
+| `order_staff` | Live orders for **their branch only**: confirm/cancel, log unanswered calls, verify payments, update statuses, assign riders, mark items/variants/add-on options sold out, pause delivery, edit items or address during the confirmation call, print kitchen tickets. **Cannot** change prices, menu structure, delivery pricing, discount codes, staff, or see reports. |
 | `customer` | Their own profile, addresses and orders. Guests order without an account. |
 
 - Role and `branch_id` live in a `profiles` table. **Users must never be able to change their own `role` or `branch_id`.** Enforce with column-level privileges or a trigger, and test it in pgTAP.
-- **Never authorise from `user_metadata`** (users can edit it). Read role from `profiles` via `SECURITY DEFINER` helper functions such as `private.auth_role()` and `private.auth_branch_id()`, defined in a non-exposed `private` schema with `SET search_path = ''`.
+- **Never authorise from `user_metadata`** (users can edit it). Read role from `profiles` via the `SECURITY DEFINER` helpers `private.is_super_admin()` and `private.is_staff_of(branch_id)`, defined in the non-exposed `private` schema with `SET search_path = ''`.
 - Signup trigger always creates `profiles.role = 'customer'`. Staff and admin accounts are created only by `super_admin` through the `admin-users` Edge Function.
 - **`super_admin` and `order_staff` must use TOTP MFA** (Supabase Auth MFA, free). RLS policies for staff and admin actions require `aal2` in the JWT.
 - Every status change, payment verification, pricing change and staff change records who did it and when.
@@ -122,11 +122,11 @@ Exactly three logins:
 ## 5. Authentication
 
 - **No SMS or OTP** (paid). The confirmation call replaces phone verification.
-- Customers log in with **phone number + password**, implemented as Supabase email/password auth with a synthetic email derived from the normalised phone (e.g. `923001234567@phone.<our-domain>`), email confirmation disabled. The UI never shows this email. Verify early in a test project that Supabase accepts the chosen address format.
+- Customers log in with **phone number + password**, implemented as Supabase email/password auth with a synthetic email derived from the normalised phone: `923001234567@phone.invalid` (`.invalid` is reserved, so no one can ever own it or receive mail there, and buying our real domain later changes nothing). Email confirmation disabled. The UI never shows this email. The signup trigger rejects any other format, and email changes are blocked. Accepted by local Supabase; confirm once on the hosted project.
 - Normalise Pakistani numbers to `92XXXXXXXXXX` (accept `03001234567`, `+92 300 1234567`, `3001234567`). `src/lib/phone.ts`, unit tested, and the same rule enforced server-side.
 - Passwords: minimum 8 characters; Turnstile CAPTCHA on signup and login (configure in Supabase Auth settings).
 - **Password reset:** there is no email or SMS to send a reset link to. Customers call the restaurant; `super_admin` resets the password from the admin panel through `admin-users` after confirming the caller's number. Accounts are optional, so a customer can always order as a guest.
-- Guest checkout: name + phone + address, no account. If a guest later signs up with the same phone, link past orders.
+- Guest checkout: name + phone + address, no account. If a guest later signs up with the same phone, their past guest orders become visible only after staff confirm an order placed from that account (the call proves the phone; without it, anyone could sign up with someone else's number and read their addresses).
 - Session handling: use the Supabase client defaults; never store tokens anywhere custom; sign out clears the TanStack Query cache.
 
 ---
@@ -137,30 +137,32 @@ Design in SQL migrations. `uuid` primary keys, `created_at`/`updated_at`, `branc
 
 **Bilingual text:** customer-visible text has `_en` and `_ur` columns. Empty Urdu falls back to English.
 
+**Branches:** every menu row (categories, items, variants, add-on groups and options, links, deal contents, banners) and every discount code carries `branch_id`; composite foreign keys keep a child in its parent's branch.
+
 Tables (columns indicative):
 
-- `branches` — name_en/ur, address, phone, lat, lng, is_active
+- `branches` — name_en/ur, address_en/ur, phone, lat, lng, order_prefix, last_order_number, is_active
 - `branch_settings` — branch_id, delivery_enabled, min_order_amount, free_delivery_threshold (nullable), road_distance_factor (default 1.3), payment account details (bank, JazzCash, Easypaisa), whatsapp_number, estimated_delivery_minutes
 - `delivery_tiers` — branch_id, upper_km, charge. Highest upper_km = max delivery radius.
 - `opening_hours` — branch_id, weekday, open_time, close_time, is_closed. **Must support closing after midnight** (e.g. 12:00–02:00).
-- `pricing_change_log` — who, what, old value, new value, when
-- `profiles` — user_id, role, branch_id, full_name, phone, is_active
-- `customers` — normalised phone (unique), name, user_id (nullable), preferred_language, is_blocked
+- `audit_log` — table, row, old and new values, who, when. Written by trigger on prices, delivery settings, opening hours, discount codes and profiles
+- `profiles` — user_id, role, branch_id, full_name, is_active
+- `customers` — normalised phone (unique), name, user_id (nullable), phone_verified_at, preferred_language, is_blocked
 - `addresses` — customer_id, label, address_text, landmark, lat, lng
 - `riders` — branch_id, name, phone, is_active
 - `categories` — branch_id, name_en/ur, sort_order, is_active
-- `items` — category_id, name_en/ur, description_en/ur, base_price, image_path, is_available, is_hidden, is_deal, sort_order
+- `items` — category_id, name_en/ur, description_en/ur, base_price, image_path, is_available, is_hidden, is_deal, is_featured, sort_order
 - `item_variants` — item_id, name_en/ur, price, is_available, sort_order
-- `addon_groups` — name_en/ur, is_required, min_select, max_select
+- `addon_groups` — name_en/ur, min_select, max_select (required when min_select ≥ 1)
 - `addon_options` — group_id, name_en/ur, extra_price, is_available
 - `item_addon_groups` — item_id, group_id, sort_order
 - `deal_items` — deal item_id, contained item/variant, quantity. **Deals are fixed bundles only.**
 - `banners` — image_path, title_en/ur, sort_order, is_active
-- `discount_codes` — code, type (percent | fixed), value, min_order, starts_at, ends_at, usage_limit, one_per_phone, first_order_only, is_active
-- `orders` — branch_id, order_number (sequential per branch, e.g. `SL-1042`), tracking_token (≥ 32 random bytes, URL-safe; store only its SHA-256 hash), customer_id, name/phone snapshot, address_text, landmark, lat, lng, distance_km, order_type (`delivery`), status, payment_method, payment_status, transaction_id, payment_verified_by, subtotal, delivery_charge, discount_amount, total, discount_code_id, language, notes, rider_id, confirmed_by, cancel_reason, per-status timestamps
+- `discount_codes` — code, type (percent | fixed), value, min_order, starts_at, ends_at, usage_limit, one_per_phone, first_order_only, is_active. Usage is counted from non-cancelled orders, not stored
+- `orders` — branch_id, order_number (sequential per branch, e.g. `SL-1042`), tracking_token (≥ 32 random bytes, URL-safe; stored as-is so staff can send the link, readable only by the order's owner and branch staff), customer_id, user_id, name/phone snapshot, address_text, landmark, lat, lng, distance_km, order_type (`delivery`), status, payment_method, payment_status, transaction_id, payment_verified_by, payment_verified_at, subtotal, delivery_charge, discount_amount, total, discount_code_id, language, notes, rider_id, confirmed_by, cancel_reason, per-status timestamps
 - `order_items` — **snapshot** of names and unit price, quantity, line_total
 - `order_item_addons` — snapshot name and price
-- `call_attempts` — order_id, staff_id, outcome, created_at
+- `call_attempts` — order_id, staff_id, created_at (each row is one unanswered call)
 - `order_status_log` — order_id, from_status, to_status, changed_by, note, created_at
 - `rate_limits` — key (hashed IP or phone + action), window_start, count
 
@@ -225,7 +227,7 @@ pending_confirmation → cancelled
 confirmed / preparing → cancelled (staff only, with reason)
 ```
 
-- Enforce allowed transitions in `update-order-status` and with a database trigger (defence in depth). Log every change.
+- Staff change status, payment and rider with direct updates, limited by RLS and column grants. Allowed transitions and payment rules are enforced in one place, the `orders` trigger, and every change is logged.
 - Third unanswered call in `call_attempts` → auto-cancel with `unreachable`.
 - Transfer orders cannot be confirmed until staff mark them paid with a transaction ID. **Unpaid at the call → cancelled** with `unpaid_transfer`.
 - COD becomes `paid` when marked `delivered`.
@@ -258,7 +260,7 @@ Order Staff see only Live Orders and sold-out toggles; Super Admin sees everythi
 - **Live Orders:** Realtime list for the staff member's branch; sound alert + browser notification (requires the staff device to keep the tab open; document this); status filters; tap-to-call; call-attempt button (third auto-cancels); verify payment with transaction ID; confirm/cancel with reason; status buttons; rider assignment; WhatsApp buttons; kitchen ticket print view (80 mm thermal CSS; printing goes through the browser print dialog); refund-due list.
 - **Menu:** categories, items, variants, add-on groups, fixed deals, photos, banners, ordering, sold-out and hide switches; English and Urdu fields side by side. **Menu changes never need code changes.**
 - **Photo upload:** compress in browser to ≤ 1200 px WebP before upload; server-side bucket limits still apply.
-- **Delivery:** branch location on map, km tiers, road factor, minimum order, free-delivery threshold, delivery switch, change log.
+- **Delivery:** branch location on map, km tiers, road factor, minimum order, free-delivery threshold, delivery switch (Order Staff may use this switch too), change log.
 - **Discount codes, Customers** (with block switch), **Reports** (sales by period, status and cancel reasons, payment method, top items, distance tier, discount usage; CSV export (opens in Excel); `super_admin` only), **Settings** (restaurant info, opening hours, payment accounts, WhatsApp number, staff accounts, riders, customer password reset).
 
 ---

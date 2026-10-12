@@ -1,0 +1,133 @@
+-- Shared test data, included by every test file inside its own transaction (rolled back).
+-- Two branches, a customer on each side of every boundary, staff per branch and an admin.
+
+-- Start from an empty menu and order history regardless of what seed.sql loaded.
+set local client_min_messages = warning;
+truncate public.branches cascade;
+
+create schema tests;
+grant usage on schema tests to anon, authenticated;
+
+-- Impersonate a logged-in user the way PostgREST does. Return to postgres with `reset role`.
+create function tests.act_as(user_id uuid, aal text default 'aal2')
+returns void
+language plpgsql
+as $$
+begin
+  perform set_config('request.jwt.claims',
+    json_build_object('sub', user_id, 'role', 'authenticated', 'aal', aal)::text, true);
+  perform set_config('role', 'authenticated', true);
+end;
+$$;
+
+create function tests.act_as_anon()
+returns void
+language plpgsql
+as $$
+begin
+  perform set_config('request.jwt.claims', '{"role": "anon"}', true);
+  perform set_config('role', 'anon', true);
+end;
+$$;
+
+-- Rows touched by an update or delete. RLS makes blocked updates and deletes touch zero rows silently.
+create function tests.rows_affected(dml text)
+returns integer
+language plpgsql
+as $$
+declare
+  affected integer;
+begin
+  execute dml;
+  get diagnostics affected = row_count;
+  return affected;
+end;
+$$;
+
+grant execute on all functions in schema tests to anon, authenticated;
+
+insert into public.branches (id, name_en, address_en, phone, lat, lng, order_prefix) values
+  ('b0000000-0000-0000-0000-000000000001', 'Branch One', 'Gulberg, Lahore', '924235761234', 31.520400, 74.358700, 'SL'),
+  ('b0000000-0000-0000-0000-000000000002', 'Branch Two', 'DHA, Lahore', '924235760000', 31.470000, 74.410000, 'SLD');
+
+insert into public.branch_settings (branch_id) values
+  ('b0000000-0000-0000-0000-000000000001'),
+  ('b0000000-0000-0000-0000-000000000002');
+
+insert into public.delivery_tiers (branch_id, upper_km, charge) values
+  ('b0000000-0000-0000-0000-000000000001', 3, 100),
+  ('b0000000-0000-0000-0000-000000000002', 3, 100);
+
+insert into public.opening_hours (branch_id, weekday, open_time, close_time) values
+  ('b0000000-0000-0000-0000-000000000001', 5, '12:00', '02:00');
+
+-- Signup trigger creates profiles and customers for these.
+insert into auth.users (id, email, raw_user_meta_data) values
+  ('a0000000-0000-0000-0000-000000000001', '923000000001@phone.invalid', '{"full_name": "Customer A"}'),
+  ('a0000000-0000-0000-0000-000000000002', '923000000002@phone.invalid', '{"full_name": "Customer B"}'),
+  ('a0000000-0000-0000-0000-000000000003', '923000000003@phone.invalid', '{"full_name": "Staff One"}'),
+  ('a0000000-0000-0000-0000-000000000004', '923000000004@phone.invalid', '{"full_name": "Staff Two"}'),
+  ('a0000000-0000-0000-0000-000000000005', '923000000005@phone.invalid', '{"full_name": "Admin"}');
+
+update public.profiles set role = 'order_staff', branch_id = 'b0000000-0000-0000-0000-000000000001'
+  where user_id = 'a0000000-0000-0000-0000-000000000003';
+update public.profiles set role = 'order_staff', branch_id = 'b0000000-0000-0000-0000-000000000002'
+  where user_id = 'a0000000-0000-0000-0000-000000000004';
+update public.profiles set role = 'super_admin'
+  where user_id = 'a0000000-0000-0000-0000-000000000005';
+
+-- A guest who never made an account.
+insert into public.customers (id, phone, name) values
+  ('c0000000-0000-0000-0000-000000000009', '923000000009', 'Guest');
+
+insert into public.categories (id, branch_id, name_en, is_active) values
+  ('ca000000-0000-0000-0000-000000000001', 'b0000000-0000-0000-0000-000000000001', 'Karahi', true),
+  ('ca000000-0000-0000-0000-000000000002', 'b0000000-0000-0000-0000-000000000001', 'Old menu', false),
+  ('ca000000-0000-0000-0000-000000000003', 'b0000000-0000-0000-0000-000000000002', 'BBQ', true);
+
+insert into public.items (id, branch_id, category_id, name_en, base_price, is_hidden) values
+  ('1e000000-0000-0000-0000-000000000001', 'b0000000-0000-0000-0000-000000000001', 'ca000000-0000-0000-0000-000000000001', 'Chicken Karahi', 1800, false),
+  ('1e000000-0000-0000-0000-000000000002', 'b0000000-0000-0000-0000-000000000001', 'ca000000-0000-0000-0000-000000000001', 'Secret Karahi', 2000, true),
+  ('1e000000-0000-0000-0000-000000000003', 'b0000000-0000-0000-0000-000000000001', 'ca000000-0000-0000-0000-000000000002', 'Retired Dish', 900, false),
+  ('1e000000-0000-0000-0000-000000000004', 'b0000000-0000-0000-0000-000000000002', 'ca000000-0000-0000-0000-000000000003', 'Seekh Kabab', 700, false);
+
+insert into public.item_variants (id, branch_id, item_id, name_en, price) values
+  ('7a000000-0000-0000-0000-000000000001', 'b0000000-0000-0000-0000-000000000001', '1e000000-0000-0000-0000-000000000001', 'Full', 1800),
+  ('7a000000-0000-0000-0000-000000000002', 'b0000000-0000-0000-0000-000000000001', '1e000000-0000-0000-0000-000000000002', 'Full', 2000);
+
+insert into public.addon_groups (id, branch_id, name_en, min_select, max_select) values
+  ('ad000000-0000-0000-0000-000000000001', 'b0000000-0000-0000-0000-000000000001', 'Choose bread', 1, 1);
+insert into public.addon_options (id, branch_id, group_id, name_en, extra_price) values
+  ('a0000000-0000-0000-0000-0000000000a1', 'b0000000-0000-0000-0000-000000000001', 'ad000000-0000-0000-0000-000000000001', 'Roghni naan', 60);
+
+insert into public.banners (branch_id, image_path, is_active) values
+  ('b0000000-0000-0000-0000-000000000001', 'banners/live.webp', true),
+  ('b0000000-0000-0000-0000-000000000001', 'banners/old.webp', false);
+
+insert into public.riders (id, branch_id, name, phone) values
+  ('d0000000-0000-0000-0000-000000000001', 'b0000000-0000-0000-0000-000000000001', 'Rider One', '923110000001'),
+  ('d0000000-0000-0000-0000-000000000002', 'b0000000-0000-0000-0000-000000000002', 'Rider Two', '923110000002');
+
+insert into public.discount_codes (branch_id, code, type, value) values
+  ('b0000000-0000-0000-0000-000000000001', 'EID10', 'percent', 10);
+
+-- Orders as place-order would insert them (service_role in production).
+insert into public.orders (
+  id, branch_id, order_number, tracking_token, customer_id, user_id, customer_name, customer_phone,
+  address_text, lat, lng, distance_km, payment_method, subtotal, delivery_charge, total, language
+) values
+  ('0d000000-0000-0000-0000-000000000001', 'b0000000-0000-0000-0000-000000000001', 1001, repeat('a', 43),
+   (select id from public.customers where phone = '923000000001'), 'a0000000-0000-0000-0000-000000000001',
+   'Customer A', '923000000001', 'House 1, Gulberg', 31.51, 74.35, 2.0, 'cod', 1800, 100, 1900, 'en'),
+  ('0d000000-0000-0000-0000-000000000002', 'b0000000-0000-0000-0000-000000000001', 1002, repeat('b', 43),
+   (select id from public.customers where phone = '923000000002'), 'a0000000-0000-0000-0000-000000000002',
+   'Customer B', '923000000002', 'House 2, Gulberg', 31.52, 74.36, 1.5, 'bank_transfer', 2000, 100, 2100, 'ur'),
+  ('0d000000-0000-0000-0000-000000000003', 'b0000000-0000-0000-0000-000000000002', 1001, repeat('c', 43),
+   'c0000000-0000-0000-0000-000000000009', null,
+   'Guest', '923000000009', 'House 9, DHA', 31.47, 74.41, 2.5, 'jazzcash', 700, 100, 800, 'en');
+
+insert into public.order_items (id, order_id, item_id, name_en, unit_price, quantity, line_total) values
+  ('0e000000-0000-0000-0000-000000000001', '0d000000-0000-0000-0000-000000000001', '1e000000-0000-0000-0000-000000000001', 'Chicken Karahi', 1800, 1, 1800),
+  ('0e000000-0000-0000-0000-000000000003', '0d000000-0000-0000-0000-000000000003', '1e000000-0000-0000-0000-000000000004', 'Seekh Kabab', 700, 1, 700);
+insert into public.order_item_addons (order_item_id, name_en, extra_price) values
+  ('0e000000-0000-0000-0000-000000000001', 'Roghni naan', 0);
