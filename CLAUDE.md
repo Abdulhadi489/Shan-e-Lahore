@@ -316,6 +316,7 @@ One milestone at a time. Before coding: a short plan and questions. After: what 
 ## 16. Working agreement
 
 - Plan first, then code. Small, focused commits with clear messages.
+- Commit locally in small steps, but **never push to GitHub, open a pull request, or deploy without asking first**, every time. Approval for one push does not cover the next.
 - Run typecheck, lint and tests before saying something is done. Paste the result summary.
 - Keep `.env.example`, `README.md`, `docs/decisions.md` and migrations current.
 - Every reply that changes code ends with: what changed, what was tested, what was not tested, and any risk or shortcut.
