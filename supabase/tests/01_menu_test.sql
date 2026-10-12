@@ -17,17 +17,17 @@ select throws_ok($$ insert into public.categories (branch_id, name_en) values ('
 select throws_ok($$ update public.items set base_price = 1 $$, '42501', null, 'anon cannot update items');
 reset role;
 
--- customer
-select tests.act_as('a0000000-0000-0000-0000-000000000001', 'aal1');
+-- logged-in account with no role
+select tests.act_as('a0000000-0000-0000-0000-000000000001');
 select set_eq($$ select name_en from public.items $$, array['Chicken Karahi', 'Seekh Kabab'],
-  'customer sees the same menu as anon');
-select is(tests.rows_affected($$ update public.items set base_price = 1 $$), 0, 'customer cannot change prices');
+  'an account with no role sees the same menu as anon');
+select is(tests.rows_affected($$ update public.items set base_price = 1 $$), 0, 'an account with no role cannot change prices');
 select throws_ok($$ insert into public.items (branch_id, category_id, name_en, base_price)
                    values ('b0000000-0000-0000-0000-000000000001', 'ca000000-0000-0000-0000-000000000001', 'X', 1) $$,
-  '42501', null, 'customer cannot add items');
+  '42501', null, 'an account with no role cannot add items');
 reset role;
 
--- staff of branch one, with MFA
+-- staff of branch one
 select tests.act_as('a0000000-0000-0000-0000-000000000003');
 select set_eq($$ select name_en from public.items $$,
   array['Chicken Karahi', 'Secret Karahi', 'Retired Dish', 'Seekh Kabab'],
@@ -58,12 +58,12 @@ select throws_ok($$ insert into public.delivery_tiers (branch_id, upper_km, char
   '42501', null, 'staff cannot change delivery tiers');
 reset role;
 
--- staff of branch one without MFA
-select tests.act_as('a0000000-0000-0000-0000-000000000003', 'aal1');
+-- deactivated staff of branch one
+select tests.act_as('a0000000-0000-0000-0000-000000000006');
 select set_eq($$ select name_en from public.items $$, array['Chicken Karahi', 'Seekh Kabab'],
-  'staff without MFA see only the public menu');
+  'deactivated staff see only the public menu');
 select is(tests.rows_affected($$ update public.items set is_available = true $$), 0,
-  'staff without MFA cannot mark items sold out');
+  'deactivated staff cannot mark items sold out');
 reset role;
 
 -- staff of branch two
@@ -92,11 +92,11 @@ select is(
   'price change is audited with who made it'
 );
 
--- super_admin without MFA
-select tests.act_as('a0000000-0000-0000-0000-000000000005', 'aal1');
-select is(tests.rows_affected($$ update public.items set base_price = 1 $$), 0, 'super_admin without MFA cannot change prices');
+-- deactivated super_admin
+select tests.act_as('a0000000-0000-0000-0000-000000000007');
+select is(tests.rows_affected($$ update public.items set base_price = 1 $$), 0, 'a deactivated super_admin cannot change prices');
 select throws_ok($$ insert into public.categories (branch_id, name_en) values ('b0000000-0000-0000-0000-000000000001', 'X') $$,
-  '42501', null, 'super_admin without MFA cannot add categories');
+  '42501', null, 'a deactivated super_admin cannot add categories');
 reset role;
 
 select * from finish();

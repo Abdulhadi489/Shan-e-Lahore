@@ -63,26 +63,6 @@ isOneToOne: false
       referencedColumns: ["id","branch_id"]
     }
                   ]
-                },"addresses": {
-                  Row: {
-                    "address_text": string,"created_at": string,"customer_id": string,"id": string,"label": string,"landmark": string,"lat": number,"lng": number,"updated_at": string
-                  }
-                  ComputedFields: never
-                  Insert: {
-                    "address_text": string,"created_at"?: string,"customer_id": string,"id"?: string,"label"?: string,"landmark"?: string,"lat": number,"lng": number,"updated_at"?: string
-                  }
-                  Update: {
-                    "address_text"?: string,"created_at"?: string,"customer_id"?: string,"id"?: string,"label"?: string,"landmark"?: string,"lat"?: number,"lng"?: number,"updated_at"?: string
-                  }
-                  Relationships: [
-                    {
-      foreignKeyName: "addresses_customer_id_fkey"
-      columns: ["customer_id"]
-isOneToOne: false
-      referencedRelation: "customers"
-      referencedColumns: ["id"]
-    }
-                  ]
                 },"audit_log": {
                   Row: {
                     "action": string,"changed_by": string | null,"created_at": string,"id": string,"new_values": Json | null,"old_values": Json | null,"row_id": string,"table_name": string
@@ -199,14 +179,14 @@ isOneToOne: false
                   ]
                 },"customers": {
                   Row: {
-                    "created_at": string,"id": string,"is_blocked": boolean,"name": string,"phone": string,"phone_verified_at": string | null,"preferred_language": string,"updated_at": string,"user_id": string | null
+                    "created_at": string,"id": string,"is_blocked": boolean,"name": string,"phone": string,"updated_at": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "created_at"?: string,"id"?: string,"is_blocked"?: boolean,"name": string,"phone": string,"phone_verified_at"?: string | null,"preferred_language"?: string,"updated_at"?: string,"user_id"?: string | null
+                    "created_at"?: string,"id"?: string,"is_blocked"?: boolean,"name": string,"phone": string,"updated_at"?: string
                   }
                   Update: {
-                    "created_at"?: string,"id"?: string,"is_blocked"?: boolean,"name"?: string,"phone"?: string,"phone_verified_at"?: string | null,"preferred_language"?: string,"updated_at"?: string,"user_id"?: string | null
+                    "created_at"?: string,"id"?: string,"is_blocked"?: boolean,"name"?: string,"phone"?: string,"updated_at"?: string
                   }
                   Relationships: [
                     
@@ -455,14 +435,14 @@ isOneToOne: false
                   ]
                 },"orders": {
                   Row: {
-                    "address_text": string,"branch_id": string,"cancel_reason": Database["public"]['Enums']["cancel_reason"] | null,"cancelled_at": string | null,"confirmed_at": string | null,"confirmed_by": string | null,"created_at": string,"customer_id": string,"customer_name": string,"customer_phone": string,"delivered_at": string | null,"delivery_charge": number,"discount_amount": number,"discount_code_id": string | null,"distance_km": number,"id": string,"landmark": string,"language": string,"lat": number,"lng": number,"notes": string,"order_number": number,"order_type": Database["public"]['Enums']["order_type"],"out_for_delivery_at": string | null,"payment_method": Database["public"]['Enums']["payment_method"],"payment_status": Database["public"]['Enums']["payment_status"],"payment_verified_at": string | null,"payment_verified_by": string | null,"preparing_at": string | null,"rider_id": string | null,"status": Database["public"]['Enums']["order_status"],"subtotal": number,"total": number,"tracking_token": string,"transaction_id": string | null,"updated_at": string,"user_id": string | null
+                    "address_text": string,"branch_id": string,"cancel_reason": Database["public"]['Enums']["cancel_reason"] | null,"cancelled_at": string | null,"confirmed_at": string | null,"confirmed_by": string | null,"created_at": string,"customer_id": string,"customer_name": string,"customer_phone": string,"delivered_at": string | null,"delivery_charge": number,"discount_amount": number,"discount_code_id": string | null,"distance_km": number,"id": string,"landmark": string,"language": string,"lat": number,"lng": number,"notes": string,"order_number": number,"order_type": Database["public"]['Enums']["order_type"],"out_for_delivery_at": string | null,"payment_method": Database["public"]['Enums']["payment_method"],"payment_status": Database["public"]['Enums']["payment_status"],"payment_verified_at": string | null,"payment_verified_by": string | null,"preparing_at": string | null,"rider_id": string | null,"status": Database["public"]['Enums']["order_status"],"subtotal": number,"total": number,"tracking_token": string,"transaction_id": string | null,"updated_at": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "address_text": string,"branch_id": string,"cancel_reason"?: Database["public"]['Enums']["cancel_reason"] | null,"cancelled_at"?: string | null,"confirmed_at"?: string | null,"confirmed_by"?: string | null,"created_at"?: string,"customer_id": string,"customer_name": string,"customer_phone": string,"delivered_at"?: string | null,"delivery_charge": number,"discount_amount"?: number,"discount_code_id"?: string | null,"distance_km": number,"id"?: string,"landmark"?: string,"language": string,"lat": number,"lng": number,"notes"?: string,"order_number": number,"order_type"?: Database["public"]['Enums']["order_type"],"out_for_delivery_at"?: string | null,"payment_method": Database["public"]['Enums']["payment_method"],"payment_status"?: Database["public"]['Enums']["payment_status"],"payment_verified_at"?: string | null,"payment_verified_by"?: string | null,"preparing_at"?: string | null,"rider_id"?: string | null,"status"?: Database["public"]['Enums']["order_status"],"subtotal": number,"total": number,"tracking_token": string,"transaction_id"?: string | null,"updated_at"?: string,"user_id"?: string | null
+                    "address_text": string,"branch_id": string,"cancel_reason"?: Database["public"]['Enums']["cancel_reason"] | null,"cancelled_at"?: string | null,"confirmed_at"?: string | null,"confirmed_by"?: string | null,"created_at"?: string,"customer_id": string,"customer_name": string,"customer_phone": string,"delivered_at"?: string | null,"delivery_charge": number,"discount_amount"?: number,"discount_code_id"?: string | null,"distance_km": number,"id"?: string,"landmark"?: string,"language": string,"lat": number,"lng": number,"notes"?: string,"order_number": number,"order_type"?: Database["public"]['Enums']["order_type"],"out_for_delivery_at"?: string | null,"payment_method": Database["public"]['Enums']["payment_method"],"payment_status"?: Database["public"]['Enums']["payment_status"],"payment_verified_at"?: string | null,"payment_verified_by"?: string | null,"preparing_at"?: string | null,"rider_id"?: string | null,"status"?: Database["public"]['Enums']["order_status"],"subtotal": number,"total": number,"tracking_token": string,"transaction_id"?: string | null,"updated_at"?: string
                   }
                   Update: {
-                    "address_text"?: string,"branch_id"?: string,"cancel_reason"?: Database["public"]['Enums']["cancel_reason"] | null,"cancelled_at"?: string | null,"confirmed_at"?: string | null,"confirmed_by"?: string | null,"created_at"?: string,"customer_id"?: string,"customer_name"?: string,"customer_phone"?: string,"delivered_at"?: string | null,"delivery_charge"?: number,"discount_amount"?: number,"discount_code_id"?: string | null,"distance_km"?: number,"id"?: string,"landmark"?: string,"language"?: string,"lat"?: number,"lng"?: number,"notes"?: string,"order_number"?: number,"order_type"?: Database["public"]['Enums']["order_type"],"out_for_delivery_at"?: string | null,"payment_method"?: Database["public"]['Enums']["payment_method"],"payment_status"?: Database["public"]['Enums']["payment_status"],"payment_verified_at"?: string | null,"payment_verified_by"?: string | null,"preparing_at"?: string | null,"rider_id"?: string | null,"status"?: Database["public"]['Enums']["order_status"],"subtotal"?: number,"total"?: number,"tracking_token"?: string,"transaction_id"?: string | null,"updated_at"?: string,"user_id"?: string | null
+                    "address_text"?: string,"branch_id"?: string,"cancel_reason"?: Database["public"]['Enums']["cancel_reason"] | null,"cancelled_at"?: string | null,"confirmed_at"?: string | null,"confirmed_by"?: string | null,"created_at"?: string,"customer_id"?: string,"customer_name"?: string,"customer_phone"?: string,"delivered_at"?: string | null,"delivery_charge"?: number,"discount_amount"?: number,"discount_code_id"?: string | null,"distance_km"?: number,"id"?: string,"landmark"?: string,"language"?: string,"lat"?: number,"lng"?: number,"notes"?: string,"order_number"?: number,"order_type"?: Database["public"]['Enums']["order_type"],"out_for_delivery_at"?: string | null,"payment_method"?: Database["public"]['Enums']["payment_method"],"payment_status"?: Database["public"]['Enums']["payment_status"],"payment_verified_at"?: string | null,"payment_verified_by"?: string | null,"preparing_at"?: string | null,"rider_id"?: string | null,"status"?: Database["public"]['Enums']["order_status"],"subtotal"?: number,"total"?: number,"tracking_token"?: string,"transaction_id"?: string | null,"updated_at"?: string
                   }
                   Relationships: [
                     {

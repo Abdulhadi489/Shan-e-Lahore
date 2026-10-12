@@ -8,12 +8,12 @@ select throws_ok($$ select * from public.discount_codes $$, '42501', null, 'anon
 select throws_ok($$ select * from public.rate_limits $$, '42501', null, 'anon cannot read rate limits');
 reset role;
 
-select tests.act_as('a0000000-0000-0000-0000-000000000001', 'aal1');
-select is((select count(*)::int from public.riders), 0, 'customers cannot read riders');
-select is((select count(*)::int from public.discount_codes), 0, 'customers cannot list discount codes');
-select throws_ok($$ select * from public.rate_limits $$, '42501', null, 'customers cannot read rate limits');
-select is(tests.rows_affected($$ update public.delivery_tiers set charge = 0 $$), 0, 'customers cannot change delivery tiers');
-select is(tests.rows_affected($$ update public.opening_hours set is_closed = true $$), 0, 'customers cannot change opening hours');
+select tests.act_as('a0000000-0000-0000-0000-000000000001');
+select is((select count(*)::int from public.riders), 0, 'an account with no role cannot read riders');
+select is((select count(*)::int from public.discount_codes), 0, 'an account with no role cannot list discount codes');
+select throws_ok($$ select * from public.rate_limits $$, '42501', null, 'an account with no role cannot read rate limits');
+select is(tests.rows_affected($$ update public.delivery_tiers set charge = 0 $$), 0, 'an account with no role cannot change delivery tiers');
+select is(tests.rows_affected($$ update public.opening_hours set is_closed = true $$), 0, 'an account with no role cannot change opening hours');
 reset role;
 
 select tests.act_as('a0000000-0000-0000-0000-000000000003');
@@ -39,8 +39,8 @@ select ok(exists (
   where table_name = 'delivery_tiers' and action = 'insert' and changed_by = 'a0000000-0000-0000-0000-000000000005'
 ), 'delivery tier changes are audited');
 
-select tests.act_as('a0000000-0000-0000-0000-000000000005', 'aal1');
-select is((select count(*)::int from public.discount_codes), 0, 'super_admin without MFA cannot read discount codes');
+select tests.act_as('a0000000-0000-0000-0000-000000000007');
+select is((select count(*)::int from public.discount_codes), 0, 'a deactivated super_admin cannot read discount codes');
 reset role;
 
 select * from finish();

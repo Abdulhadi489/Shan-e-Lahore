@@ -7,9 +7,9 @@ select throws_ok($$ insert into storage.objects (bucket_id, name) values ('menu-
   '42501', null, 'anon cannot upload menu images');
 reset role;
 
-select tests.act_as('a0000000-0000-0000-0000-000000000001', 'aal1');
+select tests.act_as('a0000000-0000-0000-0000-000000000001');
 select throws_ok($$ insert into storage.objects (bucket_id, name) values ('menu-images', 'items/customer.webp') $$,
-  '42501', null, 'customers cannot upload menu images');
+  '42501', null, 'an account with no role cannot upload menu images');
 reset role;
 
 select tests.act_as('a0000000-0000-0000-0000-000000000003');
@@ -17,9 +17,9 @@ select throws_ok($$ insert into storage.objects (bucket_id, name) values ('menu-
   '42501', null, 'staff cannot upload menu images');
 reset role;
 
-select tests.act_as('a0000000-0000-0000-0000-000000000005', 'aal1');
-select throws_ok($$ insert into storage.objects (bucket_id, name) values ('menu-images', 'items/nomfa.webp') $$,
-  '42501', null, 'super_admin without MFA cannot upload menu images');
+select tests.act_as('a0000000-0000-0000-0000-000000000007');
+select throws_ok($$ insert into storage.objects (bucket_id, name) values ('menu-images', 'items/former.webp') $$,
+  '42501', null, 'a deactivated super_admin cannot upload menu images');
 reset role;
 
 select tests.act_as('a0000000-0000-0000-0000-000000000005');

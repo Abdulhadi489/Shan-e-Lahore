@@ -1,5 +1,6 @@
 -- Shared test data, included by every test file inside its own transaction (rolled back).
--- Two branches, a customer on each side of every boundary, staff per branch and an admin.
+-- Two branches, staff per branch, an admin, deactivated staff and admin, a logged-in user with
+-- no role, and guest customers with orders.
 
 -- Start from an empty menu and order history regardless of what seed.sql loaded.
 set local client_min_messages = warning;
@@ -9,13 +10,13 @@ create schema tests;
 grant usage on schema tests to anon, authenticated;
 
 -- Impersonate a logged-in user the way PostgREST does. Return to postgres with `reset role`.
-create function tests.act_as(user_id uuid, aal text default 'aal2')
+create function tests.act_as(user_id uuid)
 returns void
 language plpgsql
 as $$
 begin
   perform set_config('request.jwt.claims',
-    json_build_object('sub', user_id, 'role', 'authenticated', 'aal', aal)::text, true);
+    json_build_object('sub', user_id, 'role', 'authenticated')::text, true);
   perform set_config('role', 'authenticated', true);
 end;
 $$;
@@ -61,13 +62,14 @@ insert into public.delivery_tiers (branch_id, upper_km, charge) values
 insert into public.opening_hours (branch_id, weekday, open_time, close_time) values
   ('b0000000-0000-0000-0000-000000000001', 5, '12:00', '02:00');
 
--- Signup trigger creates profiles and customers for these.
+-- The new-user trigger gives each a no-access profile; roles are set below as super_admin would.
 insert into auth.users (id, email, raw_user_meta_data) values
-  ('a0000000-0000-0000-0000-000000000001', '923000000001@phone.invalid', '{"full_name": "Customer A"}'),
-  ('a0000000-0000-0000-0000-000000000002', '923000000002@phone.invalid', '{"full_name": "Customer B"}'),
-  ('a0000000-0000-0000-0000-000000000003', '923000000003@phone.invalid', '{"full_name": "Staff One"}'),
-  ('a0000000-0000-0000-0000-000000000004', '923000000004@phone.invalid', '{"full_name": "Staff Two"}'),
-  ('a0000000-0000-0000-0000-000000000005', '923000000005@phone.invalid', '{"full_name": "Admin"}');
+  ('a0000000-0000-0000-0000-000000000001', 'no.role@example.test', '{"full_name": "No Role"}'),
+  ('a0000000-0000-0000-0000-000000000003', 'staff.one@example.test', '{"full_name": "Staff One"}'),
+  ('a0000000-0000-0000-0000-000000000004', 'staff.two@example.test', '{"full_name": "Staff Two"}'),
+  ('a0000000-0000-0000-0000-000000000005', 'admin@example.test', '{"full_name": "Admin"}'),
+  ('a0000000-0000-0000-0000-000000000006', 'left.staff@example.test', '{"full_name": "Former Staff"}'),
+  ('a0000000-0000-0000-0000-000000000007', 'left.admin@example.test', '{"full_name": "Former Admin"}');
 
 update public.profiles set role = 'order_staff', branch_id = 'b0000000-0000-0000-0000-000000000001'
   where user_id = 'a0000000-0000-0000-0000-000000000003';
@@ -75,9 +77,15 @@ update public.profiles set role = 'order_staff', branch_id = 'b0000000-0000-0000
   where user_id = 'a0000000-0000-0000-0000-000000000004';
 update public.profiles set role = 'super_admin'
   where user_id = 'a0000000-0000-0000-0000-000000000005';
+update public.profiles set role = 'order_staff', branch_id = 'b0000000-0000-0000-0000-000000000001', is_active = false
+  where user_id = 'a0000000-0000-0000-0000-000000000006';
+update public.profiles set role = 'super_admin', is_active = false
+  where user_id = 'a0000000-0000-0000-0000-000000000007';
 
--- A guest who never made an account.
+-- Guest customers: one row per phone, created by place-order in production.
 insert into public.customers (id, phone, name) values
+  ('c0000000-0000-0000-0000-000000000001', '923000000001', 'Guest A'),
+  ('c0000000-0000-0000-0000-000000000002', '923000000002', 'Guest B'),
   ('c0000000-0000-0000-0000-000000000009', '923000000009', 'Guest');
 
 insert into public.categories (id, branch_id, name_en, is_active) values
@@ -113,17 +121,17 @@ insert into public.discount_codes (branch_id, code, type, value) values
 
 -- Orders as place-order would insert them (service_role in production).
 insert into public.orders (
-  id, branch_id, order_number, tracking_token, customer_id, user_id, customer_name, customer_phone,
+  id, branch_id, order_number, tracking_token, customer_id, customer_name, customer_phone,
   address_text, lat, lng, distance_km, payment_method, subtotal, delivery_charge, total, language
 ) values
   ('0d000000-0000-0000-0000-000000000001', 'b0000000-0000-0000-0000-000000000001', 1001, repeat('a', 43),
-   (select id from public.customers where phone = '923000000001'), 'a0000000-0000-0000-0000-000000000001',
-   'Customer A', '923000000001', 'House 1, Gulberg', 31.51, 74.35, 2.0, 'cod', 1800, 100, 1900, 'en'),
+   'c0000000-0000-0000-0000-000000000001',
+   'Guest A', '923000000001', 'House 1, Gulberg', 31.51, 74.35, 2.0, 'cod', 1800, 100, 1900, 'en'),
   ('0d000000-0000-0000-0000-000000000002', 'b0000000-0000-0000-0000-000000000001', 1002, repeat('b', 43),
-   (select id from public.customers where phone = '923000000002'), 'a0000000-0000-0000-0000-000000000002',
-   'Customer B', '923000000002', 'House 2, Gulberg', 31.52, 74.36, 1.5, 'bank_transfer', 2000, 100, 2100, 'ur'),
+   'c0000000-0000-0000-0000-000000000002',
+   'Guest B', '923000000002', 'House 2, Gulberg', 31.52, 74.36, 1.5, 'bank_transfer', 2000, 100, 2100, 'ur'),
   ('0d000000-0000-0000-0000-000000000003', 'b0000000-0000-0000-0000-000000000002', 1001, repeat('c', 43),
-   'c0000000-0000-0000-0000-000000000009', null,
+   'c0000000-0000-0000-0000-000000000009',
    'Guest', '923000000009', 'House 9, DHA', 31.47, 74.41, 2.5, 'jazzcash', 700, 100, 800, 'en');
 
 insert into public.order_items (id, order_id, item_id, name_en, unit_price, quantity, line_total) values
