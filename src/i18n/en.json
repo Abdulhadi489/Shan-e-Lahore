@@ -1,0 +1,29 @@
+{
+  "languageName": "English",
+  "brand": "Shan-e-Lahore",
+  "nav": {
+    "main": "Main",
+    "info": "Information",
+    "menu": "Menu",
+    "cart": "Cart"
+  },
+  "pages": {
+    "menu": "Menu",
+    "cart": "Your cart",
+    "checkout": "Checkout",
+    "tracking": "Your order",
+    "about": "About us",
+    "contact": "Contact us",
+    "terms": "Terms and conditions",
+    "privacy": "Privacy policy",
+    "refund": "Refund policy",
+    "notFound": "Page not found"
+  },
+  "cart": {
+    "goToCheckout": "Go to checkout"
+  },
+  "notFound": {
+    "body": "This page doesn't exist.",
+    "goHome": "Go to the home page"
+  }
+}

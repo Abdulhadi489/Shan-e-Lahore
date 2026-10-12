@@ -1,1 +1,52 @@
 @import 'tailwindcss';
+@import '@fontsource/pt-sans-narrow/latin-700.css';
+/* Regular weight only: Nastaliq has no real bold, and each weight is 156 KB. */
+@import '@fontsource/noto-nastaliq-urdu/arabic-400.css';
+
+/*
+  Design tokens. Colours are measured from the logo and the printed menu.
+  Tailwind's built-in colours and radii are removed so only these can be used.
+  The logo orange fails contrast with white text: put ink text on brand, and use brand-deep for orange text.
+*/
+@theme {
+  --color-*: initial;
+  --color-brand: #f39100;
+  --color-brand-deep: #9e4410;
+  --color-peach: #faddca;
+  --color-surface: #fff8f2;
+  --color-raised: #ffffff;
+  --color-ink: #22211e;
+  --color-ink-muted: #665345;
+  --color-line: #eed9c8;
+  --color-danger: #b3261e;
+  --color-success: #2e6b3b;
+
+  --radius-*: initial;
+  --radius-control: 0.5rem;
+  --radius-card: 0.75rem;
+
+  --font-heading: 'PT Sans Narrow', var(--font-sans);
+}
+
+@layer base {
+  body {
+    background-color: var(--color-surface);
+    color: var(--color-ink);
+  }
+
+  /* Targets html[lang], not :lang(), so the "اردو" switch on English pages doesn't download the Urdu font. */
+  html[lang='ur'] {
+    --font-sans: 'Noto Nastaliq Urdu', ui-sans-serif, system-ui, sans-serif;
+    --font-heading: var(--font-sans);
+    font-synthesis: none;
+    /* Nastaliq stacks letters diagonally and needs about twice the usual line height. */
+    line-height: 2.2;
+    --text-xs--line-height: 2.2;
+    --text-sm--line-height: 2.2;
+    --text-base--line-height: 2.2;
+    --text-lg--line-height: 2.2;
+    --text-xl--line-height: 2.2;
+    --text-2xl--line-height: 2;
+    --text-3xl--line-height: 2;
+  }
+}
