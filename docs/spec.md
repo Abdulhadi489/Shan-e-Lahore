@@ -4,7 +4,7 @@ Oct 11, 2026 · @Someone
 
 ## Project overview
 
-Shan-e-Lahore gets a delivery-only ordering website for one branch, built so more branches can be added later without rework, with launch targeted about one month from kickoff. Customers browse the menu, order as a guest or with an account, and pay by cash on delivery or by bank, JazzCash or Easypaisa transfer. A staff member calls every customer to confirm the order before the kitchen starts.
+Shan-e-Lahore gets a delivery-only ordering website for one branch, built so more branches can be added later without rework, with launch targeted about one month from kickoff. Customers browse the menu, order as guests (no customer accounts at launch), and pay by cash on delivery or by bank, JazzCash or Easypaisa transfer. A staff member calls every customer to confirm the order before the kitchen starts.
 
 Decisions agreed so far:
 
@@ -21,30 +21,29 @@ Decisions agreed so far:
 
 ## User roles and permissions
 
-The three logins are Super Admin, Order Staff and Customer. A separate developer login is not needed: the development team uses a Super Admin account for app settings and server access for everything technical. The person who calls customers to confirm orders becomes the Order Staff role, which is the third login the client actually needs.
+There are two logins, Super Admin and Order Staff; customers order as guests and never log in. A separate developer login is not needed: the development team uses a Super Admin account for app settings and server access for everything technical. The person who calls customers to confirm orders becomes the Order Staff role.
 
 | Role | Who | Can do | Cannot do |
 | --- | --- | --- | --- |
 | Super Admin | Restaurant owner, development team | Everything: menu, prices, delivery pricing, discount codes, reports, staff accounts, riders, settings, all branches | Nothing restricted |
 | Order Staff | The person who calls customers, counter or kitchen staff | See incoming orders with a sound alert, call and confirm or cancel, verify bank, JazzCash and Easypaisa payments, move orders through statuses, assign riders, mark items sold out | Change prices, menu structure, delivery fees, discount codes; view sales reports |
-| Customer | Anyone ordering | Browse, order as guest or with an account, save addresses, view order history, reorder, track an order | Anything in the admin panel |
+| Customer | Anyone ordering, as a guest | Browse, order, track an order by its link, cancel before the confirmation call | Anything in the admin panel |
 
 Staff accounts are tied to a branch, so when a second branch opens its staff only see that branch's orders. Every status change records which staff member made it, so the owner can see who confirmed or cancelled each order.
 
-Super Admin and Order Staff logins require a second step from an authenticator app (free), because these accounts can see customer phone numbers and addresses. Customers who forget their password call the restaurant, and the Super Admin resets it from the admin panel after confirming the caller's number.
+Super Admin and Order Staff log in with email and password (minimum 12 characters), protected by a bot check. Every staff member has their own login, never a shared one. A Super Admin resets staff passwords from the admin panel, and there are always at least two Super Admin accounts so either can reset the other.
 
 ## Customer-facing website
 
-The customer site is mobile-first, because most Lahore food orders come from phones, and needs seven pages at launch.
+The customer site is mobile-first, because most Lahore food orders come from phones, and needs six pages at launch.
 
 | Page | What it does |
 | --- | --- |
 | Home | Hero banner, featured deals, popular items, delivery radius shown on a map, opening hours, call and WhatsApp buttons |
 | Menu | Categories with a sticky category bar, item cards with photo, price and a sold-out state; tapping an item opens its variant and add-on choices |
 | Cart | Items with chosen options, quantity edits, discount code field, subtotal, delivery fee and total, minimum-order warning |
-| Checkout | Name, phone, required map pin ("use my location" or drag the pin), full address and landmark, delivery notes, payment method; delivery charge calculated from the distance in km; pins outside the radius blocked; guest checkout with an optional "create account" box |
+| Checkout | Name, phone, required map pin ("use my location" or drag the pin), full address and landmark, delivery notes, payment method; delivery charge calculated from the distance in km; pins outside the radius blocked; guest checkout only, and nothing is saved on the customer's phone except the language choice |
 | Order placed and tracking | Order number, payment instructions with account numbers and a "send screenshot on WhatsApp" button for transfer orders, status timeline (awaiting call, confirmed, preparing, out for delivery, delivered), restaurant phone number; reachable by link without logging in |
-| Account | Login with phone and password, saved addresses, order history, one-tap reorder |
 | Static pages | About, contact with map, terms, privacy and refund policy |
 
 The checkout page tells the customer up front that the restaurant will call to confirm the order. That sets expectations and reduces missed calls.
@@ -157,7 +156,7 @@ The admin panel has six modules; Order Staff see only the first, and Super Admin
 | Customers | List with phone, order count, total spend and last order date; full order history per customer; guest orders linked by phone number | Admin |
 | Reports | Sales by day, week and month; orders by status, including cancellation rate; revenue by payment method; top-selling items; orders by distance tier; discount usage; export to Excel | Admin |
 
-Settings (restaurant info, opening hours, bank, JazzCash and Easypaisa account details and the WhatsApp number for screenshots, staff accounts, rider list with names and phone numbers, customer password resets, blocked phone numbers) sit under Super Admin. Even though opening hours were not requested as a feature, the site should stop taking orders outside opening hours, or customers will order at 3 a.m. and nobody will call them.
+Settings (restaurant info, opening hours, bank, JazzCash and Easypaisa account details and the WhatsApp number for screenshots, staff accounts, rider list with names and phone numbers, staff password resets, blocked phone numbers) sit under Super Admin. Even though opening hours were not requested as a feature, the site should stop taking orders outside opening hours, or customers will order at 3 a.m. and nobody will call them.
 
 ## Tech stack and data model
 
@@ -168,7 +167,7 @@ The stack is React for the website and admin panel, Supabase for the database, l
 | Website and admin panel | React with Vite, one app with protected admin routes | Built as a static site |
 | Admin screens | Same React app and shared components, plus Tailwind CSS; no admin framework | The admin is about eight screens with nested menu forms; plain React is less to learn and easier for the team to own |
 | Database | Supabase Postgres | Row-level security rules decide what each role can read and write |
-| Logins | Supabase Auth, with each user's role in a profiles table | Phone number as login ID with password; skip SMS codes, which cost money per message |
+| Logins | Supabase Auth, with each user's role in a profiles table | Staff and Super Admin only, with email and password; no customer logins, so no SMS codes, which cost money per message |
 | Menu photos | Supabase Storage | Compress images in the browser before upload to stay within free storage |
 | New-order alerts | Supabase Realtime | Staff dashboard updates the instant an order is placed |
 | Server-side rules | Supabase Edge Functions | Order total, radius check and the three-call rule run on the server, so customers cannot change prices |
@@ -178,7 +177,7 @@ The stack is React for the website and admin panel, Supabase for the database, l
 
 Free tiers have limits to plan around. Supabase's free plan pauses projects that sit inactive and does not include automatic backups, so export the database weekly; check its current database and storage limits before launch. Move Supabase to a paid plan once the site carries real orders, because backups protect the restaurant's order history.
 
-Main tables: branches, delivery settings, delivery tiers, profiles (role and branch for each login), riders, customers, addresses, categories, items, variants, add-on groups, add-on options, deals, deal items, orders, order items, order item add-ons, payments, call attempts, order status log and discount codes. Every menu text field is stored in both languages (name\_en and name\_ur, and so on). Orders store branch, map pin coordinates and distance, order type, status, payment method, payment status, transaction ID, subtotal, delivery fee, discount, total (tax-inclusive, so no separate tax field), confirming staff member and assigned rider.
+Main tables: branches, delivery settings, delivery tiers, profiles (role and branch for each login), riders, customers, categories, items, variants, add-on groups, add-on options, deals, deal items, orders, order items, order item add-ons, payments, call attempts, order status log and discount codes. Every menu text field is stored in both languages (name\_en and name\_ur, and so on). Orders store branch, map pin coordinates and distance, order type, status, payment method, payment status, transaction ID, subtotal, delivery fee, discount, total (tax-inclusive, so no separate tax field), confirming staff member and assigned rider.
 
 ## One-month plan
 
@@ -189,13 +188,13 @@ A one-month launch is tight for a student team building in two languages; it wor
 What each week delivers:
 
 1. **Spec and design:** client signs off this spec; wireframes and visual design in both languages; Supabase tables, roles and security rules; React project with translation setup deployed to Render.
-2. **Menu, cart, checkout:** customer pages in English and Urdu, menu model with variants, add-ons and fixed deals, map-pin checkout with radius check, guest and account ordering.
+2. **Menu, cart, checkout:** customer pages in English and Urdu, menu model with variants, add-ons and fixed deals, map-pin checkout with radius check, guest ordering.
 3. **Admin, orders, payments:** live orders dashboard with realtime alerts, confirmation call and three-call rule, manual payment verification, rider assignment, all admin modules, discount codes and reports.
 4. **Content, WhatsApp, testing:** Super Admin enters the real menu and photos in both languages, prefilled WhatsApp messages, staff training, end-to-end test orders, fixes, domain connected.
 
 **In the launch:** everything in this spec except the items below.
 
-**Phase 2, after launch:** automatic WhatsApp messages through the Business API; a rider login or app; takeaway orders; second-branch selection on the customer site; paid Supabase plan with automatic backups.
+**Phase 2, after launch:** customer accounts (saved addresses, order history, reorder) if customers ask for them; an authenticator app as a second step for staff logins; automatic WhatsApp messages through the Business API; a rider login or app; takeaway orders; second-branch selection on the customer site; paid Supabase plan with automatic backups.
 
 Because the menu is entered through the admin panel, missing menu content never blocks development, but the site cannot go live until the Super Admin has entered the real menu and photos in week 4.
 
@@ -210,7 +209,7 @@ The first six items are needed before week 3, when payments, delivery and order 
 - [ ] Decide who verifies payments, and give them access to the bank and wallet apps or their incoming-payment SMS alerts
 - [ ] Send the branch's exact location pin, the starting km tiers with their delivery charges, and the minimum order amount
 - [ ] Send opening hours
-- [ ] Send the rider list with names and phone numbers, and name the Order Staff members and the Super Admin who need logins
+- [ ] Send the rider list with names and phone numbers, and name the Order Staff members and the Super Admin who need logins, each with their own email address
 - [ ] Prepare the full menu in English and Urdu (categories, items, descriptions, tax-inclusive prices, sizes, add-ons, fixed deals) for the Super Admin to enter in week 4
 - [ ] Send dish photos, or book a food shoot (photos strongly affect orders)
 - [ ] Send logo, brand colours and any existing designs

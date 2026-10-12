@@ -20,7 +20,7 @@ The detailed feature specification is `docs/spec.md`. **The spec is the source o
 
 Shan-e-Lahore is a desi food restaurant in Lahore, Pakistan. We are building its delivery-only ordering website from scratch:
 
-- Customers browse the menu (English and Urdu), order as a guest or with an account, and pay cash on delivery or by bank / JazzCash / Easypaisa transfer.
+- Customers browse the menu (English and Urdu), order as guests (no customer accounts at launch), and pay cash on delivery or by bank / JazzCash / Easypaisa transfer.
 - Every order is confirmed by a staff member over a phone call before it goes to the kitchen. Transfer payments are verified manually by staff (customer sends a screenshot on WhatsApp; staff check the money actually arrived and record the transaction ID).
 - Delivery charge is calculated from distance in km between the branch and the customer's map pin, using km tiers the Super Admin can change at any time.
 - The restaurant has its own riders. Staff assign a rider to each order. No rider login at launch.
@@ -45,8 +45,8 @@ Shan-e-Lahore is a desi food restaurant in Lahore, Pakistan. We are building its
 | Styling | Tailwind CSS with design tokens (section 14) | Small CSS, RTL-friendly logical utilities |
 | Admin panel | Same React app under `/admin`, built with the same components. **No admin framework.** | The admin is ~8 screens with nested menu forms; a framework adds abstraction the team must learn and saves little here |
 | Database | Supabase Postgres | RLS, free tier |
-| Auth | Supabase Auth (section 5) | Free, with TOTP MFA and CAPTCHA support |
-| Bot protection | Cloudflare Turnstile (free) on signup, login and checkout | Stops scripted fake orders and brute force |
+| Auth | Supabase Auth (section 5), staff and admin only | Free, with CAPTCHA support |
+| Bot protection | Cloudflare Turnstile (free) on staff/admin login and checkout | Stops scripted fake orders and brute force |
 | Storage | Supabase Storage | Menu photos, banners |
 | Live updates | Supabase Realtime | New-order alerts |
 | Server logic | Supabase Edge Functions (Deno) | Anything involving money, pricing, status rules or rate limits |
@@ -80,7 +80,7 @@ Note: React Native is for mobile apps. This is a **web** app in React. A future 
 ├─ src/
 │  ├─ app/                   # routing, providers, layouts
 │  ├─ features/
-│  │  ├─ menu/  checkout/  tracking/  account/
+│  │  ├─ menu/  checkout/  tracking/
 │  │  └─ admin/              # orders, menu, delivery, discounts, customers, reports, settings
 │  ├─ components/            # shared UI built on the design tokens
 │  ├─ lib/                   # supabase client, phone.ts, whatsapp.ts, money.ts
@@ -93,7 +93,7 @@ Note: React Native is for mobile apps. This is a **web** app in React. A future 
    │  ├─ _shared/            # pricing.ts, distance.ts, opening-hours.ts, schemas.ts, rate-limit.ts, turnstile.ts (pure + tested)
    │  ├─ quote-order/  place-order/  get-order-by-token/  cancel-order-by-token/
    │  ├─ edit-order/          # staff change items or address on the call; server re-prices
-   │  └─ admin-users/        # create staff, reset customer password (super_admin only)
+   │  └─ admin-users/        # create staff, deactivate staff, reset staff password (super_admin only)
    └─ seed.sql               # placeholder dev data only, never real customer data
 ```
 
@@ -103,31 +103,32 @@ Don't create folders or files before they're needed.
 
 ## 4. User roles
 
-Exactly three logins:
+Two logins (staff and admin). Customers order as guests and never log in.
 
 | Role | Access |
 | --- | --- |
 | `super_admin` | Everything: menu, prices, delivery pricing, discount codes, reports, staff accounts, riders, settings, all branches |
 | `order_staff` | Live orders for **their branch only**: confirm/cancel, log unanswered calls, verify payments, update statuses, assign riders, mark items/variants/add-on options sold out, pause delivery, edit items or address during the confirmation call, print kitchen tickets. **Cannot** change prices, menu structure, delivery pricing, discount codes, staff, or see reports. |
-| `customer` | Their own profile, addresses and orders. Guests order without an account. |
+| `customer` | Not a customer login (there are none at launch). It is the no-access default role a new account gets until `super_admin` assigns `order_staff` or `super_admin`. |
 
 - Role and `branch_id` live in a `profiles` table. **Users must never be able to change their own `role` or `branch_id`.** Enforce with column-level privileges or a trigger, and test it in pgTAP.
 - **Never authorise from `user_metadata`** (users can edit it). Read role from `profiles` via the `SECURITY DEFINER` helpers `private.is_super_admin()` and `private.is_staff_of(branch_id)`, defined in the non-exposed `private` schema with `SET search_path = ''`.
-- Signup trigger always creates `profiles.role = 'customer'`. Staff and admin accounts are created only by `super_admin` through the `admin-users` Edge Function.
-- **`super_admin` and `order_staff` must use TOTP MFA** (Supabase Auth MFA, free). RLS policies for staff and admin actions require `aal2` in the JWT.
+- Public signup is off. Accounts are created only by `super_admin`: through the `admin-users` Edge Function, or Dashboard > Authentication > Add user for the first Super Admins (README). The new-user trigger creates a profile with the no-access role `customer`; `super_admin` then sets the role.
+- Staff and admin log in with **email + password (minimum 12 characters) + Turnstile**. Every staff member has their own account, never a shared one. Deactivate leavers (`profiles.is_active = false`); inactive profiles get no access. No MFA at launch: risk accepted and recorded in `docs/decisions.md`.
+- Email changes are blocked by a trigger on `auth.users`, which also blocks the admin API. To change a staff member's email, create a new account and deactivate the old one.
 - Every status change, payment verification, pricing change and staff change records who did it and when.
 
 ---
 
 ## 5. Authentication
 
+- **No customer accounts at launch.** Every order is a guest order: name, phone, address + landmark, required map pin, notes, payment method, Turnstile check. Customers follow their order through the tracking link (`/track/:token`). Nothing about the customer is stored on their device; only the language choice is kept in localStorage.
 - **No SMS or OTP** (paid). The confirmation call replaces phone verification.
-- Customers log in with **phone number + password**, implemented as Supabase email/password auth with a synthetic email derived from the normalised phone: `923001234567@phone.invalid` (`.invalid` is reserved, so no one can ever own it or receive mail there, and buying our real domain later changes nothing). Email confirmation disabled. The UI never shows this email. The signup trigger rejects any other format, and email changes are blocked. Accepted by local Supabase; confirm once on the hosted project.
 - Normalise Pakistani numbers to `92XXXXXXXXXX` (accept `03001234567`, `+92 300 1234567`, `3001234567`). `src/lib/phone.ts`, unit tested, and the same rule enforced server-side.
-- Passwords: minimum 8 characters; Turnstile CAPTCHA on signup and login (configure in Supabase Auth settings).
-- **Password reset:** there is no email or SMS to send a reset link to. Customers call the restaurant; `super_admin` resets the password from the admin panel through `admin-users` after confirming the caller's number. Accounts are optional, so a customer can always order as a guest.
-- Guest checkout: name + phone + address, no account. If a guest later signs up with the same phone, their past guest orders become visible only after staff confirm an order placed from that account (the call proves the phone; without it, anyone could sign up with someone else's number and read their addresses).
+- **Staff and admin:** real email + password, minimum 12 characters. Turnstile CAPTCHA on login (set in Supabase Auth settings) plus Supabase's built-in login rate limits. Public signup off: `[auth] enable_signup = false`. Keep `[auth.email] enable_signup = true`: despite its name it switches email login itself, and turning it off locks everyone out. Email confirmation off.
+- **No email sending at launch.** Supabase's built-in email only reaches members of the Supabase organisation, and there is no custom SMTP (a new external service, needs the real domain; ask first). So `super_admin` resets staff passwords through `admin-users`, there are always at least **two** `super_admin` accounts (owner + one developer) so either can reset the other, and the README documents a last-resort dashboard recovery.
 - Session handling: use the Supabase client defaults; never store tokens anywhere custom; sign out clears the TanStack Query cache.
+- Phase 2 note, if customer accounts are added: a guest's past orders should become visible to a new account only after staff confirm an order placed from it (the call proves the phone; otherwise anyone could sign up with someone else's number and read their addresses).
 
 ---
 
@@ -147,8 +148,7 @@ Tables (columns indicative):
 - `opening_hours` — branch_id, weekday, open_time, close_time, is_closed. **Must support closing after midnight** (e.g. 12:00–02:00).
 - `audit_log` — table, row, old and new values, who, when. Written by trigger on prices, delivery settings, opening hours, discount codes and profiles
 - `profiles` — user_id, role, branch_id, full_name, is_active
-- `customers` — normalised phone (unique), name, user_id (nullable), phone_verified_at, preferred_language, is_blocked
-- `addresses` — customer_id, label, address_text, landmark, lat, lng
+- `customers` — normalised phone (unique), name, is_blocked. One row per guest phone, for blocking and reports
 - `riders` — branch_id, name, phone, is_active
 - `categories` — branch_id, name_en/ur, sort_order, is_active
 - `items` — category_id, name_en/ur, description_en/ur, base_price, image_path, is_available, is_hidden, is_deal, is_featured, sort_order
@@ -159,7 +159,7 @@ Tables (columns indicative):
 - `deal_items` — deal item_id, contained item/variant, quantity. **Deals are fixed bundles only.**
 - `banners` — image_path, title_en/ur, sort_order, is_active
 - `discount_codes` — code, type (percent | fixed), value, min_order, starts_at, ends_at, usage_limit, one_per_phone, first_order_only, is_active. Usage is counted from non-cancelled orders, not stored
-- `orders` — branch_id, order_number (sequential per branch, e.g. `SL-1042`), tracking_token (≥ 32 random bytes, URL-safe; stored as-is so staff can send the link, readable only by the order's owner and branch staff), customer_id, user_id, name/phone snapshot, address_text, landmark, lat, lng, distance_km, order_type (`delivery`), status, payment_method, payment_status, transaction_id, payment_verified_by, payment_verified_at, subtotal, delivery_charge, discount_amount, total, discount_code_id, language, notes, rider_id, confirmed_by, cancel_reason, per-status timestamps
+- `orders` — branch_id, order_number (sequential per branch, e.g. `SL-1042`), tracking_token (≥ 32 random bytes, URL-safe; stored as-is so staff can send the link, readable only by branch staff), customer_id, name/phone snapshot, address_text, landmark, lat, lng, distance_km, order_type (`delivery`), status, payment_method, payment_status, transaction_id, payment_verified_by, payment_verified_at, subtotal, delivery_charge, discount_amount, total, discount_code_id, language, notes, rider_id, confirmed_by, cancel_reason, per-status timestamps
 - `order_items` — **snapshot** of names and unit price, quantity, line_total
 - `order_item_addons` — snapshot name and price
 - `call_attempts` — order_id, staff_id, created_at (each row is one unanswered call)
@@ -174,14 +174,14 @@ Tables (columns indicative):
 
 - **Explicit GRANTs are required.** New Supabase projects no longer expose `public` tables to the Data API automatically. Every migration that creates a table must, in the same file: create the table, `GRANT` only the privileges each role actually needs, `ENABLE ROW LEVEL SECURITY`, and add policies. Check current Supabase docs for this behaviour.
 - **RLS on every table**, no exceptions. Default is no access. `anon` gets `SELECT` only on public menu data (active categories, visible items, variants, add-ons, banners, opening hours, delivery tiers) and nothing else.
-- Customers never `INSERT` into `orders` directly. Orders are created only by the `place-order` Edge Function.
+- Browsers never `INSERT` into `orders` directly. Orders are created only by the `place-order` Edge Function.
 - No open `SELECT` on `orders`. The tracking page uses `get-order-by-token`, which returns a minimal, masked payload (first name, masked phone, items, totals, status, payment instructions).
 - Views must use `security_invoker = true`. `SECURITY DEFINER` functions must set `search_path = ''`, live in a non-exposed schema where possible, and check the caller's role inside.
-- Realtime: staff subscriptions must be filtered by branch and protected by RLS; test that a customer cannot subscribe to orders.
+- Realtime: staff subscriptions must be filtered by branch and protected by RLS; test that anon and non-staff users cannot receive orders.
 - Storage: `menu-images` bucket is public-read; only `super_admin` can write. Set the bucket's allowed MIME types (`image/webp`, `image/jpeg`, `image/png`) and a file size limit (1 MB). No SVG uploads.
 - The `service_role` key exists only in Edge Function secrets. Never in frontend code, `.env` files committed to git, logs or prompts.
 - Run Supabase **Security Advisor** and `supabase db lint` after every migration and fix every warning or explain why not.
-- **pgTAP tests** in `supabase/tests/` prove, for every table: what `anon`, a customer, staff of another branch, staff without MFA and `super_admin` can and cannot read and write. These tests are required, not optional.
+- **pgTAP tests** in `supabase/tests/` prove, for every table: what `anon`, a logged-in user with no role, staff of the same and another branch, deactivated staff and `super_admin` can and cannot read and write. These tests are required, not optional.
 - Never run the Supabase MCP server or any agent tooling against the production project. Development project only.
 
 ---
@@ -244,9 +244,8 @@ Mobile-first, fast on Pakistani mobile data, accessible (semantic HTML, labels, 
 - **Home:** banners, featured deals, popular items, delivery area map, opening hours, call and WhatsApp buttons, "Closed now, opens at …" when closed.
 - **Menu:** sticky category bar, item cards (placeholder image if none), sold-out state, item modal enforcing variant and add-on rules.
 - **Cart:** quantities, options, discount code, subtotal / delivery / total, minimum-order warning.
-- **Checkout:** name, phone, **required map pin** ("use my location" or drag), address + landmark, notes, payment method. Distance and charge appear as soon as the pin is set (`quote-order`). Pins outside the radius blocked. Guest checkout with optional account creation. Tell the customer the restaurant will call to confirm.
+- **Checkout:** name, phone, **required map pin** ("use my location" or drag), address + landmark, notes, payment method. Distance and charge appear as soon as the pin is set (`quote-order`). Pins outside the radius blocked. Guest checkout only. Tell the customer the restaurant will call to confirm.
 - **Tracking** (`/track/:token`): order number, status timeline, items, total; for transfer orders, account details and a "Send screenshot on WhatsApp" button; cancel while `pending_confirmation`.
-- **Account:** phone + password, saved addresses, order history, reorder.
 - **Static pages:** about, contact, terms, privacy, refund policy.
 
 **Bilingual:** switch on every page, remembered in localStorage and saved on the order. Urdu: `dir="rtl"` on `<html>`, Noto Nastaliq Urdu, larger line-height, logical CSS properties so layouts flip. No hard-coded UI strings. Western digits for prices and phones.
@@ -255,13 +254,13 @@ Mobile-first, fast on Pakistani mobile data, accessible (semantic HTML, labels, 
 
 ## 11. Admin panel (`/admin`)
 
-Order Staff see only Live Orders and sold-out toggles; Super Admin sees everything. MFA required for both.
+Order Staff see only Live Orders, sold-out toggles and the delivery switch; Super Admin sees everything.
 
 - **Live Orders:** Realtime list for the staff member's branch; sound alert + browser notification (requires the staff device to keep the tab open; document this); status filters; tap-to-call; call-attempt button (third auto-cancels); verify payment with transaction ID; confirm/cancel with reason; status buttons; rider assignment; WhatsApp buttons; kitchen ticket print view (80 mm thermal CSS; printing goes through the browser print dialog); refund-due list.
 - **Menu:** categories, items, variants, add-on groups, fixed deals, photos, banners, ordering, sold-out and hide switches; English and Urdu fields side by side. **Menu changes never need code changes.**
 - **Photo upload:** compress in browser to ≤ 1200 px WebP before upload; server-side bucket limits still apply.
 - **Delivery:** branch location on map, km tiers, road factor, minimum order, free-delivery threshold, delivery switch (Order Staff may use this switch too), change log.
-- **Discount codes, Customers** (with block switch), **Reports** (sales by period, status and cancel reasons, payment method, top items, distance tier, discount usage; CSV export (opens in Excel); `super_admin` only), **Settings** (restaurant info, opening hours, payment accounts, WhatsApp number, staff accounts, riders, customer password reset).
+- **Discount codes, Customers** (with block switch), **Reports** (sales by period, status and cancel reasons, payment method, top items, distance tier, discount usage; CSV export (opens in Excel); `super_admin` only), **Settings** (restaurant info, opening hours, payment accounts, WhatsApp number, staff accounts, riders, staff password reset).
 
 ---
 
@@ -306,9 +305,9 @@ Prefilled `https://wa.me/<number>?text=<encoded>` links that staff send from the
 
 One milestone at a time. Before coding: a short plan and questions. After: what was built, how to test it, what was **not** done or checked, known risks. Then stop for review.
 
-1. **Foundation:** Vite + React + TS + Tailwind + Router + i18n with RTL; design tokens; Supabase project link; full schema with GRANTs, RLS, helper functions, triggers and constraints; pgTAP RLS tests; generated types; dev seed with placeholder menu; auth (phone + password, roles, MFA for staff/admin, Turnstile); route protection; CI; `render.yaml` with SPA rewrite and security headers; deploy.
-2. **Customer ordering:** home, menu, item modal, cart, checkout with map pin; `_shared` pricing/distance/opening-hours/rate-limit logic with tests; `quote-order`, `place-order`, `get-order-by-token`, `cancel-order-by-token`; guest and account flows in both languages.
-3. **Admin and order handling:** Live Orders with Realtime, call attempts, payment verification, transitions, riders, WhatsApp links, kitchen ticket; menu management with uploads; delivery settings; discounts; customers; reports; settings and staff management; password reset.
+1. **Foundation:** Vite + React + TS + Tailwind + Router + i18n with RTL; design tokens; Supabase project link; full schema with GRANTs, RLS, helper functions, triggers and constraints; pgTAP RLS tests; generated types; dev seed with placeholder menu; auth (staff/admin email + password, roles, Turnstile; public signup off); route protection; CI; `render.yaml` with SPA rewrite and security headers; deploy.
+2. **Customer ordering:** home, menu, item modal, cart, checkout with map pin; `_shared` pricing/distance/opening-hours/rate-limit logic with tests; `quote-order`, `place-order`, `get-order-by-token`, `cancel-order-by-token`; guest flow in both languages.
+3. **Admin and order handling:** Live Orders with Realtime, call attempts, payment verification, transitions, riders, WhatsApp links, kitchen ticket; menu management with uploads; delivery settings; discounts; customers; reports; settings and staff management; staff password reset.
 4. **Hardening and launch:** end-to-end test of every path (COD; each transfer method; unpaid transfer; three missed calls; customer cancel; out of radius; closed hours including past midnight; sold-out item; invalid discount; rate limit; blocked number); full RLS and Security Advisor pass; CSP check; mobile, RTL and accessibility review; Lighthouse; backup and **tested restore**; README; placeholder content removed; domain connected.
 
 ---
@@ -324,4 +323,4 @@ One milestone at a time. Before coding: a short plan and questions. After: what 
 
 ## 17. Explicitly out of scope
 
-Payment gateways and cards; SMS/OTP; WhatsApp Business API; scheduled orders, takeaway, dine-in; rider login or app; tax lines, invoices, FBR/PRA integration; multi-branch selection on the customer site (but keep `branch_id`); any paid service. If a task seems to need one, stop and ask.
+Payment gateways and cards; SMS/OTP; WhatsApp Business API; scheduled orders, takeaway, dine-in; rider login or app; tax lines, invoices, FBR/PRA integration; multi-branch selection on the customer site (but keep `branch_id`); customer accounts (phase 2); any paid service. If a task seems to need one, stop and ask.
