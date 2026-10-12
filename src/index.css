@@ -34,6 +34,11 @@
     color: var(--color-ink);
   }
 
+  :focus-visible {
+    outline: 2px solid var(--color-brand-deep);
+    outline-offset: 2px;
+  }
+
   /* Targets html[lang], not :lang(), so the "اردو" switch on English pages doesn't download the Urdu font. */
   html[lang='ur'] {
     --font-sans: 'Noto Nastaliq Urdu', ui-sans-serif, system-ui, sans-serif;
