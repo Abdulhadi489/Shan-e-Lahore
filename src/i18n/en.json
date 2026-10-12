@@ -25,5 +25,39 @@
   "notFound": {
     "body": "This page doesn't exist.",
     "goHome": "Go to the home page"
+  },
+  "admin": {
+    "title": "Staff",
+    "loading": "Loading…",
+    "signOut": "Sign out",
+    "liveOrders": "Live orders",
+    "signedInAs": "Signed in as {{name}} ({{role}})",
+    "roles": {
+      "super_admin": "Super Admin",
+      "order_staff": "Order Staff",
+      "customer": "No role yet"
+    },
+    "noRole": "Your account has no access yet. Ask a Super Admin to give you a role.",
+    "deactivated": "This account has been deactivated. Ask a Super Admin if you think this is a mistake.",
+    "profileError": "Couldn't load your account. Check your connection and reload the page.",
+    "login": {
+      "title": "Staff login",
+      "email": "Email",
+      "password": "Password",
+      "submit": "Log in",
+      "submitting": "Logging in…",
+      "botCheckPending": "Complete the bot check above to log in.",
+      "botCheckUnavailable": "The bot check couldn't load. Check your connection and reload the page.",
+      "forgotPassword": "Forgot your password? Ask a Super Admin to reset it.",
+      "errors": {
+        "email": "Enter a valid email address.",
+        "password": "Enter your password.",
+        "wrongCredentials": "Email or password is wrong.",
+        "botCheckFailed": "The bot check failed. Try again.",
+        "tooManyAttempts": "Too many attempts. Wait a few minutes and try again.",
+        "network": "Can't reach the server. Check your connection and try again.",
+        "unexpected": "Something went wrong. Try again."
+      }
+    }
   }
 }

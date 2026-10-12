@@ -1,7 +1,11 @@
+import { lazy, Suspense } from 'react'
 import { Link, Route, Routes } from 'react-router'
 import { useTranslation } from 'react-i18next'
 import { CustomerLayout, infoPages } from './CustomerLayout'
 import { EmptyPage } from './EmptyPage'
+
+// Staff code downloads only when someone opens /admin, so customers on mobile data never load it.
+const AdminApp = lazy(() => import('../features/admin/AdminApp').then((module) => ({ default: module.AdminApp })))
 
 export function AppRoutes() {
   const { t } = useTranslation()
@@ -37,6 +41,14 @@ export function AppRoutes() {
           }
         />
       </Route>
+      <Route
+        path="admin/*"
+        element={
+          <Suspense>
+            <AdminApp />
+          </Suspense>
+        }
+      />
     </Routes>
   )
 }
