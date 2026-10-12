@@ -31,7 +31,19 @@ supabase start
 
 ## Environment variables
 
-Names are in `.env.example`. Only public values go in the frontend. The Supabase secret key and the Turnstile secret never go in any file in this repository: they live in Supabase's dashboard (Edge Function secrets, Authentication > Attack Protection).
+Names are in `.env.example`. Copy it to `.env.local` (git ignores it) and fill it in, then restart `npm run dev`:
+
+| | Local Supabase (`supabase start`) | Hosted dev project |
+| --- | --- | --- |
+| `VITE_SUPABASE_URL` | `API_URL` from `supabase status` | Dashboard > Project Settings > API |
+| `VITE_SUPABASE_PUBLISHABLE_KEY` | `PUBLISHABLE_KEY` from `supabase status` | Dashboard > Project Settings > API Keys |
+| `VITE_TURNSTILE_SITE_KEY` | `1x00000000000000000000AA` (Cloudflare's always-pass test key) | The real site key; the widget must list `localhost` under its hostnames |
+
+Local Supabase does not check the bot-check token, so the test key is enough there. The hosted project does.
+
+Only public values go in the frontend. The Supabase secret key and the Turnstile secret never go in any file in this repository: they live in Supabase's dashboard (Edge Function secrets, Authentication > Attack Protection).
+
+To log in locally, create accounts in the local dashboard (http://127.0.0.1:54323) with the same steps as "Creating a Super Admin" below.
 
 ## Creating a Super Admin
 
