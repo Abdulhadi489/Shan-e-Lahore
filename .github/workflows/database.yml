@@ -1,0 +1,31 @@
+name: Database
+
+# Starting Supabase takes about 5 minutes, and a private repo gets 2,000 free Actions minutes a month,
+# so this runs only when the database changes.
+on:
+  push:
+    branches: [main]
+    paths: ['supabase/**', '.github/workflows/database.yml']
+  pull_request:
+    paths: ['supabase/**', '.github/workflows/database.yml']
+
+permissions:
+  contents: read
+
+jobs:
+  database:
+    name: RLS tests, schema lint, Security Advisor
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: supabase/setup-cli@45a513f8c64c0bc8e0e3dfe572b5c95be85f6359 # v3.0.1
+        with:
+          version: 2.118.0
+      # Only the services the tests need: the database, plus Auth and Storage, whose schemas the migrations and tests use.
+      - run: supabase start -x realtime,imgproxy,kong,mailpit,postgrest,postgres-meta,studio,edge-runtime,logflare,vector,supavisor
+      - run: supabase test db
+      - run: supabase db lint --local --fail-on warning
+      - run: supabase db advisors --local --type all --fail-on warn
