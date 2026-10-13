@@ -40,5 +40,5 @@ Live (dev data): https://shan-e-lahore.onrender.com, backed by the hosted dev Su
 
 - Ten days for Milestones 2-4 is tight. Anything not ready by 21 October is listed here and decided with the team, not dropped silently.
 - All Urdu written so far was written by Claude and needs review.
-- Placeholder data in dev: minimum order, delivery tiers, opening hours, payment accounts, WhatsApp number. The branch pin is real (31.523689, 74.344498).
+- Placeholder data in dev: minimum order, delivery tiers, payment accounts, WhatsApp number. Opening hours are real (05:00 to midnight daily). The branch pin is real (31.523689, 74.344498).
 - The Supabase client library is the biggest download on every page (about 115 KB compressed); review in the Milestone 4 speed pass.

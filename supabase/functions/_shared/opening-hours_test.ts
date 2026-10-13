@@ -62,3 +62,15 @@ Deno.test('uses Lahore time whatever the time zone of the Date', () => {
   // 20:30 UTC on Monday is 01:30 Tuesday in Lahore, still within Monday's hours.
   assertEquals(openingStatus(noonToTwoAm, new Date('2026-10-12T20:30Z')), { open: true, closesAt: '02:00' })
 })
+
+Deno.test('closing at exactly midnight', () => {
+  const fiveToMidnight: OpeningHours = [0, 1, 2, 3, 4, 5, 6].map((weekday) => ({
+    weekday,
+    open_time: '05:00:00',
+    close_time: '00:00:00',
+    is_closed: false,
+  }))
+  assertEquals(openingStatus(fiveToMidnight, lahore('2026-10-12T23:59')), { open: true, closesAt: '00:00' })
+  assertEquals(openingStatus(fiveToMidnight, lahore('2026-10-13T00:00')), { open: false, opensAt: { weekday: 2, time: '05:00' } })
+  assertEquals(openingStatus(fiveToMidnight, lahore('2026-10-13T04:59')), { open: false, opensAt: { weekday: 2, time: '05:00' } })
+})

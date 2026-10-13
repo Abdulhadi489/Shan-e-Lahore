@@ -84,7 +84,7 @@ export function HomePage() {
                   : t('home.closedOpensOn', { day: dayLabel(lng, status.opensAt.weekday), time: timeLabel(lng, status.opensAt.time) })}
           </p>
         )}
-        <h1 className="mt-3 font-heading text-5xl font-bold md:text-6xl rtl:text-4xl md:rtl:text-5xl">{t('home.headline')}</h1>
+        <h1 className="mt-3 font-heading text-4xl font-bold sm:text-5xl md:text-6xl md:rtl:text-5xl">{t('home.headline')}</h1>
         <p className="mt-4 max-w-[45ch] text-lg text-ink-muted">{t('home.subhead')}</p>
         {settings && !settings.delivery_enabled && <p className="mt-3 font-bold text-danger">{t('home.deliveryPaused')}</p>}
         <div className="mt-6 flex flex-wrap gap-3">
