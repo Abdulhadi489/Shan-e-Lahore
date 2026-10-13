@@ -1,14 +1,15 @@
 -- Local development data only. Never put real customer data here.
 -- The menu (names, prices, Urdu) is transcribed from the restaurant's printed menu of 2026-08-29;
 -- the Super Admin enters the live menu through the admin panel.
--- Placeholders until the client sends real values: map pin, minimum order, delivery tiers, opening hours,
+-- Branch pin: Google Maps listing "Shan-e-Lahore", Gulberg II (sent by the team, 2026-10-13).
+-- Placeholders until the client sends real values: minimum order, delivery tiers, opening hours,
 -- and the Urdu for categories, Half/Full and deal contents
 -- (written by Claude; needs review by an Urdu speaker).
 
 insert into public.branches (id, name_en, name_ur, address_en, address_ur, phone, lat, lng, order_prefix) values
   ('b0000000-0000-0000-0000-000000000001', 'Shan-e-Lahore', 'شانِ لاہور',
    '113 D Main Market, Near Rizwan Burger, Gulberg II, Lahore', '113 ڈی مین مارکیٹ، نزد رضوان برگر، گلبرگ II، لاہور',
-   '924235242650', 31.520400, 74.358700, 'SL');
+   '924235242650', 31.523689, 74.344498, 'SL');
 
 insert into public.branch_settings (branch_id, min_order_amount, free_delivery_threshold) values
   ('b0000000-0000-0000-0000-000000000001', 800, null);
