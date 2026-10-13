@@ -13,7 +13,7 @@ Live (dev data): https://shan-e-lahore.onrender.com, backed by the hosted dev Su
 | Milestone | State |
 | --- | --- |
 | 1. Foundation | Done |
-| 2. Customer ordering | Core done and live, static pages drafted. Left: dish photos (team is taking them), admin-managed home banners (with Milestone 3), restaurant approval of the page texts |
+| 2. Customer ordering | Core done and live, static pages drafted. Left: real dish photos (display code done; team is taking them), admin-managed home banners (with Milestone 3), restaurant approval of the page texts |
 | 3. Admin and order handling | Not started. Unblocked: staff use a laptop or phone (design phone-first); no receipt printer yet |
 | 4. Hardening and launch | Not started |
 
@@ -45,7 +45,8 @@ Tick items as they land. Items come from `CLAUDE.md` section 15 and `docs/spec.m
 - [x] Tracking page: status timeline, call notice, payment instructions, WhatsApp screenshot link, rider when out for delivery, cancel while pending
 - [x] Shared rules with Deno tests (`supabase/functions/_shared/`): pricing, delivery charge, discounts, opening hours (past midnight), phone numbers, input schemas, whole-order pricing
 - [x] Edge Functions `quote-order`, `place-order`, `get-order-by-token`, `cancel-order-by-token`; order creation and rate limits in SQL (`create_order`, `hit_rate_limit`)
-- [ ] Dish photos on cards: display code plus first upload batch (waiting on the team's photos)
+- [x] Dish photos: display on cards (small 320 px file) and in the dish pop-up (large file); empty space when a dish has none. Tested locally with a test image
+- [ ] First batch of real dish photos uploaded to dev (waiting on the team's photos)
 - [x] Static pages: about, contact (address, phone, hours and map from the database), terms, privacy, refund policy. **Draft text** written from facts we know (no invented promises such as refund deadlines); the restaurant must approve it
 - [ ] Home-page banners from the `banners` table (spec: managed by the Super Admin). The home page shows the fixed three-arch strip for now; build the display together with banner upload in Milestone 3
 
@@ -59,7 +60,7 @@ Tick items as they land. Items come from `CLAUDE.md` section 15 and `docs/spec.m
 - [ ] Refund-due list (cancelled paid orders; staff mark refunded)
 - [ ] `edit-order` Edge Function: staff change items or address during the confirmation call; the server re-prices
 - [ ] Staff-only controls: sold-out switches for items, variants and add-on options; delivery on/off switch
-- [ ] Menu management (Super Admin): categories (including the "sides" switch), items, variants, add-on groups, deals, photo upload compressed in the browser to 1200 px WebP, banners, ordering, sold-out and hide switches, English and Urdu side by side
+- [ ] Menu management (Super Admin): categories (including the "sides" switch), items, variants, add-on groups, deals, photo upload compressed in the browser to WebP as two files (`<name>.webp` up to 1200 px and `<name>-card.webp` at 320 px, see `docs/decisions.md`), banners, ordering, sold-out and hide switches, English and Urdu side by side
 - [ ] Delivery settings: branch pin on a map, km tiers, road factor, minimum order (currently 0, off), free-delivery threshold, delivery switch, change log
 - [ ] Discount codes
 - [ ] Customers: list with order count, spend and last order; order history; block switch

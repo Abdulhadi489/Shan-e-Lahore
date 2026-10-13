@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, type FormEvent } from 'react'
 import { useTranslation } from 'react-i18next'
 import { localized } from '../../i18n'
 import { formatAmount } from '../../lib/money'
+import { menuImageUrl } from '../../lib/images'
 import { MAX_QUANTITY, unitPrice } from '../../../supabase/functions/_shared/pricing'
 import { addToCart } from '../checkout/cart'
 import { SidesRow } from './SidesRow'
@@ -44,6 +45,13 @@ function ItemChoices({ item, onDone }: { item: MenuItem; onDone: () => void }) {
 
   return (
     <form onSubmit={submit} className="flex flex-col gap-5 p-5">
+      {item.image_path && (
+        <img
+          src={menuImageUrl(item.image_path, 'full')}
+          alt={localized(lng, item.name_en, item.name_ur)}
+          className="aspect-[4/3] w-full rounded-card bg-peach object-cover"
+        />
+      )}
       <div className="flex items-start gap-3">
         <div className="flex-1">
           <h2 className="font-heading text-2xl font-bold">{localized(lng, item.name_en, item.name_ur)}</h2>

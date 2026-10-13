@@ -3,6 +3,7 @@ import { useLocation } from 'react-router'
 import { useTranslation } from 'react-i18next'
 import { localized } from '../../i18n'
 import { formatAmount } from '../../lib/money'
+import { menuImageUrl } from '../../lib/images'
 import { ItemDialog } from './ItemDialog'
 import { useMenu, type MenuItem } from './useMenu'
 
@@ -24,8 +25,20 @@ export function ItemCard({ item, onSelect }: { item: MenuItem; onSelect: (item: 
       disabled={soldOut}
       className="flex h-full w-full gap-3 rounded-card border border-line bg-raised p-3 text-start hover:border-brand-deep disabled:cursor-not-allowed"
     >
-      {/* Empty photo space until dish photos are uploaded. */}
-      <span aria-hidden className="size-20 shrink-0 rounded-control bg-peach" />
+      {item.image_path ? (
+        <img
+          src={menuImageUrl(item.image_path, 'card')}
+          alt=""
+          width={80}
+          height={80}
+          loading="lazy"
+          decoding="async"
+          className="size-20 shrink-0 rounded-control bg-peach object-cover"
+        />
+      ) : (
+        // Empty photo space until the dish has a photo.
+        <span aria-hidden className="size-20 shrink-0 rounded-control bg-peach" />
+      )}
       <span className="flex flex-1 flex-col">
         <span className="font-bold">{localized(lng, item.name_en, item.name_ur)}</span>
         {item.description_en && (
