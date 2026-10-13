@@ -2,6 +2,8 @@
 
 Delivery-only ordering website for Shan-e-Lahore, Lahore. Customers order as guests; staff and the Super Admin manage orders and the menu under `/admin`. Rules for contributors are in `CLAUDE.md`, features in `docs/spec.md`, and the reasons behind decisions in `docs/decisions.md`.
 
+**Start here:** `docs/status.md` shows what is done, what is next, what is waiting on the restaurant, and where everything is hosted.
+
 ## Tools you need
 
 - Node 24 (`.nvmrc`)
@@ -79,6 +81,19 @@ Shared-rule tests: `deno test --config supabase/functions/deno.json supabase/fun
 
 Deploying to a hosted project: `supabase db push` (migrations), then `supabase functions deploy`, then set the two secrets in Dashboard > Edge Functions > Secrets (or `supabase secrets set NAME=value`): `TURNSTILE_SECRET_KEY` (the widget's **secret** key) and `ALLOWED_ORIGINS` (comma-separated site origins, e.g. `https://shan-e-lahore.onrender.com,http://localhost:5173`).
 
+## Code map
+
+How a customer order flows through the code:
+
+1. `src/features/menu/` loads the menu (`useMenu.ts`, one query) and shows dishes; `ItemDialog.tsx` enforces size and add-on rules with `supabase/functions/_shared/pricing.ts`; `SidesRow.tsx` adds one-tap sides.
+2. `src/features/checkout/cart.ts` keeps the cart (dish choices only) in localStorage; `CartPage.tsx` re-prices it from the live menu.
+3. `CheckoutPage.tsx` takes the map pin (`LocationPicker.tsx`, Leaflet) and the customer's details, asks `quote-order` for the price, then calls `place-order` (`orderApi.ts` wraps all four functions).
+4. `supabase/functions/place-order/` validates (`_shared/schemas.ts`), rate-limits (`_shared/rate-limit.ts` → `public.hit_rate_limit`), checks Turnstile (`_shared/turnstile.ts`), loads the menu and branch (`_shared/load.ts`), prices everything (`_shared/order.ts`) and saves it with `public.create_order` (migration `20261013081612`).
+5. The customer lands on `src/features/tracking/TrackingPage.tsx`, which polls `get-order-by-token` and can call `cancel-order-by-token`.
+6. Staff change status, payment and rider directly in the `orders` table (Milestone 3 screens); the rules live in the database trigger `private.enforce_order_rules` (migration `20261012105428`), and every change is logged in `order_status_log`.
+
+Other pieces: `src/app/` (routes, customer layout, `useBranch.ts` for hours and delivery tiers), `src/features/home/HomePage.tsx`, `src/features/admin/` (login with Turnstile, route guard), `src/i18n/` (all text; Urdu in `ur.json`), `src/index.css` (design tokens).
+
 ## Checks and deploys
 
 GitHub Actions runs on every push to `main` and every pull request:
@@ -123,14 +138,7 @@ Never share one account between people. Changing someone's email is not possible
 
 ## Before launch
 
-Open items that must be done before real customers use the site:
-
-- [ ] Create the production Supabase project (Pro plan), push migrations, create the Super Admins, switch on leaked password protection and Turnstile.
-- [ ] Point `render.yaml` at production (the `VITE_` values and the CSP) and connect the real domain.
-- [ ] Remove `localhost` from the Turnstile widget's hostnames; add the real domain.
-- [ ] Enter the real menu, photos, branch pin, delivery tiers, minimum order, opening hours and payment accounts; remove placeholder data.
-- [ ] Urdu text reviewed by an Urdu speaker.
-- [ ] Daily encrypted backup running and one restore tested (CLAUDE.md section 13).
+The launch checklist is the Milestone 4 list in `docs/status.md`.
 
 ## Troubleshooting
 

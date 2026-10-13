@@ -68,33 +68,41 @@ Note: React Native is for mobile apps. This is a **web** app in React. A future 
 
 ## 3. Repository structure
 
+Planned layout; folders marked *(Milestone N)* don't exist yet. The detailed map of existing files is in `README.md` (Code map).
+
 ```
 /
 ├─ CLAUDE.md
-├─ README.md                 # setup, env vars, deploy, backup and restore, security checklist
+├─ README.md                 # setup, env vars, environments, Edge Functions, deploy, code map, launch checklist
 ├─ .env.example              # names only, never real values
-├─ render.yaml               # static site config, SPA rewrite, security headers
+├─ render.yaml               # static site config, SPA rewrite, security headers (CSP), public VITE_ values
+├─ .github/                  # CI workflows (ci.yml, database.yml) and dependabot.yml
+├─ .claude/skills/           # design-taste-frontend (reviewed copy; CLAUDE.md wins on conflicts)
 ├─ docs/
 │  ├─ spec.md                # feature specification
-│  └─ decisions.md           # short log of decisions and why (one line each)
+│  ├─ decisions.md           # short log of decisions and why (one line each)
+│  └─ status.md              # milestone checklists, plan, open items, hosted setup; updated every push
 ├─ src/
-│  ├─ app/                   # routing, providers, layouts
+│  ├─ app/                   # routing, layouts, useBranch (branch, hours, tiers)
+│  ├─ assets/                # images bundled with the site (menu arches)
 │  ├─ features/
-│  │  ├─ menu/  checkout/  tracking/
-│  │  └─ admin/              # orders, menu, delivery, discounts, customers, reports, settings
-│  ├─ components/            # shared UI built on the design tokens
-│  ├─ lib/                   # supabase client, phone.ts, whatsapp.ts, money.ts
-│  ├─ i18n/                  # en.json, ur.json
+│  │  ├─ home/  menu/  checkout/  tracking/
+│  │  └─ admin/              # login and route guard now; orders, menu, delivery, discounts, customers, reports, settings (Milestone 3)
+│  ├─ components/            # shared UI built on the design tokens (Turnstile)
+│  ├─ lib/                   # supabase client, whatsapp.ts, money.ts
+│  ├─ i18n/                  # en.json, ur.json, typed keys
 │  └─ types/                 # generated: supabase gen types
 └─ supabase/
    ├─ migrations/            # schema, GRANTs, RLS, functions, triggers
-   ├─ tests/                 # pgTAP RLS tests
+   ├─ tests/                 # pgTAP RLS and rule tests
    ├─ functions/
-   │  ├─ _shared/            # pricing.ts, distance.ts, opening-hours.ts, schemas.ts, rate-limit.ts, turnstile.ts (pure + tested)
+   │  ├─ deno.json           # import map for local runs and shared tests; each function has its own for deploys
+   │  ├─ _shared/            # pure, tested rules also imported by the website: pricing, delivery, discount, opening-hours,
+   │  │                      # phone, schemas, order; plus server-only http, db, load, rate-limit, turnstile
    │  ├─ quote-order/  place-order/  get-order-by-token/  cancel-order-by-token/
-   │  ├─ edit-order/          # staff change items or address on the call; server re-prices
-   │  └─ admin-users/        # create staff, deactivate staff, reset staff password (super_admin only)
-   └─ seed.sql               # placeholder dev data only, never real customer data
+   │  ├─ edit-order/         # staff change items or address on the call; server re-prices (Milestone 3)
+   │  └─ admin-users/        # create staff, deactivate staff, reset staff password, super_admin only (Milestone 3)
+   └─ seed.sql               # dev data: the real printed menu plus placeholders; never real customer data
 ```
 
 Don't create folders or files before they're needed.
