@@ -53,5 +53,8 @@
     --text-xl--line-height: 2.2;
     --text-2xl--line-height: 2;
     --text-3xl--line-height: 2;
+    --text-4xl--line-height: 1.8;
+    --text-5xl--line-height: 1.7;
+    --text-6xl--line-height: 1.6;
   }
 }

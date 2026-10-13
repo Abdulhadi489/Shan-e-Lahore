@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { useLocation } from 'react-router'
 import { useTranslation } from 'react-i18next'
 import { localized } from '../../i18n'
 import { formatAmount } from '../../lib/money'
@@ -51,6 +52,12 @@ export function MenuPage() {
   const lng = i18n.language
   const menu = useMenu()
   const [selected, setSelected] = useState<MenuItem | null>(null)
+  const { hash } = useLocation()
+
+  // Links like /menu#category-… arrive before the menu has loaded, so scroll once it has.
+  useEffect(() => {
+    if (menu.data && hash) document.getElementById(decodeURIComponent(hash.slice(1)))?.scrollIntoView()
+  }, [menu.data, hash])
 
   return (
     <>

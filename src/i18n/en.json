@@ -74,7 +74,21 @@
     "delivery": "Delivery charges",
     "tier": "Up to {{km}} km",
     "beyond": "We don't deliver beyond {{km}} km.",
-    "minimumOrder": "Minimum order {{amount}}"
+    "minimumOrder": "Minimum order {{amount}}",
+    "headline": "Lahori karahi and BBQ, delivered hot",
+    "subhead": "Order online from our full menu. We call to confirm every order before the kitchen starts.",
+    "archAlt": "The arch from Shan-e-Lahore's printed menu, with the word Apnaiyat (belonging) in Urdu",
+    "browse": "Browse the menu",
+    "dishCount_one": "{{count}} dish",
+    "dishCount_other": "{{count}} dishes",
+    "how": "How ordering works",
+    "stepOrder": "Order online",
+    "stepOrderBody": "Choose your dishes, drop a pin on the map, and pay cash on delivery or by transfer.",
+    "stepCall": "We call to confirm",
+    "stepCallBody": "Our staff call you to check the order and address before cooking starts.",
+    "stepDeliver": "Our rider delivers",
+    "stepDeliverBody": "The restaurant's own riders bring your order to your door.",
+    "findUs": "Find us"
   },
   "admin": {
     "title": "Staff",
