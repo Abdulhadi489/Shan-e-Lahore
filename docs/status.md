@@ -13,8 +13,8 @@ Live (dev data): https://shan-e-lahore.onrender.com, backed by the hosted dev Su
 | Milestone | State |
 | --- | --- |
 | 1. Foundation | Done |
-| 2. Customer ordering | Core done and live. Left: dish photos (team is taking them), static page text (from the restaurant), admin-managed home banners (with Milestone 3) |
-| 3. Admin and order handling | Not started. **On hold** until the restaurant confirms which device staff use (phone, tablet or laptop) and whether there is a receipt printer |
+| 2. Customer ordering | Core done and live, static pages drafted. Left: dish photos (team is taking them), admin-managed home banners (with Milestone 3), restaurant approval of the page texts |
+| 3. Admin and order handling | Not started. Unblocked: staff use a laptop or phone (design phone-first); no receipt printer yet |
 | 4. Hardening and launch | Not started |
 
 ## Milestone checklists
@@ -46,16 +46,16 @@ Tick items as they land. Items come from `CLAUDE.md` section 15 and `docs/spec.m
 - [x] Shared rules with Deno tests (`supabase/functions/_shared/`): pricing, delivery charge, discounts, opening hours (past midnight), phone numbers, input schemas, whole-order pricing
 - [x] Edge Functions `quote-order`, `place-order`, `get-order-by-token`, `cancel-order-by-token`; order creation and rate limits in SQL (`create_order`, `hit_rate_limit`)
 - [ ] Dish photos on cards: display code plus first upload batch (waiting on the team's photos)
-- [ ] Static pages (about, contact with map, terms, privacy, refund policy): currently title only; text needed from the restaurant
+- [x] Static pages: about, contact (address, phone, hours and map from the database), terms, privacy, refund policy. **Draft text** written from facts we know (no invented promises such as refund deadlines); the restaurant must approve it
 - [ ] Home-page banners from the `banners` table (spec: managed by the Super Admin). The home page shows the fixed three-arch strip for now; build the display together with banner upload in Milestone 3
 
-### Milestone 3: Admin and order handling (on hold)
+### Milestone 3: Admin and order handling
 
 - [ ] **Live Orders**: Realtime list for the staff member's branch; sound alert and browser notification (staff keep the tab open; document this); status filters; tap-to-call
 - [ ] Call-attempt button (the third missed call auto-cancels; already enforced by the database)
 - [ ] Verify transfer payment with transaction ID; confirm; cancel with reason; status buttons; rider assignment (`out_for_delivery` needs a rider; enforced by the database)
 - [ ] WhatsApp message builders in `src/lib/whatsapp.ts` (English and Urdu by the order's language): order received with payment instructions, confirmed, out for delivery with rider, cancelled with refund note, and the rider message with address and Google Maps link
-- [ ] Kitchen ticket print view (80 mm thermal CSS, browser print dialog)
+- [ ] Kitchen ticket print view (80 mm thermal CSS, browser print dialog; no printer yet, receipts are manual, so it also prints to any printer or PDF)
 - [ ] Refund-due list (cancelled paid orders; staff mark refunded)
 - [ ] `edit-order` Edge Function: staff change items or address during the confirmation call; the server re-prices
 - [ ] Staff-only controls: sold-out switches for items, variants and add-on options; delivery on/off switch
@@ -95,12 +95,11 @@ Tick items as they land. Items come from `CLAUDE.md` section 15 and `docs/spec.m
 
 | By | What |
 | --- | --- |
-| Now | Which device staff use at the counter (phone, tablet or laptop) and whether there is a receipt printer: needed before Milestone 3 |
 | 15 Oct | Dish photos (team is taking them) |
 | 16 Oct | Drinks list with prices (for the sides row), delivery prices per km tier, bank/JazzCash/Easypaisa account details, WhatsApp number for screenshots, rider names and phones, staff names and emails |
 | 18 Oct | Original logo file (SVG, AI, EPS or PDF) |
 | 20 Oct | Urdu speaker to review all site text; decision and payment for Supabase Pro (production backups); domain name bought |
-| 21 Oct | About, contact, terms, privacy and refund policy text in both languages |
+| 21 Oct | Approve or correct the draft about, terms, privacy and refund policy pages (both languages); say how fast refunds are sent and what happens with wrong or missing items |
 
 ## Hosted setup and accounts (no secrets here)
 

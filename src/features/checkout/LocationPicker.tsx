@@ -125,12 +125,13 @@ export function LocationPicker({
 }
 
 // Read-only map of the delivery area for the home page.
-export function DeliveryAreaMap({ branch, radiusKm }: { branch: Pin; radiusKm: number }) {
+// radiusKm 0 shows just the restaurant (contact page).
+export function DeliveryAreaMap({ branch, radiusKm, zoom = 11 }: { branch: Pin; radiusKm: number; zoom?: number }) {
   return (
     <div dir="ltr" className="h-72 overflow-hidden rounded-card border border-line">
-      <MapContainer center={branch} zoom={11} scrollWheelZoom={false} className="h-full w-full">
+      <MapContainer center={branch} zoom={zoom} scrollWheelZoom={false} className="h-full w-full">
         <TileLayer url={tiles} attribution={attribution} />
-        <Circle center={branch} radius={radiusKm * 1000} className="map-delivery-area" />
+        {radiusKm > 0 && <Circle center={branch} radius={radiusKm * 1000} className="map-delivery-area" />}
         <Marker position={branch} icon={branchIcon} interactive={false} />
       </MapContainer>
     </div>

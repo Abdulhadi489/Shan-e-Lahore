@@ -4,31 +4,20 @@ import { useTranslation } from 'react-i18next'
 import { ArrowRight, Bike, MapPin, PhoneCall, ShoppingBag } from 'lucide-react'
 import { localized } from '../../i18n'
 import { formatAmount } from '../../lib/money'
+import { dayLabel, phoneLabel, timeLabel } from '../../lib/format'
+import { OpeningHoursList } from '../../app/OpeningHoursList'
 import { karachiWeekMinute, openingStatus } from '../../../supabase/functions/_shared/opening-hours'
 import { useBranch } from '../../app/useBranch'
 import { ItemDialog } from '../menu/ItemDialog'
 import { ItemCard } from '../menu/MenuPage'
 import { useMenu, type MenuItem } from '../menu/useMenu'
 
-// The map library is large, so the delivery-area map loads only when someone asks for it.
-const DeliveryAreaMap = lazy(() => import('../checkout/LocationPicker').then((module) => ({ default: module.DeliveryAreaMap })))
 // The three arches from the printed menu and the shop's signboard: ثقافت، اپنائیت، روایت.
 import archesSmall from '../../assets/menu-arches-800.webp'
 import archesLarge from '../../assets/menu-arches-1600.webp'
 
-// Western digits in both languages; Intl supplies day names and AM/PM in Urdu.
-const locale = (lng: string) => `${lng === 'ur' ? 'ur-PK' : 'en-PK'}-u-nu-latn`
-// Wrapped in Unicode isolate marks so "2:00 AM" isn't reordered to "AM 2:00" inside an Urdu sentence.
-const timeLabel = (lng: string, hhmm: string) =>
-  `⁨${new Date(`2000-01-01T${hhmm}:00Z`).toLocaleTimeString(locale(lng), { hour: 'numeric', minute: '2-digit', timeZone: 'UTC' })}⁩`
-// 2023-01-01 was a Sunday, matching weekday 0.
-const dayLabel = (lng: string, weekday: number) =>
-  new Date(Date.UTC(2023, 0, 1 + weekday)).toLocaleDateString(locale(lng), { weekday: 'long', timeZone: 'UTC' })
-// Shown as 042 35242650 or 0300 1234567.
-const phoneLabel = (phone: string) => {
-  const split = phone.startsWith('923') ? 5 : 4
-  return `0${phone.slice(2, split)} ${phone.slice(split)}`
-}
+// The map library is large, so the delivery-area map loads only when someone asks for it.
+const DeliveryAreaMap = lazy(() => import('../checkout/LocationPicker').then((module) => ({ default: module.DeliveryAreaMap })))
 
 const steps = [
   { icon: ShoppingBag, title: 'home.stepOrder', body: 'home.stepOrderBody' },
@@ -205,22 +194,9 @@ export function HomePage() {
 
         <div>
           <h2 className="font-heading text-2xl font-bold">{t('home.hours')}</h2>
-          <dl className="mt-3">
-            {/* Week starts on Monday, as Lahore calendars do. */}
-            {[1, 2, 3, 4, 5, 6, 0].map((weekday) => {
-              const day = hours.find((h) => h.weekday === weekday)
-              return (
-                <div key={weekday} className={`flex justify-between gap-4 py-0.5 ${weekday === today ? 'font-bold' : ''}`}>
-                  <dt>{dayLabel(lng, weekday)}</dt>
-                  <dd>
-                    {!day || day.is_closed
-                      ? t('home.closedDay')
-                      : `${timeLabel(lng, day.open_time.slice(0, 5))} – ${timeLabel(lng, day.close_time.slice(0, 5))}`}
-                  </dd>
-                </div>
-              )
-            })}
-          </dl>
+          <div className="mt-3">
+            <OpeningHoursList hours={hours} />
+          </div>
         </div>
 
         {tiers.length > 0 && (
