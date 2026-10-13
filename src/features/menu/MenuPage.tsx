@@ -24,10 +24,8 @@ export function ItemCard({ item, onSelect }: { item: MenuItem; onSelect: (item: 
       disabled={soldOut}
       className="flex h-full w-full gap-3 rounded-card border border-line bg-raised p-3 text-start hover:border-brand-deep disabled:cursor-not-allowed"
     >
-      {/* Branded placeholder until dish photos exist: the arch from the printed menu. */}
-      <span aria-hidden className="flex size-20 shrink-0 items-end justify-center rounded-control bg-peach">
-        <span className="h-14 w-10 rounded-t-full border-4 border-b-0 border-brand" />
-      </span>
+      {/* Empty photo space until dish photos are uploaded. */}
+      <span aria-hidden className="size-20 shrink-0 rounded-control bg-peach" />
       <span className="flex flex-1 flex-col">
         <span className="font-bold">{localized(lng, item.name_en, item.name_ur)}</span>
         {item.description_en && (

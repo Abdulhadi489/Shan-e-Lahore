@@ -9,9 +9,9 @@ import { useBranch } from '../../app/useBranch'
 import { ItemDialog } from '../menu/ItemDialog'
 import { ItemCard } from '../menu/MenuPage'
 import { useMenu, type MenuItem } from '../menu/useMenu'
-// The middle arch of the restaurant's printed menu (designer's artwork), until dish photos arrive.
-import archSmall from '../../assets/menu-arch-640.webp'
-import archLarge from '../../assets/menu-arch-1000.webp'
+// The three arches from the printed menu and the shop's signboard: ثقافت، اپنائیت، روایت.
+import archesSmall from '../../assets/menu-arches-800.webp'
+import archesLarge from '../../assets/menu-arches-1600.webp'
 
 // Western digits in both languages; Intl supplies day names and AM/PM in Urdu.
 const locale = (lng: string) => `${lng === 'ur' ? 'ur-PK' : 'en-PK'}-u-nu-latn`
@@ -55,52 +55,52 @@ export function HomePage() {
     <>
       <title>{t('brand')}</title>
 
-      <section className="grid items-center gap-8 md:grid-cols-2 md:gap-12">
-        <div>
-          {status && (
-            <p className={`flex items-center gap-2 font-bold ${status.open ? 'text-success' : 'text-danger'}`}>
-              <span aria-hidden className={`size-2.5 rounded-full ${status.open ? 'bg-success' : 'bg-danger'}`} />
-              {status.open
-                ? t('home.openNow', { time: timeLabel(lng, status.closesAt) })
-                : !status.opensAt
-                  ? t('home.closed')
-                  : status.opensAt.weekday === today
-                    ? t('home.closedOpensToday', { time: timeLabel(lng, status.opensAt.time) })
-                    : t('home.closedOpensOn', { day: dayLabel(lng, status.opensAt.weekday), time: timeLabel(lng, status.opensAt.time) })}
-            </p>
-          )}
-          <h1 className="mt-3 font-heading text-5xl font-bold md:text-6xl rtl:text-4xl md:rtl:text-5xl">{t('home.headline')}</h1>
-          <p className="mt-4 max-w-[45ch] text-lg text-ink-muted">{t('home.subhead')}</p>
-          {settings && !settings.delivery_enabled && <p className="mt-3 font-bold text-danger">{t('home.deliveryPaused')}</p>}
-          <div className="mt-6 flex flex-wrap gap-3">
-            <Link
-              to="/menu"
-              className="flex items-center gap-2 rounded-control bg-brand px-6 py-3 text-lg font-bold text-ink hover:bg-peach active:scale-[0.98]"
+      <img
+        src={archesSmall}
+        srcSet={`${archesSmall} 800w, ${archesLarge} 1600w`}
+        sizes="(min-width: 1024px) 992px, 100vw"
+        width={1600}
+        height={269}
+        fetchPriority="high"
+        alt={t('home.archesAlt')}
+        className="-mx-4 -mt-6 block w-[calc(100%+2rem)] max-w-none sm:mx-0 sm:mt-0 sm:w-full sm:rounded-card"
+      />
+
+      {/* Space beside the text stays free for a dish photo once the team's photos arrive. */}
+      <section className="mt-8 max-w-2xl">
+        {status && (
+          <p className={`flex items-center gap-2 font-bold ${status.open ? 'text-success' : 'text-danger'}`}>
+            <span aria-hidden className={`size-2.5 rounded-full ${status.open ? 'bg-success' : 'bg-danger'}`} />
+            {status.open
+              ? t('home.openNow', { time: timeLabel(lng, status.closesAt) })
+              : !status.opensAt
+                ? t('home.closed')
+                : status.opensAt.weekday === today
+                  ? t('home.closedOpensToday', { time: timeLabel(lng, status.opensAt.time) })
+                  : t('home.closedOpensOn', { day: dayLabel(lng, status.opensAt.weekday), time: timeLabel(lng, status.opensAt.time) })}
+          </p>
+        )}
+        <h1 className="mt-3 font-heading text-5xl font-bold md:text-6xl rtl:text-4xl md:rtl:text-5xl">{t('home.headline')}</h1>
+        <p className="mt-4 max-w-[45ch] text-lg text-ink-muted">{t('home.subhead')}</p>
+        {settings && !settings.delivery_enabled && <p className="mt-3 font-bold text-danger">{t('home.deliveryPaused')}</p>}
+        <div className="mt-6 flex flex-wrap gap-3">
+          <Link
+            to="/menu"
+            className="flex items-center gap-2 rounded-control bg-brand px-6 py-3 text-lg font-bold text-ink hover:bg-peach active:scale-[0.98]"
+          >
+            {t('home.order')}
+            <ArrowRight aria-hidden className="size-5 rtl:-scale-x-100" />
+          </Link>
+          {branch.data && (
+            <a
+              href={`tel:+${branch.data.phone}`}
+              className="flex items-center gap-2 rounded-control border border-ink-muted bg-raised px-6 py-3 text-lg font-bold active:scale-[0.98]"
             >
-              {t('home.order')}
-              <ArrowRight aria-hidden className="size-5 rtl:-scale-x-100" />
-            </Link>
-            {branch.data && (
-              <a
-                href={`tel:+${branch.data.phone}`}
-                className="flex items-center gap-2 rounded-control border border-ink-muted bg-raised px-6 py-3 text-lg font-bold active:scale-[0.98]"
-              >
-                <PhoneCall aria-hidden className="size-5" />
-                {t('home.call')} <span dir="ltr">{phoneLabel(branch.data.phone)}</span>
-              </a>
-            )}
-          </div>
+              <PhoneCall aria-hidden className="size-5" />
+              {t('home.call')} <span dir="ltr">{phoneLabel(branch.data.phone)}</span>
+            </a>
+          )}
         </div>
-        <img
-          src={archSmall}
-          srcSet={`${archSmall} 640w, ${archLarge} 1000w`}
-          sizes="(min-width: 768px) 50vw, 100vw"
-          width={1000}
-          height={530}
-          fetchPriority="high"
-          alt={t('home.archAlt')}
-          className="w-full rounded-card"
-        />
       </section>
 
       {deals.length > 0 && (
