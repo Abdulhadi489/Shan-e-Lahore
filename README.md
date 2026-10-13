@@ -98,6 +98,17 @@ If no Super Admin can log in (both passwords lost), a developer with access to t
 
 Never share one account between people. Changing someone's email is not possible (a database trigger blocks it); create a new account and deactivate the old one instead.
 
+## Before launch
+
+Open items that must be done before real customers use the site:
+
+- [ ] Create the production Supabase project (Pro plan), push migrations, create the Super Admins, switch on leaked password protection and Turnstile.
+- [ ] Point `render.yaml` at production (the `VITE_` values and the CSP) and connect the real domain.
+- [ ] Remove `localhost` from the Turnstile widget's hostnames; add the real domain.
+- [ ] Enter the real menu, photos, branch pin, delivery tiers, minimum order, opening hours and payment accounts; remove placeholder data.
+- [ ] Urdu text reviewed by an Urdu speaker.
+- [ ] Daily encrypted backup running and one restore tested (CLAUDE.md section 13).
+
 ## Troubleshooting
 
 **Staff login says "The bot check failed. Try again."** Supabase has the wrong Turnstile key. Dashboard > Authentication > Attack Protection needs the widget's **Secret key** from Cloudflare, not its Site key (the public one in `VITE_TURNSTILE_SITE_KEY`). To check without logging in, send a request with a fake token:
