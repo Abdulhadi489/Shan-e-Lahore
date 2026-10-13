@@ -9,7 +9,7 @@ function isSoldOut(item: MenuItem) {
   return !item.is_available || (item.variants.length > 0 && item.variants.every((v) => !v.is_available))
 }
 
-function ItemCard({ item, onSelect }: { item: MenuItem; onSelect: (item: MenuItem) => void }) {
+export function ItemCard({ item, onSelect }: { item: MenuItem; onSelect: (item: MenuItem) => void }) {
   const { t, i18n } = useTranslation()
   const lng = i18n.language
   const soldOut = isSoldOut(item)

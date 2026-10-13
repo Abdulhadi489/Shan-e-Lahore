@@ -5,6 +5,7 @@ import { CustomerLayout, infoPages } from './CustomerLayout'
 import { EmptyPage } from './EmptyPage'
 import { MenuPage } from '../features/menu/MenuPage'
 import { CartPage } from '../features/checkout/CartPage'
+import { HomePage } from '../features/home/HomePage'
 
 // Staff code downloads only when someone opens /admin, so customers on mobile data never load it.
 const AdminApp = lazy(() => import('../features/admin/AdminApp').then((module) => ({ default: module.AdminApp })))
@@ -14,7 +15,7 @@ export function AppRoutes() {
   return (
     <Routes>
       <Route element={<CustomerLayout />}>
-        <Route index element={<EmptyPage title="brand" />} />
+        <Route index element={<HomePage />} />
         <Route path="menu" element={<MenuPage />} />
         <Route path="cart" element={<CartPage />} />
         <Route path="checkout" element={<EmptyPage title="pages.checkout" />} />

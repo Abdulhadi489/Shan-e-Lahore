@@ -58,6 +58,24 @@
     "add": "Add to cart",
     "addWithPrice": "Add to cart · {{price}}"
   },
+  "home": {
+    "order": "Order now",
+    "call": "Call",
+    "whatsapp": "WhatsApp",
+    "openNow": "Open now · closes at {{time}}",
+    "closed": "Closed now",
+    "closedOpensToday": "Closed now · opens today at {{time}}",
+    "closedOpensOn": "Closed now · opens {{day}} at {{time}}",
+    "deliveryPaused": "Delivery is paused right now. Please check back soon.",
+    "deals": "Deals",
+    "popular": "Popular dishes",
+    "hours": "Opening hours",
+    "closedDay": "Closed",
+    "delivery": "Delivery charges",
+    "tier": "Up to {{km}} km",
+    "beyond": "We don't deliver beyond {{km}} km.",
+    "minimumOrder": "Minimum order {{amount}}"
+  },
   "admin": {
     "title": "Staff",
     "loading": "Loading…",
