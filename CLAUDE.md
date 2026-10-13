@@ -326,6 +326,8 @@ One milestone at a time. Before coding: a short plan and questions. After: what 
 - Commit locally in small steps, but **never push to GitHub, open a pull request, or deploy without asking first**, every time. Approval for one push does not cover the next.
 - Run typecheck, lint and tests before saying something is done. Paste the result summary.
 - Keep `.env.example`, `README.md`, `docs/decisions.md` and migrations current.
+- **Before every push, update `docs/status.md`:** tick finished checklist items, add new tasks, update what is waiting on the restaurant, the hosted setup table (services, secrets by name only, who owns what) and the dev data notes. Several developers and their AI assistants work on this repo; `docs/status.md` is how they know where things stand. Personal assistant memory is not shared, so anything others need goes in the repo.
+- Hosted changes (migrations pushed, functions deployed, secrets set, dashboard settings) are recorded in `docs/status.md` in the same push.
 - Every reply that changes code ends with: what changed, what was tested, what was not tested, and any risk or shortcut.
 - If you think a decision here is wrong, say so directly with the reason and the better option. Don't silently work around it.
 
