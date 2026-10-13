@@ -1,0 +1,56 @@
+{
+  "version": "5",
+  "specifiers": {
+    "jsr:@std/assert@1": "1.0.19",
+    "jsr:@std/assert@1.0.19": "1.0.19",
+    "jsr:@std/internal@^1.0.12": "1.0.14"
+  },
+  "jsr": {
+    "@std/assert@1.0.19": {
+      "integrity": "eaada96ee120cb980bc47e040f82814d786fe8162ecc53c91d8df60b8755991e",
+      "dependencies": [
+        "jsr:@std/internal"
+      ]
+    },
+    "@std/internal@1.0.14": {
+      "integrity": "291516b3d4c35024d6ffbc0a9df5bf4c64116e05b50012cf846710152d2ffdf7"
+    }
+  },
+  "workspace": {
+    "packageJson": {
+      "dependencies": [
+        "npm:@eslint/js@10.0.1",
+        "npm:@fontsource/noto-nastaliq-urdu@5.3.0",
+        "npm:@fontsource/pt-sans-narrow@5.3.0",
+        "npm:@hookform/resolvers@5.9.1",
+        "npm:@supabase/supabase-js@2.117.2",
+        "npm:@tailwindcss/vite@4.3.3",
+        "npm:@tanstack/react-query@5.104.0",
+        "npm:@types/leaflet@1.9.22",
+        "npm:@types/node@24.19.0",
+        "npm:@types/react-dom@19.3.0",
+        "npm:@types/react@19.3.0",
+        "npm:@vitejs/plugin-react@6.1.1",
+        "npm:browser-image-compression@2.0.2",
+        "npm:eslint-plugin-react-hooks@7.1.1",
+        "npm:eslint@10.11.0",
+        "npm:globals@17.12.0",
+        "npm:i18next@26.4.2",
+        "npm:leaflet@1.9.4",
+        "npm:lucide-react@1.48.0",
+        "npm:react-dom@19.3.0",
+        "npm:react-hook-form@7.89.0",
+        "npm:react-i18next@17.0.15",
+        "npm:react-leaflet@5.0.0",
+        "npm:react-router@8.4.0",
+        "npm:react@19.3.0",
+        "npm:tailwindcss@4.3.3",
+        "npm:typescript-eslint@8.70.1",
+        "npm:typescript@6.0.3",
+        "npm:vite@8.3.1",
+        "npm:vitest@5.0.2",
+        "npm:zod@4.6.5"
+      ]
+    }
+  }
+}
