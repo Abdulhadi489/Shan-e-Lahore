@@ -122,7 +122,7 @@ Two logins (staff and admin). Customers order as guests and never log in.
 
 ## 5. Authentication
 
-- **No customer accounts at launch.** Every order is a guest order: name, phone, address + landmark, required map pin, notes, payment method, Turnstile check. Customers follow their order through the tracking link (`/track/:token`). Nothing about the customer is stored on their device; only the language choice is kept in localStorage.
+- **No customer accounts at launch.** Every order is a guest order: name, phone, address + landmark, required map pin, notes, payment method, Turnstile check. Customers follow their order through the tracking link (`/track/:token`). Nothing about the customer is stored on their device: localStorage keeps only the language choice and the cart (dish choices and quantities, never name, phone or address).
 - **No SMS or OTP** (paid). The confirmation call replaces phone verification.
 - Normalise Pakistani numbers to `92XXXXXXXXXX` (accept `03001234567`, `+92 300 1234567`, `3001234567`). `src/lib/phone.ts`, unit tested, and the same rule enforced server-side.
 - **Staff and admin:** real email + password, minimum 12 characters. Turnstile CAPTCHA on login (set in Supabase Auth settings) plus Supabase's built-in login rate limits. Public signup off: `[auth] enable_signup = false`. Keep `[auth.email] enable_signup = true`: despite its name it switches email login itself, and turning it off locks everyone out. Email confirmation off.
