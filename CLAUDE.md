@@ -30,7 +30,7 @@ Shan-e-Lahore is a desi food restaurant in Lahore, Pakistan. We are building its
 
 - Built by a small team of CS students. No external hires. Code must be understandable by them after launch.
 - Free tiers during development (Supabase free, Render free static site). See section 13 for the honest production recommendation.
-- Launch target: about four weeks from kickoff (section 15).
+- Launch target: **Friday 23 October 2026** (moved forward from 9 November on 13 October). Day-by-day plan and open items: `docs/status.md`.
 
 ---
 

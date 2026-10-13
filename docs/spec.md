@@ -181,7 +181,7 @@ Main tables: branches, delivery settings, delivery tiers, profiles (role and bra
 
 ## One-month plan
 
-A one-month launch is tight for a student team building in two languages; it works only if everything outside the core ordering flow waits for phase 2 and the client delivers menu content on time. The proposed plan starts Monday Oct 12 and launches Monday Nov 9.
+A one-month launch is tight for a student team building in two languages; it works only if everything outside the core ordering flow waits for phase 2 and the client delivers menu content on time. The proposed plan starts Monday Oct 12 and launches Monday Nov 9. **Moved forward to Friday Oct 23 by the team on Oct 13; see docs/status.md.**
 
 &#91;embedded content: proposed build plan · 4 weeks\]
 
