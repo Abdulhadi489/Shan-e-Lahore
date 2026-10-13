@@ -24,6 +24,7 @@ supabase start
 | --- | --- |
 | `npm run dev` | Website at http://localhost:5173 |
 | `npm run typecheck` / `npm run lint` / `npm test` | TypeScript, lint and unit tests |
+| `supabase functions serve --env-file supabase/functions/.env` | Order Edge Functions at http://127.0.0.1:54321/functions/v1/ |
 | `supabase db reset` | Rebuild the local database from `supabase/migrations/` and the seed |
 | `supabase test db` | Run the pgTAP access tests in `supabase/tests/` |
 | `supabase db advisors --local` and `supabase db lint --local` | Supabase's security and schema checks |
@@ -55,6 +56,28 @@ To log in locally, create accounts in the local dashboard (http://127.0.0.1:5432
 | Who may change it | Anyone, freely | The team, after asking in the group | Only through migrations and the Super Admin panel; no AI or agent tooling (CLAUDE.md section 7) |
 
 Schema changes always go local first, then `supabase db push` to dev, then to production. Data is never copied from production to the other two.
+
+## Edge Functions (orders)
+
+Customers never write to the database directly. Four Edge Functions in `supabase/functions/` handle orders; the rules they share (pricing, delivery charge, discounts, opening hours, input schemas) live in `supabase/functions/_shared/` and are imported by the website too, so the price shown is the price charged.
+
+| Function | Does |
+| --- | --- |
+| `quote-order` | Prices a cart for a map pin: subtotal, distance, delivery, discount, total, and every reason it can't be ordered |
+| `place-order` | Validates, rate-limits (10 per IP per hour, 3 per phone per 10 minutes), checks Turnstile, re-prices from the database and creates the order with `public.create_order()` |
+| `get-order-by-token` | The tracking page's data, masked (first name, masked phone, no address) |
+| `cancel-order-by-token` | Cancels only while the order waits for the confirmation call |
+
+Run them locally (needs `supabase start` first):
+
+```bash
+cp supabase/functions/.env.example supabase/functions/.env
+supabase functions serve --env-file supabase/functions/.env
+```
+
+Shared-rule tests: `deno test --config supabase/functions/deno.json supabase/functions/_shared/`.
+
+Deploying to a hosted project: `supabase db push` (migrations), then `supabase functions deploy`, then set the two secrets in Dashboard > Edge Functions > Secrets (or `supabase secrets set NAME=value`): `TURNSTILE_SECRET_KEY` (the widget's **secret** key) and `ALLOWED_ORIGINS` (comma-separated site origins, e.g. `https://shan-e-lahore.onrender.com,http://localhost:5173`).
 
 ## Checks and deploys
 
