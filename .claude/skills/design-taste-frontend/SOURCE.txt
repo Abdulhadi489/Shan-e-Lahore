@@ -1,0 +1,2 @@
+Copied from https://github.com/Leonxlnx/taste-skill (skills/taste-skill, MIT) at commit d237dd399d57524945c0c81327da5da19f7a468d on 2026-10-13.
+Reviewed before install. CLAUDE.md overrides it wherever they disagree.
