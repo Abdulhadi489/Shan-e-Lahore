@@ -9,11 +9,11 @@ Updated with every push. Read with `CLAUDE.md` (rules), `docs/spec.md` (features
 | Milestone | State |
 | --- | --- |
 | 1. Foundation | Done: schema, RLS and pgTAP tests, staff login with Turnstile, i18n (English/Urdu, RTL), design tokens, CI, Render deploy |
-| 2. Customer ordering | Nearly done: home, menu, item dialog, cart, checkout with map pin, order tracking and cancel, four order Edge Functions with shared tested rules (26 Deno tests, 157 pgTAP tests). Left: deploy functions to hosted dev, dish photos on cards |
+| 2. Customer ordering | Nearly done: home, menu, item dialog, cart, checkout with map pin, order tracking and cancel, four order Edge Functions with shared tested rules (26 Deno tests, 157 pgTAP tests). Left: dish photos on cards |
 | 3. Admin and order handling | Not started |
 | 4. Hardening and launch | Not started |
 
-Live (dev data): https://shan-e-lahore.onrender.com, backed by the hosted dev Supabase project `shan-e-lahore-dev`. Checkout works locally; on the live site it needs the Edge Functions deployed to the dev project (pending approval).
+Live (dev data): https://shan-e-lahore.onrender.com, backed by the hosted dev Supabase project `shan-e-lahore-dev`. Checkout and tracking work on the live site: migration, Edge Functions and their secrets (`TURNSTILE_SECRET_KEY`, `ALLOWED_ORIGINS`) are on the dev project. Staff cannot see orders until the admin panel (Milestone 3).
 
 ## Plan to launch
 
