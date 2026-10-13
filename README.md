@@ -45,6 +45,17 @@ Only public values go in the frontend. The Supabase secret key and the Turnstile
 
 To log in locally, create accounts in the local dashboard (http://127.0.0.1:54323) with the same steps as "Creating a Super Admin" below.
 
+## Environments
+
+| | Local | Dev (hosted) | Production (hosted) |
+| --- | --- | --- | --- |
+| Supabase | Docker on your laptop (`supabase start`) | Project `shan-e-lahore-dev` (Mumbai, free plan) | Not created yet; created before launch (Milestone 4), Supabase Pro recommended for daily backups |
+| Data | `supabase/seed.sql`, rebuilt with `supabase db reset` | Test data only, never real customers | Real menu and real orders |
+| Website | `npm run dev` | https://shan-e-lahore.onrender.com (for now) | Same Render site, switched to the production project, then the real domain |
+| Who may change it | Anyone, freely | The team, after asking in the group | Only through migrations and the Super Admin panel; no AI or agent tooling (CLAUDE.md section 7) |
+
+Schema changes always go local first, then `supabase db push` to dev, then to production. Data is never copied from production to the other two.
+
 ## Checks and deploys
 
 GitHub Actions runs on every push to `main` and every pull request:

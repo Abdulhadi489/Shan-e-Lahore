@@ -2,7 +2,7 @@
 -- The menu (names, prices, Urdu) is transcribed from the restaurant's printed menu of 2026-08-29;
 -- the Super Admin enters the live menu through the admin panel.
 -- Placeholders until the client sends real values: map pin, minimum order, delivery tiers, opening hours,
--- the "Spice level" add-on group, and the Urdu for categories, Half/Full and deal contents
+-- and the Urdu for categories, Half/Full and deal contents
 -- (written by Claude; needs review by an Urdu speaker).
 
 insert into public.branches (id, name_en, name_ur, address_en, address_ur, phone, lat, lng, order_prefix) values
@@ -187,17 +187,3 @@ from public.categories c, (values
    '2-3 افراد کے لیے۔ 2 چکن بوٹی، 2 ملائی بوٹی، 2 راجستانی بوٹی، 3 چکن چیز کباب۔', 3300, 2)
 ) d(name_en, name_ur, description_en, description_ur, price, sort_order)
 where c.name_en = 'Special Deals';
-
--- Placeholder add-on group so the add-on rules can be built and tested; the printed menu has none.
-insert into public.addon_groups (id, branch_id, name_en, name_ur, min_select, max_select) values
-  ('ad000000-0000-0000-0000-000000000001', 'b0000000-0000-0000-0000-000000000001', 'Spice level', 'مرچ', 1, 1);
-
-insert into public.addon_options (branch_id, group_id, name_en, name_ur, extra_price, sort_order) values
-  ('b0000000-0000-0000-0000-000000000001', 'ad000000-0000-0000-0000-000000000001', 'Mild', 'ہلکی', 0, 1),
-  ('b0000000-0000-0000-0000-000000000001', 'ad000000-0000-0000-0000-000000000001', 'Medium', 'درمیانی', 0, 2),
-  ('b0000000-0000-0000-0000-000000000001', 'ad000000-0000-0000-0000-000000000001', 'Hot', 'تیز', 0, 3);
-
-insert into public.item_addon_groups (branch_id, item_id, group_id, sort_order)
-select i.branch_id, i.id, 'ad000000-0000-0000-0000-000000000001', 1
-from public.items i join public.categories c on c.id = i.category_id
-where c.name_en in ('Mutton & Beef Karahi', 'Chicken Karahi', 'Afghani');
