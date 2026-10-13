@@ -6,9 +6,12 @@ import { EmptyPage } from './EmptyPage'
 import { MenuPage } from '../features/menu/MenuPage'
 import { CartPage } from '../features/checkout/CartPage'
 import { HomePage } from '../features/home/HomePage'
+import { TrackingPage } from '../features/tracking/TrackingPage'
 
-// Staff code downloads only when someone opens /admin, so customers on mobile data never load it.
+// Staff code downloads only when someone opens /admin, and the map library only at checkout,
+// so customers on mobile data download them only when needed.
 const AdminApp = lazy(() => import('../features/admin/AdminApp').then((module) => ({ default: module.AdminApp })))
+const CheckoutPage = lazy(() => import('../features/checkout/CheckoutPage').then((module) => ({ default: module.CheckoutPage })))
 
 export function AppRoutes() {
   const { t } = useTranslation()
@@ -18,8 +21,15 @@ export function AppRoutes() {
         <Route index element={<HomePage />} />
         <Route path="menu" element={<MenuPage />} />
         <Route path="cart" element={<CartPage />} />
-        <Route path="checkout" element={<EmptyPage title="pages.checkout" />} />
-        <Route path="track/:token" element={<EmptyPage title="pages.tracking" />} />
+        <Route
+          path="checkout"
+          element={
+            <Suspense>
+              <CheckoutPage />
+            </Suspense>
+          }
+        />
+        <Route path="track/:token" element={<TrackingPage />} />
         {infoPages.map((page) => (
           <Route key={page.path} path={page.path} element={<EmptyPage title={page.title} />} />
         ))}

@@ -7,7 +7,7 @@ async function fetchBranch() {
     .from('branches')
     .select(
       `id, name_en, name_ur, address_en, address_ur, phone, lat, lng,
-       branch_settings ( delivery_enabled, min_order_amount, free_delivery_threshold, whatsapp_number, estimated_delivery_minutes ),
+       branch_settings ( delivery_enabled, min_order_amount, free_delivery_threshold, road_distance_factor, whatsapp_number, estimated_delivery_minutes ),
        opening_hours ( weekday, open_time, close_time, is_closed ),
        delivery_tiers ( upper_km, charge )`,
     )

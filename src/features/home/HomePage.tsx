@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { lazy, Suspense, useState } from 'react'
 import { Link } from 'react-router'
 import { useTranslation } from 'react-i18next'
 import { ArrowRight, Bike, MapPin, PhoneCall, ShoppingBag } from 'lucide-react'
@@ -9,6 +9,9 @@ import { useBranch } from '../../app/useBranch'
 import { ItemDialog } from '../menu/ItemDialog'
 import { ItemCard } from '../menu/MenuPage'
 import { useMenu, type MenuItem } from '../menu/useMenu'
+
+// The map library is large, so the delivery-area map loads only when someone asks for it.
+const DeliveryAreaMap = lazy(() => import('../checkout/LocationPicker').then((module) => ({ default: module.DeliveryAreaMap })))
 // The three arches from the printed menu and the shop's signboard: ثقافت، اپنائیت، روایت.
 import archesSmall from '../../assets/menu-arches-800.webp'
 import archesLarge from '../../assets/menu-arches-1600.webp'
@@ -39,6 +42,7 @@ export function HomePage() {
   const branch = useBranch()
   const menu = useMenu()
   const [selected, setSelected] = useState<MenuItem | null>(null)
+  const [showMap, setShowMap] = useState(false)
 
   const featured = menu.data?.flatMap((c) => c.items).filter((item) => item.is_featured) ?? []
   const deals = featured.filter((item) => item.is_deal)
@@ -234,6 +238,20 @@ export function HomePage() {
             {settings && settings.min_order_amount > 0 && (
               <p className="mt-1 text-sm text-ink-muted">{t('home.minimumOrder', { amount: price(settings.min_order_amount) })}</p>
             )}
+            <div className="mt-4">
+              {showMap && branch.data ? (
+                <Suspense fallback={<p className="text-sm text-ink-muted">{t('home.mapLoading')}</p>}>
+                  <DeliveryAreaMap
+                    branch={{ lat: Number(branch.data.lat), lng: Number(branch.data.lng) }}
+                    radiusKm={(tiers.at(-1)?.upper_km ?? 0) / Number(settings?.road_distance_factor ?? 1)}
+                  />
+                </Suspense>
+              ) : (
+                <button type="button" onClick={() => setShowMap(true)} className="font-bold text-brand-deep underline">
+                  {t('home.showMap')}
+                </button>
+              )}
+            </div>
           </div>
         )}
       </section>
