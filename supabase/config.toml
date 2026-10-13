@@ -414,3 +414,17 @@ enabled = true
 # formatted with uppercase keywords, indent 2, max width 180, trailing commas,
 # and column/key alignment. Set to "null" to emit raw, unformatted SQL.
 # format_options = "{\"keywordCase\":\"upper\",\"indent\":2,\"maxWidth\":180,\"commaStyle\":\"trailing\"}"
+
+# Customer-facing Edge Functions. Customers are anonymous guests, so these do their own checks
+# (zod input validation, rate limits, Turnstile on place-order) instead of requiring a user JWT.
+[functions.quote-order]
+verify_jwt = false
+
+[functions.place-order]
+verify_jwt = false
+
+[functions.get-order-by-token]
+verify_jwt = false
+
+[functions.cancel-order-by-token]
+verify_jwt = false
