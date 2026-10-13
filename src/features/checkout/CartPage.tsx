@@ -5,6 +5,7 @@ import { formatAmount } from '../../lib/money'
 import { MAX_QUANTITY, unitPrice } from '../../../supabase/functions/_shared/pricing'
 import { useBranch } from '../../app/useBranch'
 import { useMenu } from '../menu/useMenu'
+import { SidesRow } from '../menu/SidesRow'
 import { lineKey, setQuantity, useCart } from './cart'
 
 export function CartPage() {
@@ -99,6 +100,10 @@ export function CartPage() {
           )
         })}
       </ul>
+
+      <div className="mt-6">
+        <SidesRow />
+      </div>
 
       <div className="mt-6 flex max-w-md flex-col gap-2 rounded-card border border-line bg-raised p-4">
         <p className="flex justify-between font-bold">

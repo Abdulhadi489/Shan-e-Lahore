@@ -4,6 +4,7 @@ import { localized } from '../../i18n'
 import { formatAmount } from '../../lib/money'
 import { MAX_QUANTITY, unitPrice } from '../../../supabase/functions/_shared/pricing'
 import { addToCart } from '../checkout/cart'
+import { SidesRow } from './SidesRow'
 import type { MenuItem } from './useMenu'
 
 type AddonGroup = MenuItem['addon_groups'][number]
@@ -142,6 +143,8 @@ function ItemChoices({ item, onDone }: { item: MenuItem; onDone: () => void }) {
       >
         {'error' in result ? t('item.add') : t('item.addWithPrice', { price: price(result.price * quantity) })}
       </button>
+
+      <SidesRow excludeItemId={item.id} />
     </form>
   )
 }

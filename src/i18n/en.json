@@ -203,6 +203,11 @@
     "cancelFailed": "Couldn't cancel. The order may already be confirmed; please call us.",
     "payTransferOnCall": "Pay {{total}} by {{method}}. We'll give you the account details on the confirmation call."
   },
+  "sides": {
+    "title": "Add with your order",
+    "add": "Add {{name}}, {{price}}",
+    "inCart": "{{count}} in cart"
+  },
   "admin": {
     "title": "Staff",
     "loading": "Loading…",

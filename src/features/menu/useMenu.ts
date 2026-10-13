@@ -4,7 +4,7 @@ import { supabase } from '../../lib/supabase'
 // RLS already limits anonymous visitors to active categories and visible items.
 // shortcut: one branch, so nothing filters by branch_id; filter here when the site gets a branch picker.
 const menuColumns = `
-  id, name_en, name_ur, sort_order,
+  id, name_en, name_ur, sort_order, is_side,
   items (
     id, name_en, name_ur, description_en, description_ur, base_price, is_available, is_deal, is_featured, sort_order,
     item_variants ( id, name_en, name_ur, price, is_available, sort_order ),

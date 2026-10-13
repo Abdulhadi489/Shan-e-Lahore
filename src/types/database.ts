@@ -159,14 +159,14 @@ isOneToOne: false
                   ]
                 },"categories": {
                   Row: {
-                    "branch_id": string,"created_at": string,"id": string,"is_active": boolean,"name_en": string,"name_ur": string,"sort_order": number,"updated_at": string
+                    "branch_id": string,"created_at": string,"id": string,"is_active": boolean,"is_side": boolean,"name_en": string,"name_ur": string,"sort_order": number,"updated_at": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "branch_id": string,"created_at"?: string,"id"?: string,"is_active"?: boolean,"name_en": string,"name_ur"?: string,"sort_order"?: number,"updated_at"?: string
+                    "branch_id": string,"created_at"?: string,"id"?: string,"is_active"?: boolean,"is_side"?: boolean,"name_en": string,"name_ur"?: string,"sort_order"?: number,"updated_at"?: string
                   }
                   Update: {
-                    "branch_id"?: string,"created_at"?: string,"id"?: string,"is_active"?: boolean,"name_en"?: string,"name_ur"?: string,"sort_order"?: number,"updated_at"?: string
+                    "branch_id"?: string,"created_at"?: string,"id"?: string,"is_active"?: boolean,"is_side"?: boolean,"name_en"?: string,"name_ur"?: string,"sort_order"?: number,"updated_at"?: string
                   }
                   Relationships: [
                     {

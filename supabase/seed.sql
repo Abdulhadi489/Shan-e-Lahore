@@ -189,3 +189,6 @@ from public.categories c, (values
    '2-3 افراد کے لیے۔ 2 چکن بوٹی، 2 ملائی بوٹی، 2 راجستانی بوٹی، 3 چکن چیز کباب۔', 3300, 2)
 ) d(name_en, name_ur, description_en, description_ur, price, sort_order)
 where c.name_en = 'Special Deals';
+
+-- Breads and raita/salad are offered as one-tap sides with every dish.
+update public.categories set is_side = true where name_en in ('Tandoor', 'Raita & Salad');
