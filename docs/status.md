@@ -14,7 +14,7 @@ Live (dev data): https://shan-e-lahore.onrender.com, backed by the hosted dev Su
 | --- | --- |
 | 1. Foundation | Done |
 | 2. Customer ordering | Core done and live, static pages drafted. Left: real dish photos (display code done; team is taking them), admin-managed home banners (with Milestone 3), restaurant approval of the page texts |
-| 3. Admin and order handling | Live Orders built and tested locally (14 Oct), **not pushed yet**. Next: staff switches, settings, menu management. Reports, discount codes and edit-order may slip to the week after launch (team decision) |
+| 3. Admin and order handling | Live Orders live on the Render site (14 Oct); tested locally, not yet on dev with a real staff login. Next: staff switches, settings, menu management. Reports, discount codes and edit-order may slip to the week after launch (team decision) |
 | 4. Hardening and launch | Not started |
 
 ## Milestone checklists
@@ -87,7 +87,7 @@ Tick items as they land. Items come from `CLAUDE.md` section 15 and `docs/spec.m
 | Days | Work |
 | --- | --- |
 | 13 Oct | Done ahead of plan: checkout back end and front end, tracking, sides |
-| 14 Oct | Live Orders (done locally) |
+| 14 Oct | Live Orders (done, pushed) |
 | 15-16 Oct | Staff switches (sold out, pause delivery); Settings (riders, payment accounts, WhatsApp number, hours, staff accounts); first dish photos |
 | 17-18 Oct | Menu management, photo upload, home banners |
 | 19 Oct | Delivery settings; Customers list with block switch; edit-order, discount codes and reports if time allows |
@@ -121,12 +121,11 @@ Tick items as they land. Items come from `CLAUDE.md` section 15 and `docs/spec.m
 
 - Real: menu (106 dishes, from the printed menu of 2026-08-29), branch address, phone and map pin (31.523689, 74.344498), opening hours (05:00 to midnight daily).
 - Placeholder: delivery tiers (3/5/7 km at Rs 100/150/200), road factor 1.3. Minimum order is 0 (off, team decision).
-- Empty: payment accounts, WhatsApp number, riders, discount codes, banners, photos. While payment accounts are empty, the tracking page and the WhatsApp messages say the details come on the confirmation call. With no riders, orders can't be sent out for delivery on dev until riders are added (Settings, or SQL with the team's OK). The local seed has two placeholder riders.
+- Empty: payment accounts, WhatsApp number, riders, discount codes, banners, photos. While payment accounts are empty, the tracking page and the WhatsApp messages say the details come on the confirmation call. With no riders, orders can't be sent out for delivery on dev until the Riders screen lands (15-16 Oct; team chose to wait rather than add riders by SQL). The local seed has two placeholder riders.
 
 ## Known gaps and risks
 
 - Ten days for Milestones 3 and 4 is tight. Anything not ready by 21 October is listed here and decided with the team, not dropped silently.
 - All Urdu so far was written by Claude (except dish names, which are the restaurant's own) and needs review, including the customer WhatsApp messages (`whatsapp.*` in `src/i18n/ur.json`).
-- Until Live Orders is pushed, staff cannot see orders on the live site; test orders there should be cancelled from their tracking page.
 - New-order alerts work only while the Live orders page is open and on a device that is awake; a locked phone never rings (no web push). See README "Setting up the order station".
 - Realtime sends anonymous subscribers an empty "401" notice when an order changes (no order data). Accepted, see `docs/decisions.md`.
