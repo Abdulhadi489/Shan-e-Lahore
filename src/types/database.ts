@@ -543,7 +543,12 @@ isOneToOne: false
             [_ in never]: never
           }
           Functions: {
-            [_ in never]: never
+            "create_order":
+{ Args: { "lines": Json,"order_data": Json }; Returns: Json
+                           },
+"hit_rate_limit":
+{ Args: { "limit_key": string,"max_count": number,"window_seconds": number }; Returns: boolean
+                           }
           }
           Enums: {
             "cancel_reason": "customer_request"|"unreachable"|"unpaid_transfer"|"out_of_stock"|"other","discount_type": "percent"|"fixed","order_status": "pending_confirmation"|"confirmed"|"preparing"|"out_for_delivery"|"delivered"|"cancelled","order_type": "delivery","payment_method": "cod"|"bank_transfer"|"jazzcash"|"easypaisa","payment_status": "unpaid"|"paid"|"refund_due"|"refunded","user_role": "super_admin"|"order_staff"|"customer"
