@@ -13,7 +13,7 @@ Live (dev data): https://shan-e-lahore.onrender.com, backed by the hosted dev Su
 | Milestone | State |
 | --- | --- |
 | 1. Foundation | Done |
-| 2. Customer ordering | Done except dish photos (team is taking them) and static page text (from the restaurant) |
+| 2. Customer ordering | Core done and live. Left: dish photos (team is taking them), static page text (from the restaurant), admin-managed home banners (with Milestone 3) |
 | 3. Admin and order handling | Not started. **On hold** until the restaurant confirms which device staff use (phone, tablet or laptop) and whether there is a receipt printer |
 | 4. Hardening and launch | Not started |
 
@@ -47,6 +47,7 @@ Tick items as they land. Items come from `CLAUDE.md` section 15 and `docs/spec.m
 - [x] Edge Functions `quote-order`, `place-order`, `get-order-by-token`, `cancel-order-by-token`; order creation and rate limits in SQL (`create_order`, `hit_rate_limit`)
 - [ ] Dish photos on cards: display code plus first upload batch (waiting on the team's photos)
 - [ ] Static pages (about, contact with map, terms, privacy, refund policy): currently title only; text needed from the restaurant
+- [ ] Home-page banners from the `banners` table (spec: managed by the Super Admin). The home page shows the fixed three-arch strip for now; build the display together with banner upload in Milestone 3
 
 ### Milestone 3: Admin and order handling (on hold)
 
