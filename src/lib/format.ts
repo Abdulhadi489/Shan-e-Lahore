@@ -14,3 +14,10 @@ export const phoneLabel = (phone: string) => {
   const split = phone.startsWith('923') ? 5 : 4
   return `0${phone.slice(2, split)} ${phone.slice(split)}`
 }
+
+// Wallet numbers and phones as people type them (03001234567), for copying.
+export const localPhone = (phone: string) => `0${phone.slice(2)}`
+
+// A timestamp from the database as a Lahore clock time.
+export const clockLabel = (lng: string, iso: string) =>
+  new Date(iso).toLocaleTimeString(locale(lng), { hour: 'numeric', minute: '2-digit', timeZone: 'Asia/Karachi' })

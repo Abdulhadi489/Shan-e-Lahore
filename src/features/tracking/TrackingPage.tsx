@@ -3,6 +3,7 @@ import { useMutation, useQuery } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
 import { Check, PhoneCall } from 'lucide-react'
 import { localized } from '../../i18n'
+import { clockLabel, localPhone } from '../../lib/format'
 import { formatAmount } from '../../lib/money'
 import { whatsappLink } from '../../lib/whatsapp'
 import { cancelOrder, getOrder, OrderApiError, type TrackedOrder } from '../checkout/orderApi'
@@ -16,7 +17,6 @@ const steps = [
 ] as const
 
 const finished = (order: TrackedOrder | undefined) => order?.status === 'delivered' || order?.status === 'cancelled'
-const localPhone = (phone: string) => `0${phone.slice(2)}`
 
 export function TrackingPage() {
   const { t, i18n } = useTranslation()
@@ -31,12 +31,6 @@ export function TrackingPage() {
   })
   const cancel = useMutation({ mutationFn: () => cancelOrder(token), onSettled: () => order.refetch() })
   const price = (amount: number) => t('price', { amount: formatAmount(amount) })
-  const clock = (iso: string) =>
-    new Date(iso).toLocaleTimeString(`${lng === 'ur' ? 'ur-PK' : 'en-PK'}-u-nu-latn`, {
-      hour: 'numeric',
-      minute: '2-digit',
-      timeZone: 'Asia/Karachi',
-    })
 
   if (order.isPending) return <p>{t('tracking.loading')}</p>
   if (order.isError) {
@@ -84,7 +78,7 @@ export function TrackingPage() {
                       </span>
                       <span className={index === currentStep ? 'font-bold' : done ? '' : 'text-ink-muted'}>
                         {t(`tracking.steps.${step.status}`)}
-                        {time && <span className="ms-2 text-sm text-ink-muted">{clock(time)}</span>}
+                        {time && <span className="ms-2 text-sm text-ink-muted">{clockLabel(lng, time)}</span>}
                       </span>
                     </li>
                   )

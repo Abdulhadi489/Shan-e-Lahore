@@ -193,3 +193,8 @@ where c.name_en = 'Special Deals';
 
 -- Breads and raita/salad are offered as one-tap sides with every dish.
 update public.categories set is_side = true where name_en in ('Tandoor', 'Raita & Salad');
+
+-- Placeholder riders so "out for delivery" can be tried locally; the Super Admin adds real riders in Settings.
+insert into public.riders (branch_id, name, phone) values
+  ('b0000000-0000-0000-0000-000000000001', 'Test Rider One', '923000000001'),
+  ('b0000000-0000-0000-0000-000000000001', 'Test Rider Two', '923000000002');

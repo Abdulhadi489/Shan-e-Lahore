@@ -208,6 +208,14 @@
     "add": "Add {{name}}, {{price}}",
     "inCart": "{{count}} in cart"
   },
+  "whatsapp": {
+    "received": "Assalam-o-Alaikum {{name}}. We've received your order {{number}} for {{total}}. We'll call you shortly to confirm it.",
+    "screenshot": "Please send the payment screenshot in this chat.",
+    "confirmed": "Your order {{number}} is confirmed. Expected in about {{minutes}} minutes.",
+    "outForDelivery": "Your order {{number}} is on the way. Your rider is {{rider}}, {{phone}}.",
+    "cancelled": "Your order {{number}} has been cancelled.",
+    "track": "Track your order: {{link}}"
+  },
   "info": {
     "about": [
       {
@@ -336,6 +344,97 @@
         "network": "Can't reach the server. Check your connection and try again.",
         "unexpected": "Something went wrong. Try again."
       }
+    },
+    "alerts": {
+      "off": "Order alerts are off. Browsers need one tap each time this page is opened.",
+      "turnOn": "Turn on alerts",
+      "on": "Alerts on",
+      "ringing_one": "New order {{numbers}}. Tap to stop the alarm.",
+      "ringing_other": "{{count}} new orders: {{numbers}}. Tap to stop the alarm.",
+      "notification": "New order {{number}}"
+    },
+    "orders": {
+      "tabs": {
+        "new": "New",
+        "kitchen": "Kitchen",
+        "onTheWay": "On the way",
+        "done": "Done today",
+        "refunds": "Refund due"
+      },
+      "tabsLabel": "Order lists",
+      "empty": "No orders here.",
+      "loadError": "Couldn't load orders. Check your connection; the page keeps retrying.",
+      "status": {
+        "pending_confirmation": "Waiting for call",
+        "confirmed": "Confirmed",
+        "preparing": "Preparing",
+        "out_for_delivery": "Out for delivery",
+        "delivered": "Delivered",
+        "cancelled": "Cancelled"
+      },
+      "paymentStatus": {
+        "unpaid": "Unpaid",
+        "paid": "Paid",
+        "refund_due": "Refund due",
+        "refunded": "Refunded"
+      },
+      "missedCalls_one": "{{count}} missed call",
+      "missedCalls_other": "{{count}} missed calls",
+      "back": "Live orders",
+      "notFound": "This order isn't in today's list.",
+      "heading": "Order {{number}}",
+      "placedAt": "Placed at {{time}}",
+      "customer": "Customer",
+      "whatsappCustomer": "WhatsApp customer",
+      "missedCall": "Didn't answer",
+      "missedCallHelp": "Missed calls: {{count}} of 3. The third cancels the order.",
+      "missedCallCancels": "This is the third missed call, so the order will be cancelled. Continue?",
+      "address": "Delivery address",
+      "landmark": "Landmark: {{landmark}}",
+      "distance": "{{km}} km from the restaurant",
+      "openMap": "Open in Google Maps",
+      "notes": "Customer notes",
+      "items": "Items",
+      "payment": "Payment",
+      "transactionId": "Transaction ID",
+      "markPaid": "Mark paid",
+      "paidHelp": "Check that the money has arrived in the account. A screenshot alone is not proof.",
+      "verifiedAt": "Verified at {{time}}, transaction ID {{id}}",
+      "markRefunded": "Mark refunded",
+      "refundedConfirm": "Have you sent the refund of {{amount}}?",
+      "confirm": "Confirm order",
+      "confirmNeedsPayment": "Mark the transfer paid before confirming. If it hasn't arrived, cancel with \"Transfer not paid\".",
+      "startPreparing": "Start preparing",
+      "rider": "Rider",
+      "chooseRider": "Choose a rider",
+      "noRiders": "No riders yet. A Super Admin adds them in Settings.",
+      "whatsappRider": "Send details to rider",
+      "outForDelivery": "Out for delivery",
+      "needsRider": "Choose a rider first.",
+      "delivered": "Mark delivered",
+      "cancel": "Cancel order",
+      "cancelReason": "Reason",
+      "chooseReason": "Choose a reason",
+      "cancelConfirm": "Cancel order {{number}}?",
+      "reasons": {
+        "customer_request": "Customer asked to cancel",
+        "unreachable": "Customer didn't answer",
+        "unpaid_transfer": "Transfer not paid",
+        "out_of_stock": "Item out of stock",
+        "other": "Other"
+      },
+      "ticket": "Kitchen ticket",
+      "print": "Print",
+      "saveFailed": "Couldn't save. Check your connection. If someone else changed this order, the screen now shows the latest."
+    },
+    "whatsapp": {
+      "order": "Order {{number}}",
+      "customer": "Customer: {{name}}, {{phone}}",
+      "address": "Address: {{address}}",
+      "landmark": "Landmark: {{landmark}}",
+      "collectCash": "Collect {{amount}} in cash.",
+      "collectNothing": "Already paid. Collect nothing.",
+      "map": "Map: {{link}}"
     }
   }
 }

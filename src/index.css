@@ -83,3 +83,9 @@
   fill: var(--color-brand);
   fill-opacity: 0.08;
 }
+
+/* Kitchen tickets (KitchenTicket.tsx) are the only staff page meant for printing: 80 mm thermal paper. */
+@page {
+  size: 80mm auto;
+  margin: 4mm;
+}
