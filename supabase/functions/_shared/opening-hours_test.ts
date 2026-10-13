@@ -1,4 +1,4 @@
-import { assertEquals } from 'jsr:@std/assert@1.0.19'
+import { assertEquals } from '@std/assert'
 import { type OpeningHours, openingStatus } from './opening-hours.ts'
 
 // Lahore is UTC+5. 2026-10-12 is a Monday (weekday 1).

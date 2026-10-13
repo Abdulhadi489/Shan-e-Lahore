@@ -32,7 +32,7 @@ jobs:
         with:
           deno-version: v2.x
       # Shared order rules (pricing, delivery, opening hours) used by both the website and the Edge Functions.
-      - run: deno test supabase/functions/_shared/
+      - run: deno test --config supabase/functions/deno.json supabase/functions/_shared/
 
   audit:
     name: npm audit

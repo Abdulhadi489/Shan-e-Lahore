@@ -1,4 +1,4 @@
-import { assertEquals } from 'jsr:@std/assert@1.0.19'
+import { assertEquals } from '@std/assert'
 import { type PricedItem, unitPrice } from './pricing.ts'
 
 const karahi: PricedItem = {

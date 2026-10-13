@@ -1,14 +1,9 @@
 import { useSyncExternalStore } from 'react'
 import { z } from 'zod'
 import { MAX_QUANTITY } from '../../../supabase/functions/_shared/pricing'
+import { cartLine } from '../../../supabase/functions/_shared/schemas'
 
 // Only dish choices and quantities: names and prices are always read fresh from the menu.
-const cartLine = z.object({
-  itemId: z.uuid(),
-  variantId: z.uuid().nullable(),
-  addonOptionIds: z.array(z.uuid()).max(20),
-  quantity: z.int().min(1).max(MAX_QUANTITY),
-})
 export type CartLine = z.infer<typeof cartLine>
 
 const storageKey = 'cart'
