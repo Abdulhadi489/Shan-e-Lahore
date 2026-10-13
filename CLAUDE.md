@@ -87,7 +87,7 @@ Planned layout; folders marked *(Milestone N)* don't exist yet. The detailed map
 │  ├─ assets/                # images bundled with the site (menu arches)
 │  ├─ features/
 │  │  ├─ home/  menu/  checkout/  tracking/
-│  │  └─ admin/              # login and route guard now; orders, menu, delivery, discounts, customers, reports, settings (Milestone 3)
+│  │  └─ admin/              # login, route guard, Live Orders (orders/); menu, delivery, discounts, customers, reports, settings (Milestone 3)
 │  ├─ components/            # shared UI built on the design tokens (Turnstile)
 │  ├─ lib/                   # supabase client, whatsapp.ts, money.ts
 │  ├─ i18n/                  # en.json, ur.json, typed keys

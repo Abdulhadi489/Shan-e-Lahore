@@ -46,7 +46,7 @@ Local Supabase does not check the bot-check token, so the test key is enough the
 
 Only public values go in the frontend. The Supabase secret key and the Turnstile secret never go in any file in this repository: they live in Supabase's dashboard (Edge Function secrets, Authentication > Attack Protection).
 
-To log in locally, create accounts in the local dashboard (http://127.0.0.1:54323) with the same steps as "Creating a Super Admin" below.
+To log in locally, create accounts in the local dashboard (http://127.0.0.1:54323) with the same steps as "Creating a Super Admin" below. The seed adds two placeholder riders so orders can be sent out for delivery.
 
 ## Environments
 
@@ -90,9 +90,10 @@ How a customer order flows through the code:
 3. `CheckoutPage.tsx` takes the map pin (`LocationPicker.tsx`, Leaflet) and the customer's details, asks `quote-order` for the price, then calls `place-order` (`orderApi.ts` wraps all four functions).
 4. `supabase/functions/place-order/` validates (`_shared/schemas.ts`), rate-limits (`_shared/rate-limit.ts` → `public.hit_rate_limit`), checks Turnstile (`_shared/turnstile.ts`), loads the menu and branch (`_shared/load.ts`), prices everything (`_shared/order.ts`) and saves it with `public.create_order` (migration `20261013081612`).
 5. The customer lands on `src/features/tracking/TrackingPage.tsx`, which polls `get-order-by-token` and can call `cancel-order-by-token`.
-6. Staff change status, payment and rider directly in the `orders` table (Milestone 3 screens); the rules live in the database trigger `private.enforce_order_rules` (migration `20261012105428`), and every change is logged in `order_status_log`.
+6. Staff work the order in `src/features/admin/orders/`: `useLiveOrders.ts` loads open orders, today's orders and refunds due in one query and refetches when Realtime reports a change (and every 30 seconds as a backup); `useNewOrderAlarm.ts` rings, shows a notification and keeps the screen awake; `LiveOrdersPage.tsx` is the list, `OrderPage.tsx` the call screen, `KitchenTicket.tsx` the print view. The prepared WhatsApp messages come from `src/lib/whatsapp.ts`.
+7. Status, payment and rider changes are direct updates to the `orders` table; the rules live in the database trigger `private.enforce_order_rules` (migration `20261012105428`), the third missed call in `call_attempts` cancels the order, and every status change is logged in `order_status_log` with who made it.
 
-Other pieces: `src/app/` (routes, customer layout, `useBranch.ts` for hours and delivery tiers), `src/features/home/HomePage.tsx`, `src/features/admin/` (login with Turnstile, route guard), `src/i18n/` (all text; Urdu in `ur.json`), `src/index.css` (design tokens).
+Other pieces: `src/app/` (routes, customer layout, `useBranch.ts` for hours and delivery tiers), `src/features/home/HomePage.tsx`, `src/features/admin/` (login with Turnstile, route guard, `StaffLayout.tsx` with the alarm banner), `src/i18n/` (all text; Urdu in `ur.json`), `src/index.css` (design tokens).
 
 ## Checks and deploys
 
@@ -106,7 +107,7 @@ Dependabot opens weekly update pull requests, waiting 14 days after a release (s
 The website is a Render static site described in `render.yaml`: build command, the public `VITE_` values, the rewrite that lets React Router handle every address, and the security headers. Render deploys a commit on `main` only after its checks pass, so **pushing to `main` is deploying**.
 
 - **First-time setup:** Render Dashboard > New > Blueprint > choose this repo (the repo owner approves Render's GitHub app) > Apply. Then add the site's `onrender.com` address to the Turnstile widget's hostnames in Cloudflare.
-- **Switching Supabase projects** (for example to production): change `VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY` and the Supabase URL in the Content-Security-Policy in `render.yaml`, in the same commit.
+- **Switching Supabase projects** (for example to production): change `VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY` and the Supabase URL in the Content-Security-Policy in `render.yaml` (three places: `https://` and `wss://` in `connect-src`, `https://` in `img-src`), in the same commit.
 - **Adding an outside service** (map tiles, images from Storage, Realtime): add its address to the matching CSP directive, or the browser blocks it. Check the browser console for "violates the following Content Security Policy directive".
 
 ## Creating a Super Admin
@@ -135,6 +136,18 @@ If no Super Admin can log in (both passwords lost), a developer with access to t
    ```
 
 Never share one account between people. Changing someone's email is not possible (a database trigger blocks it); create a new account and deactivate the old one instead.
+
+## Setting up the order station
+
+New orders ring on the staff screen only while the Live orders page is open. The restaurant's order station is a laptop:
+
+1. Use Chrome or Edge, with the laptop plugged in and the volume up. Set the laptop not to sleep while plugged in.
+2. Open `/admin`, log in and tap **Turn on alerts**. Browsers allow sound only after a tap, so this is needed again after every reload. Allow notifications when the browser asks.
+3. Keep the Live orders tab open, ideally in its own window. While it is on screen the page keeps the screen awake.
+4. Chrome: Settings > Performance > "Always keep these sites active" > add the site, so Memory Saver never closes the tab.
+5. The WhatsApp buttons open WhatsApp on the same device, so log WhatsApp Desktop (or web.whatsapp.com) into the restaurant's WhatsApp Business number, never a personal one.
+
+Phones can handle orders too, but only ring while their screen is on and the page is open. Pop-up notifications work on laptops only (Android needs a service worker and iPhone a home-screen install; neither is built).
 
 ## Before launch
 
