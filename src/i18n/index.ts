@@ -14,6 +14,11 @@ function readSavedLanguage() {
   }
 }
 
+// Database text has _en and _ur columns; empty Urdu falls back to English.
+export function localized(lng: string, en: string, ur: string) {
+  return lng === 'ur' && ur ? ur : en
+}
+
 export function applyDocumentLanguage(lng: string) {
   document.documentElement.lang = lng
   document.documentElement.dir = i18n.dir(lng)

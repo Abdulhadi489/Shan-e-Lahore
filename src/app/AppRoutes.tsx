@@ -3,6 +3,8 @@ import { Link, Route, Routes } from 'react-router'
 import { useTranslation } from 'react-i18next'
 import { CustomerLayout, infoPages } from './CustomerLayout'
 import { EmptyPage } from './EmptyPage'
+import { MenuPage } from '../features/menu/MenuPage'
+import { CartPage } from '../features/checkout/CartPage'
 
 // Staff code downloads only when someone opens /admin, so customers on mobile data never load it.
 const AdminApp = lazy(() => import('../features/admin/AdminApp').then((module) => ({ default: module.AdminApp })))
@@ -13,17 +15,8 @@ export function AppRoutes() {
     <Routes>
       <Route element={<CustomerLayout />}>
         <Route index element={<EmptyPage title="brand" />} />
-        <Route path="menu" element={<EmptyPage title="pages.menu" />} />
-        <Route
-          path="cart"
-          element={
-            <EmptyPage title="pages.cart">
-              <Link to="/checkout" className="mt-4 inline-block text-brand-deep underline">
-                {t('cart.goToCheckout')}
-              </Link>
-            </EmptyPage>
-          }
-        />
+        <Route path="menu" element={<MenuPage />} />
+        <Route path="cart" element={<CartPage />} />
         <Route path="checkout" element={<EmptyPage title="pages.checkout" />} />
         <Route path="track/:token" element={<EmptyPage title="pages.tracking" />} />
         {infoPages.map((page) => (

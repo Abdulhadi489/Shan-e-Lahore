@@ -1,5 +1,6 @@
 import { Link, NavLink, Outlet } from 'react-router'
 import { useTranslation } from 'react-i18next'
+import { useCart } from '../features/checkout/cart'
 
 export const infoPages = [
   { path: 'about', title: 'pages.about' },
@@ -29,6 +30,7 @@ function LanguageSwitch() {
 
 export function CustomerLayout() {
   const { t } = useTranslation()
+  const cartCount = useCart().reduce((sum, line) => sum + line.quantity, 0)
   return (
     <div className="flex min-h-dvh flex-col">
       <header className="border-b border-line bg-raised">
@@ -42,6 +44,9 @@ export function CustomerLayout() {
             </NavLink>
             <NavLink to="/cart" className={navLinkClass}>
               {t('nav.cart')}
+              {cartCount > 0 && (
+                <span className="ms-1 rounded-full bg-brand px-2 text-sm font-bold text-ink">{cartCount}</span>
+              )}
             </NavLink>
           </nav>
           <LanguageSwitch />

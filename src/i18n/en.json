@@ -20,11 +20,43 @@
     "notFound": "Page not found"
   },
   "cart": {
-    "goToCheckout": "Go to checkout"
+    "goToCheckout": "Go to checkout",
+    "empty": "Your cart is empty.",
+    "browseMenu": "Browse the menu",
+    "subtotal": "Subtotal",
+    "deliveryNote": "The delivery charge is added at checkout, based on your map pin.",
+    "minimumOrder": "The minimum order is {{minimum}}. Add {{remaining}} more.",
+    "remove": "Remove",
+    "unavailable": "No longer available. Remove it to continue.",
+    "unknownItem": "Removed from the menu"
   },
   "notFound": {
     "body": "This page doesn't exist.",
     "goHome": "Go to the home page"
+  },
+  "price": "Rs {{amount}}",
+  "menu": {
+    "categories": "Menu categories",
+    "from": "from {{price}}",
+    "soldOut": "Sold out",
+    "loading": "Loading the menu…",
+    "error": "Couldn't load the menu. Check your connection and try again.",
+    "retry": "Try again",
+    "empty": "The menu is empty right now."
+  },
+  "item": {
+    "close": "Close",
+    "size": "Size",
+    "required": "Required",
+    "optional": "Optional",
+    "chooseExactly": "Choose {{count}}",
+    "chooseUpTo": "Choose up to {{count}}",
+    "chooseBetween": "Choose {{min}} to {{max}}",
+    "quantity": "Quantity",
+    "decrease": "Decrease quantity",
+    "increase": "Increase quantity",
+    "add": "Add to cart",
+    "addWithPrice": "Add to cart · {{price}}"
   },
   "admin": {
     "title": "Staff",
