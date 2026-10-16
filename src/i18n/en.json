@@ -701,6 +701,44 @@
       "add": "Add code",
       "edit": "Edit",
       "none": "No discount codes yet."
+    },
+    "reports": {
+      "heading": "Reports",
+      "from": "From",
+      "to": "To",
+      "groupBy": "Group sales by",
+      "groups": {
+        "day": "Day",
+        "week": "Week",
+        "month": "Month"
+      },
+      "show": "Show",
+      "export": "Download for Excel",
+      "exportHelp": "One row per order, without customer names, phones or addresses.",
+      "empty": "No orders in this period.",
+      "totals": {
+        "orders": "Orders",
+        "delivered": "Delivered",
+        "cancelled": "Cancelled",
+        "cancellationRate": "Cancellation rate",
+        "open": "Still open",
+        "revenue": "Revenue (delivered)",
+        "averageOrder": "Average order",
+        "deliveryCharges": "Delivery charges",
+        "discounts": "Discounts given"
+      },
+      "sales": "Sales",
+      "period": "Period",
+      "statuses": "Orders by status",
+      "cancelReasons": "Why orders were cancelled",
+      "payments": "Revenue by payment method",
+      "topItems": "Top dishes",
+      "quantity": "Quantity",
+      "amount": "Amount",
+      "distance": "Orders by distance (km)",
+      "discountCodes": "Discount codes used",
+      "uses": "Uses",
+      "count": "Orders"
     }
   }
 }
