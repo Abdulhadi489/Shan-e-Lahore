@@ -7,7 +7,7 @@ import { useStaffBranch, type StaffBranch } from './useStaffBranch'
 import { useLiveOrders, type LiveOrder } from './orders/useLiveOrders'
 import { useNewOrderAlarm } from './orders/useNewOrderAlarm'
 
-type StaffContext = { branch: StaffBranch; orders: UseQueryResult<LiveOrder[]>; isSuperAdmin: boolean }
+type StaffContext = { branch: StaffBranch; orders: UseQueryResult<LiveOrder[]>; isSuperAdmin: boolean; userId: string }
 export const useStaff = () => useOutletContext<StaffContext>()
 
 // Hides Super Admin screens from Order Staff. The database's RLS policies are what actually protect the data.
@@ -62,7 +62,7 @@ export function StaffLayout({ userId }: { userId: string }) {
   } else if (!branch.data) {
     content = <p>{t('admin.loading')}</p>
   } else {
-    content = <Outlet context={{ branch: branch.data, orders, isSuperAdmin } satisfies StaffContext} />
+    content = <Outlet context={{ branch: branch.data, orders, isSuperAdmin, userId } satisfies StaffContext} />
   }
 
   return (

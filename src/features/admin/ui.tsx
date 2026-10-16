@@ -1,3 +1,4 @@
+import type { FormEvent } from 'react'
 import { useMutation, useQueryClient, type QueryKey } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
 import type { PostgrestError } from '@supabase/supabase-js'
@@ -38,3 +39,18 @@ export function SaveError({ error }: { error: Error | null }) {
     </p>
   )
 }
+
+export function SavedOrError({ save }: { save: ReturnType<typeof useDbMutation> }) {
+  const { t } = useTranslation(undefined, { lng: 'en' })
+  if (save.isSuccess) return <p role="status" className="text-success">{t('admin.settings.saved')}</p>
+  return <SaveError error={save.error} />
+}
+
+// Admin forms are plain HTML forms: native validation first, then the database's CHECKs.
+export const submitted = (event: FormEvent<HTMLFormElement>) => {
+  event.preventDefault()
+  return new FormData(event.currentTarget)
+}
+export const text = (form: FormData, name: string) => String(form.get(name) ?? '').trim()
+// Empty optional fields are stored as null, which the database CHECKs allow.
+export const optional = (form: FormData, name: string) => text(form, name) || null

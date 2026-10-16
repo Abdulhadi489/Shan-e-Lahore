@@ -1,5 +1,5 @@
 import { assertEquals } from '@std/assert'
-import { normalisePakistaniMobile } from './phone.ts'
+import { normalisePakistaniMobile, normalisePakistaniPhone } from './phone.ts'
 
 Deno.test('accepts the common ways of typing a Pakistani mobile number', () => {
   for (const input of [
@@ -17,4 +17,12 @@ Deno.test('rejects landlines, wrong lengths and junk', () => {
   ]) {
     assertEquals(normalisePakistaniMobile(input), null, input)
   }
+})
+
+Deno.test('branch phones accept landlines, UAN numbers and mobiles', () => {
+  assertEquals(normalisePakistaniPhone('042 35242650'), '924235242650')
+  assertEquals(normalisePakistaniPhone('+92 42 111 123 456'), '9242111123456')
+  assertEquals(normalisePakistaniPhone('0300-1234567'), '923001234567')
+  assertEquals(normalisePakistaniPhone('12345'), null)
+  assertEquals(normalisePakistaniPhone('042 3524 2650 1234'), null)
 })

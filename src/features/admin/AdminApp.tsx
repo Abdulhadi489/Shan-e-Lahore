@@ -6,7 +6,8 @@ import type { Session } from '@supabase/supabase-js'
 import i18n, { applyDocumentLanguage } from '../../i18n'
 import { supabase } from '../../lib/supabase'
 import { LoginPage } from './LoginPage'
-import { StaffLayout } from './StaffLayout'
+import { StaffLayout, SuperAdminOnly } from './StaffLayout'
+import { SettingsPage } from './settings/SettingsPage'
 import { AvailabilityPage } from './availability/AvailabilityPage'
 import { LiveOrdersPage } from './orders/LiveOrdersPage'
 import { OrderPage } from './orders/OrderPage'
@@ -48,6 +49,9 @@ export function AdminApp() {
         <Route path="orders/:id" element={<OrderPage />} />
         <Route path="orders/:id/ticket" element={<KitchenTicket />} />
         <Route path="availability" element={<AvailabilityPage />} />
+        <Route element={<SuperAdminOnly />}>
+          <Route path="settings" element={<SettingsPage />} />
+        </Route>
       </Route>
       <Route path="*" element={<Navigate to="/admin" replace />} />
     </Routes>

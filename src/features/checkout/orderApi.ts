@@ -2,7 +2,7 @@ import { FunctionsHttpError } from '@supabase/supabase-js'
 import { supabase } from '../../lib/supabase'
 import type { CartLine } from './cart'
 
-// The customer Edge Functions answer with JSON: the result, or { error: CODE, ... }.
+// Our Edge Functions answer with JSON: the result, or { error: CODE, ... }.
 export class OrderApiError extends Error {
   constructor(
     public code: string,
@@ -12,7 +12,7 @@ export class OrderApiError extends Error {
   }
 }
 
-async function invoke<T>(name: string, body: object): Promise<T> {
+export async function invoke<T>(name: string, body: object): Promise<T> {
   const { data, error } = await supabase.functions.invoke(name, { body })
   if (!error) return data as T
   if (error instanceof FunctionsHttpError) {

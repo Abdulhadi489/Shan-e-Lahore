@@ -467,6 +467,78 @@
       "hidden": "hidden from the menu",
       "addons": "Add-on choices",
       "noMatch": "No dishes match."
+    },
+    "settings": {
+      "heading": "Settings",
+      "save": "Save",
+      "saved": "Saved.",
+      "optional": "optional",
+      "restaurant": {
+        "heading": "Restaurant",
+        "nameEn": "Name (English)",
+        "nameUr": "Name (Urdu)",
+        "addressEn": "Address (English)",
+        "addressUr": "Address (Urdu)",
+        "phone": "Phone shown to customers",
+        "phoneInvalid": "Enter a Pakistani phone number, for example 042 35242650."
+      },
+      "payments": {
+        "heading": "Payments and WhatsApp",
+        "help": "Customers see these account details for transfer orders. Leave an account empty if the restaurant doesn't use it.",
+        "whatsapp": "WhatsApp number for payment screenshots",
+        "minutes": "Usual delivery time (minutes)",
+        "bankName": "Bank name",
+        "bankTitle": "Bank account title",
+        "bankNumber": "Bank account number",
+        "iban": "IBAN",
+        "ibanInvalid": "An IBAN looks like PK36SCBL0000001123456702.",
+        "jazzcashTitle": "JazzCash account title",
+        "jazzcashNumber": "JazzCash number",
+        "easypaisaTitle": "Easypaisa account title",
+        "easypaisaNumber": "Easypaisa number",
+        "mobileInvalid": "Enter a Pakistani mobile number, for example 0300 1234567."
+      },
+      "hours": {
+        "heading": "Opening hours",
+        "help": "Orders are accepted only during these hours. A closing time earlier than the opening time means the restaurant closes after midnight.",
+        "opens": "Opens",
+        "closes": "Closes",
+        "closed": "Closed all day"
+      },
+      "riders": {
+        "heading": "Riders",
+        "name": "Name",
+        "phone": "Mobile number",
+        "active": "Active",
+        "add": "Add rider",
+        "none": "No riders yet."
+      },
+      "staff": {
+        "heading": "Staff accounts",
+        "help": "Everyone gets their own login. Deactivate people who leave instead of sharing passwords. Keep at least two active Super Admins.",
+        "you": "you",
+        "role": "Role",
+        "active": "Active",
+        "noAccess": "No access",
+        "resetPassword": "Reset password",
+        "newPassword": "New password (at least 12 characters)",
+        "passwordReset": "Password changed. Give it to them in person.",
+        "addHeading": "Add a staff account",
+        "fullName": "Full name",
+        "email": "Email",
+        "password": "First password (at least 12 characters)",
+        "create": "Create account",
+        "created": "Account created. Give them their email and password in person.",
+        "errors": {
+          "EMAIL_TAKEN": "An account with this email already exists.",
+          "WEAK_PASSWORD": "Choose a longer password, at least 12 characters.",
+          "CANNOT_CHANGE_OWN_ACCESS": "You can't change your own role. Ask another Super Admin.",
+          "TWO_SUPER_ADMINS_REQUIRED": "Keep at least two active Super Admins, so either can reset the other's password.",
+          "ACCOUNT_NOT_FOUND": "This account no longer exists. Reload the page.",
+          "BRANCH_REQUIRED": "Order Staff need a branch.",
+          "other": "Couldn't save. Check your connection and try again."
+        }
+      }
     }
   }
 }
