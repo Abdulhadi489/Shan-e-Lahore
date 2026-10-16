@@ -616,6 +616,45 @@
         "add": "Upload banner",
         "none": "No banners yet. The home page shows the three arches until you add one."
       }
+    },
+    "delivery": {
+      "heading": "Delivery",
+      "pausedHelp": "To pause or resume delivery, use Availability.",
+      "location": {
+        "heading": "Restaurant location",
+        "help": "Distances and delivery charges are measured from this pin. Move it only if the restaurant moves or the pin is wrong.",
+        "save": "Save new location",
+        "unchanged": "Tap the map or drag the pin to change the location."
+      },
+      "tiers": {
+        "heading": "Delivery charges",
+        "help": "Each row is a distance limit and its charge. The largest distance is the delivery radius: further away, customers can't order. Changes apply to new orders only.",
+        "upTo": "Up to (km)",
+        "charge": "Charge (Rs)",
+        "add": "Add distance"
+      },
+      "rules": {
+        "heading": "Delivery rules",
+        "roadFactor": "Road distance factor",
+        "roadFactorHelp": "Straight-line distance is multiplied by this to estimate the road distance. 1.3 is a common start.",
+        "minOrder": "Minimum order (Rs)",
+        "minOrderHelp": "0 means no minimum.",
+        "freeThreshold": "Free delivery from (Rs)",
+        "freeThresholdHelp": "Leave empty for no free delivery."
+      },
+      "log": {
+        "heading": "Change log",
+        "help": "Who changed the restaurant location, delivery charges and delivery rules, and when. The latest 30 changes.",
+        "empty": "No changes yet.",
+        "unknown": "System",
+        "tables": {
+          "branches": "Restaurant",
+          "branch_settings": "Delivery rules",
+          "delivery_tiers": "Delivery charge"
+        },
+        "added": "added",
+        "deleted": "deleted"
+      }
     }
   }
 }
