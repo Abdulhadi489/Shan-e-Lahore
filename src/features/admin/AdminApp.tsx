@@ -14,6 +14,7 @@ import { AddonGroupsPage } from './menu/AddonGroupsPage'
 import { BannersPage } from './menu/BannersPage'
 import { DeliveryPage } from './delivery/DeliveryPage'
 import { CustomerPage, CustomersPage } from './customers/CustomersPage'
+import { DiscountsPage } from './discounts/DiscountsPage'
 import { AvailabilityPage } from './availability/AvailabilityPage'
 import { LiveOrdersPage } from './orders/LiveOrdersPage'
 import { OrderPage } from './orders/OrderPage'
@@ -63,6 +64,7 @@ export function AdminApp() {
           <Route path="menu/banners" element={<BannersPage />} />
           <Route path="delivery" element={<DeliveryPage />} />
           <Route path="customers" element={<CustomersPage />} />
+          <Route path="discounts" element={<DiscountsPage />} />
           <Route path="customers/:id" element={<CustomerPage />} />
         </Route>
       </Route>

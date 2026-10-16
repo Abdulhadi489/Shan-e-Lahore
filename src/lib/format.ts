@@ -21,3 +21,7 @@ export const localPhone = (phone: string) => `0${phone.slice(2)}`
 // A timestamp from the database as a Lahore clock time.
 export const clockLabel = (lng: string, iso: string) =>
   new Date(iso).toLocaleTimeString(locale(lng), { hour: 'numeric', minute: '2-digit', timeZone: 'Asia/Karachi' })
+
+// <input type="datetime-local"> holds Lahore wall-clock time (UTC+5, no daylight saving).
+export const toLahoreInput = (iso: string) => new Date(Date.parse(iso) + 5 * 3_600_000).toISOString().slice(0, 16)
+export const fromLahoreInput = (value: string) => new Date(`${value}:00+05:00`).toISOString()

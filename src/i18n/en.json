@@ -676,6 +676,31 @@
       "history": "Order history",
       "noOrders": "No orders.",
       "showing": "Showing the 100 most recent customers. Search to find others."
+    },
+    "discounts": {
+      "heading": "Discount codes",
+      "help": "Customers type the code in the cart. The server checks every rule again when the order is placed. Codes that have been used can't be deleted; switch them off instead.",
+      "code": "Code",
+      "codeHelp": "3 to 20 capital letters or digits, for example EID10.",
+      "type": "Type",
+      "percent": "Percent off",
+      "fixed": "Rupees off",
+      "value": "Amount",
+      "minOrder": "Minimum order (Rs)",
+      "startsAt": "Starts",
+      "endsAt": "Ends",
+      "datesHelp": "Lahore time. Leave empty for no limit.",
+      "usageLimit": "Total uses allowed",
+      "usageLimitHelp": "Leave empty for unlimited.",
+      "onePerPhone": "Once per phone number",
+      "firstOrderOnly": "First order only",
+      "active": "Active",
+      "uses_one": "used {{count}} time",
+      "uses_other": "used {{count}} times",
+      "off": "off",
+      "add": "Add code",
+      "edit": "Edit",
+      "none": "No discount codes yet."
     }
   }
 }
