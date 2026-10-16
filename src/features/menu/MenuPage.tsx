@@ -103,7 +103,7 @@ export function MenuPage() {
           {menu.data.map((category) => (
             <section key={category.id} id={`category-${category.id}`} className="mt-8 scroll-mt-16">
               <h2 className="font-heading text-2xl font-bold">{localized(lng, category.name_en, category.name_ur)}</h2>
-              <ul className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              <ul className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                 {category.items.map((item) => (
                   <li key={item.id}>
                     <ItemCard item={item} onSelect={setSelected} />

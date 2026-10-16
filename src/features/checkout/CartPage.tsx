@@ -57,7 +57,7 @@ export function CartPage() {
     <>
       {title}
       {heading}
-      <ul className="mt-4 flex flex-col gap-3">
+      <ul className="mt-4 flex max-w-3xl flex-col gap-3">
         {rows.map(({ line, key, item, unit }) => {
           const variant = item?.variants.find((v) => v.id === line.variantId)
           const options = item?.addon_groups.flatMap((g) => g.options).filter((o) => line.addonOptionIds.includes(o.id)) ?? []

@@ -1,6 +1,7 @@
-import { Link, NavLink, Outlet } from 'react-router'
+import { Link, NavLink, Outlet, useLocation } from 'react-router'
 import { useTranslation } from 'react-i18next'
 import { useCart } from '../features/checkout/cart'
+import { HomeBanner } from '../features/home/HomeBanner'
 
 export const infoPages = [
   { path: 'about', title: 'pages.about' },
@@ -31,10 +32,11 @@ function LanguageSwitch() {
 export function CustomerLayout() {
   const { t } = useTranslation()
   const cartCount = useCart().reduce((sum, line) => sum + line.quantity, 0)
+  const isHome = useLocation().pathname === '/'
   return (
     <div className="flex min-h-dvh flex-col">
       <header className="border-b border-line bg-raised">
-        <div className="mx-auto flex max-w-5xl flex-wrap items-center gap-x-4 gap-y-2 px-4 py-3">
+        <div className="mx-auto flex max-w-7xl flex-wrap items-center gap-x-4 gap-y-2 px-4 py-3">
           <Link to="/" className="font-heading text-2xl font-bold text-brand-deep">
             {t('brand')}
           </Link>
@@ -53,12 +55,13 @@ export function CustomerLayout() {
         </div>
       </header>
 
-      <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-6">
+      {isHome && <HomeBanner />}
+      <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-6">
         <Outlet />
       </main>
 
       <footer className="border-t border-line bg-peach">
-        <nav aria-label={t('nav.info')} className="mx-auto flex max-w-5xl flex-wrap gap-x-6 gap-y-2 px-4 py-6">
+        <nav aria-label={t('nav.info')} className="mx-auto flex max-w-7xl flex-wrap gap-x-6 gap-y-2 px-4 py-6">
           {infoPages.map((page) => (
             <NavLink key={page.path} to={`/${page.path}`} className={navLinkClass}>
               {t(page.title)}
