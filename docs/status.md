@@ -14,7 +14,7 @@ Live (dev data): https://shan-e-lahore.onrender.com, backed by the hosted dev Su
 | --- | --- |
 | 1. Foundation | Done |
 | 2. Customer ordering | Done and live, static pages drafted. Left: real dish photos (upload screen built; team is taking them), restaurant approval of the page texts |
-| 3. Admin and order handling | **Built and tested locally (17 Oct), not pushed yet.** Live Orders is live since 14 Oct. Everything else (availability, settings, staff accounts, menu, photos, banners, delivery, customers, discount codes, reports, editing orders) waits on a push plus 4 migrations and 2 new Edge Functions on the dev project, each with the team's OK |
+| 3. Admin and order handling | **Done and live on dev (17 Oct)**: Live Orders, availability, settings and staff accounts, menu with photos and banners, delivery, customers, discount codes, reports, editing orders. Tested locally; next the team clicks through on dev with real logins and enters the restaurant's real content |
 | 4. Hardening and launch | Not started |
 
 ## Milestone checklists
@@ -66,7 +66,8 @@ Tick items as they land. Items come from `CLAUDE.md` section 15 and `docs/spec.m
 - [x] Customers: list with order count, cancellations, delivered spend and last order (`customer_summaries` view); search; order history; block switch
 - [x] Reports (Super Admin only): sales by period, status and cancel reasons, payment method, top items, distance tier, discount usage; CSV export (UTF-8 with BOM)
 - [x] Settings: restaurant info, opening hours, payment accounts, WhatsApp number, riders; staff accounts through the `admin-users` Edge Function (create, change role or active state, reset password; two active Super Admins always kept)
-- [ ] Push and deploy to dev (needs the team's OK): `supabase db push` for migrations `20261016193031_staff_access`, `20261016194545_audit_branches`, `20261016194933_customer_summaries`, `20261016195618_edit_order`; `supabase functions deploy admin-users edit-order place-order` (place-order only moved shared code); then a click-through on dev with real staff logins
+- [x] Pushed and deployed to dev (17 Oct, approved by Arslan): migrations `20261016193031_staff_access`, `20261016194545_audit_branches`, `20261016194933_customer_summaries`, `20261016195618_edit_order`; functions `admin-users`, `edit-order` (both keep verify_jwt on and check the login themselves) and `place-order` (shared code moved). Security Advisor on dev: only the two accepted warnings
+- [ ] Click-through on dev with real staff logins: every staff screen, a photo upload, a report download, an order edit
 
 ### Milestone 4: Hardening and launch
 
@@ -90,7 +91,8 @@ Tick items as they land. Items come from `CLAUDE.md` section 15 and `docs/spec.m
 | 13 Oct | Done ahead of plan: checkout back end and front end, tracking, sides |
 | 14 Oct | Live Orders (done, pushed) |
 | 16-17 Oct | Rest of Milestone 3 built and tested locally: availability, settings and staff accounts, menu with photos and banners, delivery, customers, discount codes, reports, editing orders |
-| 17-19 Oct | Push and deploy to dev, team tests every screen with real logins; restaurant's real content goes in (menu, photos, prices, accounts, riders, staff) |
+| 17 Oct | Pushed and deployed to dev |
+| 17-19 Oct | Team tests every screen on dev with real logins; restaurant's real content goes in (menu, photos, prices, accounts, riders, staff) |
 | 20-21 Oct | Milestone 4 |
 | 22 Oct | Real content in production, Urdu fixes, domain |
 | 23 Oct | Launch |
@@ -112,7 +114,7 @@ Tick items as they land. Items come from `CLAUDE.md` section 15 and `docs/spec.m
 | --- | --- | --- |
 | GitHub | Private repo `Abdulhadi489/Shan-e-Lahore`, default branch `main` | Hadi owns it; Arslan has push access. CI minutes come from Hadi's free account (2,000 a month) |
 | Render | Blueprint `shan-e-lahore`, static site https://shan-e-lahore.onrender.com, deploys `main` after CI passes | Arslan's Render workspace; Hadi installed Render's GitHub app on his account for this repo only |
-| Supabase dev | Project `shan-e-lahore-dev` (ref `gdjvulhrumxwjmnaywnn`, Mumbai, free plan): 9 migrations, 4 Edge Functions (4 newer migrations and 2 functions are in git, not yet deployed) | Super Admins on dev: Arslan and Sufyan. Edge Function secrets: `TURNSTILE_SECRET_KEY`, `ALLOWED_ORIGINS` (Render URL, localhost:5173, 127.0.0.1:5173) |
+| Supabase dev | Project `shan-e-lahore-dev` (ref `gdjvulhrumxwjmnaywnn`, Mumbai, free plan): 13 migrations, 6 Edge Functions (4 for customers, `admin-users` and `edit-order` for staff) | Super Admins on dev: Arslan and Sufyan. Edge Function secrets: `TURNSTILE_SECRET_KEY`, `ALLOWED_ORIGINS` (Render URL, localhost:5173, 127.0.0.1:5173) |
 | Supabase production | Not created yet (Milestone 4) | |
 | Supabase organisation | "Shan-e-Lahore" (free plan), holds the dev project | Members (16 Oct): Arslan, Sufyan (joined); Hadi, Talha, Umair (invited). All five are Owners for now; recommended: Arslan and Sufyan Owners, the rest Developers (README "Joining the team"). MFA is off for every member; each should switch it on |
 | Cloudflare Turnstile | Widget "Shan-e-Lahore", site key `0x4AAAAAAFUjrlxajrhVCE3G`; hostnames `localhost` and `shan-e-lahore.onrender.com` | Arslan's Cloudflare account. The secret key is set in Supabase Auth (Attack Protection) and as the `TURNSTILE_SECRET_KEY` function secret |
@@ -122,7 +124,7 @@ Tick items as they land. Items come from `CLAUDE.md` section 15 and `docs/spec.m
 
 - Real: menu (106 dishes, from the printed menu of 2026-08-29), branch address, phone and map pin (31.523689, 74.344498), opening hours (05:00 to midnight daily).
 - Placeholder: delivery tiers (3/5/7 km at Rs 100/150/200), road factor 1.3. Minimum order is 0 (off, team decision).
-- Empty: payment accounts, WhatsApp number, riders, discount codes, banners, photos. While payment accounts are empty, the tracking page and the WhatsApp messages say the details come on the confirmation call. With no riders, orders can't be sent out for delivery on dev until someone adds riders in Settings (built; needs the push). The local seed has two placeholder riders.
+- Empty: payment accounts, WhatsApp number, riders, discount codes, banners, photos. While payment accounts are empty, the tracking page and the WhatsApp messages say the details come on the confirmation call. With no riders, orders can't be sent out for delivery on dev until someone adds riders in Settings > Riders. The local seed has two placeholder riders.
 
 ## Known gaps and risks
 
@@ -130,6 +132,6 @@ Tick items as they land. Items come from `CLAUDE.md` section 15 and `docs/spec.m
 - All Urdu so far was written by Claude (except dish names, which are the restaurant's own) and needs review, including the customer WhatsApp messages (`whatsapp.*` in `src/i18n/ur.json`).
 - New-order alerts work only while the Live orders page is open and on a device that is awake; a locked phone never rings (no web push). See README "Setting up the order station".
 - Realtime sends anonymous subscribers an empty "401" notice when an order changes (no order data). Accepted, see `docs/decisions.md`.
-- The Milestone 3 screens were tested only against the local database, as a local Super Admin and a local Order Staff account. Photo upload, the Excel download and the staff functions have not yet run on dev or under the live security headers (CSP).
+- The Milestone 3 screens were tested against the local database, as a local Super Admin and a local Order Staff account. On dev only the functions' login refusal and CORS were checked; photo upload, the Excel download and the staff screens still need a click-through on dev under the live security headers (CSP).
 - Upload menu photos from Chrome or Edge: Safari can't make WebP files, so its uploads are larger PNGs (they still display).
 - The staff screens are English only, and the dish pop-up used when editing an order follows the language last chosen on the customer site.
