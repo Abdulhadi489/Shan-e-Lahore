@@ -4,7 +4,7 @@ import { localized } from '../../i18n'
 import { formatAmount } from '../../lib/money'
 import { menuImageUrl } from '../../lib/images'
 import { MAX_QUANTITY, unitPrice } from '../../../supabase/functions/_shared/pricing'
-import { addToCart } from '../checkout/cart'
+import { addToCart, type CartLine } from '../checkout/cart'
 import { SidesRow } from './SidesRow'
 import type { MenuItem } from './useMenu'
 
@@ -16,7 +16,7 @@ function groupRule(group: AddonGroup) {
   return { key: 'item.chooseBetween', min: group.min_select, max: group.max_select } as const
 }
 
-function ItemChoices({ item, onDone }: { item: MenuItem; onDone: () => void }) {
+function ItemChoices({ item, onDone, onAdd }: { item: MenuItem; onDone: () => void; onAdd: (line: CartLine) => void }) {
   const { t, i18n } = useTranslation()
   const lng = i18n.language
   const [variantId, setVariantId] = useState(item.variants.find((v) => v.is_available)?.id ?? null)
@@ -39,7 +39,7 @@ function ItemChoices({ item, onDone }: { item: MenuItem; onDone: () => void }) {
   function submit(event: FormEvent) {
     event.preventDefault()
     if ('error' in result) return
-    addToCart({ itemId: item.id, variantId, addonOptionIds: addonIds, quantity })
+    onAdd({ itemId: item.id, variantId, addonOptionIds: addonIds, quantity })
     onDone()
   }
 
@@ -152,13 +152,22 @@ function ItemChoices({ item, onDone }: { item: MenuItem; onDone: () => void }) {
         {'error' in result ? t('item.add') : t('item.addWithPrice', { price: price(result.price * quantity) })}
       </button>
 
-      <SidesRow excludeItemId={item.id} />
+      {onAdd === addToCart && <SidesRow excludeItemId={item.id} />}
     </form>
   )
 }
 
 // Native <dialog>: the browser handles focus, Escape and the backdrop.
-export function ItemDialog({ item, onClose }: { item: MenuItem | null; onClose: () => void }) {
+// Customers add to their cart; staff editing an order on the call pass onAdd to take the choice instead.
+export function ItemDialog({
+  item,
+  onClose,
+  onAdd = addToCart,
+}: {
+  item: MenuItem | null
+  onClose: () => void
+  onAdd?: (line: CartLine) => void
+}) {
   const dialog = useRef<HTMLDialogElement>(null)
   useEffect(() => {
     if (item) dialog.current?.showModal()
@@ -170,7 +179,7 @@ export function ItemDialog({ item, onClose }: { item: MenuItem | null; onClose: 
       onClose={onClose}
       className="m-auto max-h-[90dvh] w-[calc(100%-2rem)] max-w-lg overflow-y-auto rounded-card bg-raised text-ink backdrop:bg-ink/60"
     >
-      {item && <ItemChoices key={item.id} item={item} onDone={() => dialog.current?.close()} />}
+      {item && <ItemChoices key={item.id} item={item} onAdd={onAdd} onDone={() => dialog.current?.close()} />}
     </dialog>
   )
 }

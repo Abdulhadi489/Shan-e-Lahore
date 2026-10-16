@@ -4,7 +4,7 @@
 
 -- Start from an empty menu and order history regardless of what seed.sql loaded.
 set local client_min_messages = warning;
-truncate public.branches cascade;
+truncate public.branches, public.customers cascade;
 
 create schema tests;
 grant usage on schema tests to anon, authenticated;

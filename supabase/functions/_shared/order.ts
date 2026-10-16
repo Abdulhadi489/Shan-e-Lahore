@@ -102,3 +102,27 @@ export function priceOrder(order: {
     problems,
   }
 }
+
+// The order_items rows create_order and replace_order_contents save: names and prices as they are now,
+// so later menu changes never alter an order.
+export const snapshotLines = (lines: PricedLine[]) =>
+  lines.map((line) => ({
+    item_id: line.itemId,
+    variant_id: line.variantId,
+    name_en: line.name_en,
+    name_ur: line.name_ur,
+    variant_name_en: line.variant?.name_en ?? null,
+    variant_name_ur: line.variant?.name_ur ?? null,
+    unit_price: line.unitPrice,
+    quantity: line.quantity,
+    line_total: line.lineTotal,
+    addons: line.addons.map((addon) => ({
+      addon_option_id: addon.id,
+      name_en: addon.name_en,
+      name_ur: addon.name_ur,
+      extra_price: addon.extra_price,
+    })),
+  }))
+
+// The database keeps six decimal places (about 10 cm).
+export const round6 = (value: number) => Math.round(value * 1e6) / 1e6

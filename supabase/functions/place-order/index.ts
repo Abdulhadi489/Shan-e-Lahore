@@ -3,13 +3,10 @@
 import { db } from '../_shared/db.ts'
 import { clientIp, fail, serve } from '../_shared/http.ts'
 import { loadBranch, loadDiscount, loadItems } from '../_shared/load.ts'
-import { priceOrder } from '../_shared/order.ts'
+import { priceOrder, round6, snapshotLines } from '../_shared/order.ts'
 import { rateLimited } from '../_shared/rate-limit.ts'
 import { placeOrderRequest } from '../_shared/schemas.ts'
 import { turnstilePassed } from '../_shared/turnstile.ts'
-
-// The database keeps six decimal places (about 10 cm).
-const round6 = (value: number) => Math.round(value * 1e6) / 1e6
 
 serve(async (body, req) => {
   const input = placeOrderRequest.safeParse(body)
@@ -55,23 +52,7 @@ serve(async (body, req) => {
       language: order.language,
       notes: order.notes,
     },
-    lines: priced.lines.map((line) => ({
-      item_id: line.itemId,
-      variant_id: line.variantId,
-      name_en: line.name_en,
-      name_ur: line.name_ur,
-      variant_name_en: line.variant?.name_en ?? null,
-      variant_name_ur: line.variant?.name_ur ?? null,
-      unit_price: line.unitPrice,
-      quantity: line.quantity,
-      line_total: line.lineTotal,
-      addons: line.addons.map((addon) => ({
-        addon_option_id: addon.id,
-        name_en: addon.name_en,
-        name_ur: addon.name_ur,
-        extra_price: addon.extra_price,
-      })),
-    })),
+    lines: snapshotLines(priced.lines),
   })
   if (error) {
     if (error.message.includes('NUMBER_BLOCKED')) return fail(403, 'NUMBER_BLOCKED')

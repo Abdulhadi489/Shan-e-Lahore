@@ -425,7 +425,10 @@
       },
       "ticket": "Kitchen ticket",
       "print": "Print",
-      "saveFailed": "Couldn't save. Check your connection. If someone else changed this order, the screen now shows the latest."
+      "saveFailed": "Couldn't save. Check your connection. If someone else changed this order, the screen now shows the latest.",
+      "edit": "Edit dishes or address",
+      "edited": "Order updated. New total {{total}}. Tell the customer.",
+      "discountRemoved": "The discount no longer applies to the new dishes, so it was removed."
     },
     "whatsapp": {
       "order": "Order {{number}}",
@@ -739,6 +742,32 @@
       "discountCodes": "Discount codes used",
       "uses": "Uses",
       "count": "Orders"
+    },
+    "editOrder": {
+      "heading": "Edit order {{number}}",
+      "help": "Change what the customer asks for on the call. The server re-prices everything, including delivery, when you save.",
+      "dishes": "Dishes",
+      "decrease": "One less {{name}}",
+      "increase": "One more {{name}}",
+      "remove": "Remove",
+      "removed": "No longer on the menu. Remove it to save.",
+      "addDish": "Add a dish",
+      "chooseDish": "Choose a dish",
+      "itemsSubtotal": "Dishes: {{amount}}",
+      "address": "Address",
+      "landmark": "Landmark",
+      "pin": "Map pin",
+      "save": "Save changes",
+      "cancel": "Back without saving",
+      "notEditable": "Only orders waiting for the confirmation call can be edited.",
+      "errors": {
+        "OUTSIDE_DELIVERY_AREA": "The new pin is outside the delivery area.",
+        "ITEM_UNAVAILABLE_OR_CHANGED": "A dish is sold out or its choices changed. Check the dishes and try again.",
+        "BELOW_MINIMUM": "The order is now below the minimum order.",
+        "ORDER_NOT_EDITABLE": "This order was confirmed or cancelled meanwhile, so it can't be edited.",
+        "NOT_ALLOWED": "You can't edit orders of this branch.",
+        "other": "Couldn't save the changes. Check your connection and try again."
+      }
     }
   }
 }

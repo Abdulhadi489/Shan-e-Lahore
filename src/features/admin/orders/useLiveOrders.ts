@@ -17,7 +17,7 @@ const liveOrdersQuery = (branchId: string) =>
       `id, order_number, tracking_token, status, cancel_reason, payment_method, payment_status, transaction_id,
        payment_verified_at, customer_name, customer_phone, address_text, landmark, lat, lng, distance_km, notes,
        language, subtotal, delivery_charge, discount_amount, total, rider_id, created_at,
-       order_items ( id, name_en, variant_name_en, quantity, line_total, order_item_addons ( id, name_en ) ),
+       order_items ( id, item_id, variant_id, name_en, variant_name_en, quantity, line_total, order_item_addons ( id, addon_option_id, name_en ) ),
        riders ( name, phone ),
        call_attempts ( count )`,
     )

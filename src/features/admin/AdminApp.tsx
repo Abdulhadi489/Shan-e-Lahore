@@ -20,6 +20,7 @@ import { AvailabilityPage } from './availability/AvailabilityPage'
 import { LiveOrdersPage } from './orders/LiveOrdersPage'
 import { OrderPage } from './orders/OrderPage'
 import { KitchenTicket } from './orders/KitchenTicket'
+import { OrderEditor } from './orders/OrderEditor'
 
 // undefined while the saved session is still being read from storage.
 function useSession() {
@@ -56,6 +57,7 @@ export function AdminApp() {
         <Route index element={<LiveOrdersPage />} />
         <Route path="orders/:id" element={<OrderPage />} />
         <Route path="orders/:id/ticket" element={<KitchenTicket />} />
+        <Route path="orders/:id/edit" element={<OrderEditor />} />
         <Route path="availability" element={<AvailabilityPage />} />
         <Route element={<SuperAdminOnly />}>
           <Route path="settings" element={<SettingsPage />} />

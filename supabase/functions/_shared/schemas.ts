@@ -50,3 +50,13 @@ export const placeOrderRequest = z.strictObject({
 })
 
 export const tokenRequest = z.strictObject({ token: z.string().regex(/^[A-Za-z0-9_-]{43,}$/) })
+
+// Staff change dishes or the address on the confirmation call; the server re-prices everything.
+export const editOrderRequest = z.strictObject({
+  orderId: z.uuid(),
+  lines: z.array(cartLine).min(1).max(50),
+  lat: z.number().min(-90).max(90),
+  lng: z.number().min(-180).max(180),
+  address: customerDetails.shape.address,
+  landmark: customerDetails.shape.landmark,
+})

@@ -1,7 +1,7 @@
 import { useState } from 'react'
-import { Link, useParams } from 'react-router'
+import { Link, useLocation, useParams } from 'react-router'
 import { useTranslation } from 'react-i18next'
-import { ArrowLeft, MapPin, MessageCircle, Phone, Printer } from 'lucide-react'
+import { ArrowLeft, MapPin, MessageCircle, Pencil, Phone, Printer } from 'lucide-react'
 import i18n from '../../../i18n'
 import { clockLabel, phoneLabel } from '../../../lib/format'
 import { formatAmount } from '../../../lib/money'
@@ -10,6 +10,7 @@ import { customerMessage, googleMapsLink, riderMessage, whatsappLink } from '../
 import { Constants, type Enums, type TablesUpdate } from '../../../types/database'
 import { useStaff } from '../StaffLayout'
 import { card, dangerButton, inputClass, primaryButton, secondaryButton, useDbMutation } from '../ui'
+import type { EditResult } from './OrderEditor'
 
 // wa.me and Google Maps open in a new tab so this page, and its new-order alarm, stays open.
 const newTab = { target: '_blank', rel: 'noopener noreferrer' }
@@ -17,6 +18,7 @@ const newTab = { target: '_blank', rel: 'noopener noreferrer' }
 export function OrderPage() {
   const { t } = useTranslation(undefined, { lng: 'en' })
   const { id } = useParams()
+  const edited = (useLocation().state as { edited?: EditResult } | null)?.edited
   const { branch, orders } = useStaff()
   const [transactionId, setTransactionId] = useState('')
   const [cancelReason, setCancelReason] = useState<Enums<'cancel_reason'> | ''>('')
@@ -61,6 +63,13 @@ export function OrderPage() {
         {o.cancel_reason && `: ${t(`admin.orders.reasons.${o.cancel_reason}`)}`}
         <span className="ms-2 font-normal text-ink-muted">{t('admin.orders.placedAt', { time: clockLabel('en', o.created_at) })}</span>
       </p>
+
+      {edited && (
+        <div role="status" className="mt-3 rounded-card bg-peach p-3 font-bold">
+          <p>{t('admin.orders.edited', { total: price(edited.total) })}</p>
+          {edited.discountRemoved && <p>{t('admin.orders.discountRemoved')}</p>}
+        </div>
+      )}
 
       <div className="mt-6 grid gap-4 lg:grid-cols-[1fr_24rem]">
         <div className="flex flex-col gap-4">
@@ -139,6 +148,10 @@ export function OrderPage() {
             <section className={`${card} flex flex-col gap-3`}>
               {o.status === 'pending_confirmation' && (
                 <>
+                  <Link to="edit" className={secondaryButton}>
+                    <Pencil aria-hidden className="size-5" />
+                    {t('admin.orders.edit')}
+                  </Link>
                   <p>{t('admin.orders.missedCallHelp', { count: missedCalls })}</p>
                   <button
                     type="button"
