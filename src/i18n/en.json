@@ -539,6 +539,83 @@
           "other": "Couldn't save. Check your connection and try again."
         }
       }
+    },
+    "menu": {
+      "heading": "Menu",
+      "sections": {
+        "dishes": "Dishes",
+        "addons": "Add-on groups",
+        "banners": "Home banners"
+      },
+      "nameEn": "Name (English)",
+      "nameUr": "Name (Urdu)",
+      "sortOrder": "Position",
+      "sortHelp": "Lower numbers come first.",
+      "active": "Shown on the menu",
+      "isSide": "Offer as a side with every dish",
+      "save": "Save",
+      "delete": "Delete",
+      "deleteConfirm": "Delete {{name}}? This can't be undone.",
+      "addCategory": "Add category",
+      "addDish": "Add dish",
+      "noDishes": "No dishes yet.",
+      "hiddenCategory": "Hidden category",
+      "flags": {
+        "hidden": "Hidden",
+        "deal": "Deal",
+        "featured": "On home page",
+        "soldOut": "Sold out",
+        "noPhoto": "No photo"
+      },
+      "item": {
+        "newHeading": "New dish",
+        "back": "Menu",
+        "category": "Category",
+        "descriptionEn": "Description (English)",
+        "descriptionUr": "Description (Urdu)",
+        "basePrice": "Price (Rs)",
+        "basePriceHelp": "If the dish has sizes, customers pay the size's price instead.",
+        "isDeal": "This is a deal (list what it contains in the description)",
+        "isFeatured": "Show on the home page",
+        "isHidden": "Hidden from customers",
+        "isAvailable": "Available (untick when sold out)",
+        "created": "Dish added. You can now add sizes, add-ons and a photo.",
+        "photo": "Photo",
+        "photoHelp": "A clear photo of the dish. It is shrunk in your browser before uploading, so any phone photo works.",
+        "photoSaveFirst": "Save the dish first, then add its photo.",
+        "uploadPhoto": "Upload photo",
+        "uploading": "Uploading…",
+        "removePhoto": "Remove photo",
+        "photoFailed": "Couldn't upload the photo. Use a JPEG, PNG or WebP image and try again.",
+        "photoAlt": "Photo of {{name}}",
+        "variants": "Sizes",
+        "variantsHelp": "For example Half and Full. Leave empty if the dish has one size.",
+        "price": "Price (Rs)",
+        "available": "Available",
+        "addVariant": "Add size",
+        "addonGroups": "Add-on groups",
+        "addonGroupsHelp": "Choices the customer makes for this dish. Create groups under Menu > Add-on groups.",
+        "noAddonGroups": "No add-on groups yet."
+      },
+      "addons": {
+        "help": "A group is a set of choices, such as \"Choose bread\" or \"Spice level\", that you attach to dishes.",
+        "min": "Customer must pick at least",
+        "max": "Customer may pick at most",
+        "minHelp": "0 makes the group optional.",
+        "options": "Choices",
+        "extraPrice": "Extra price (Rs)",
+        "addOption": "Add choice",
+        "addGroup": "Add group",
+        "none": "No add-on groups yet."
+      },
+      "banners": {
+        "help": "Wide pictures shown at the top of the home page. Upload a landscape image; it is resized in your browser.",
+        "titleEn": "Caption (English)",
+        "titleUr": "Caption (Urdu)",
+        "image": "Image",
+        "add": "Upload banner",
+        "none": "No banners yet. The home page shows the three arches until you add one."
+      }
     }
   }
 }

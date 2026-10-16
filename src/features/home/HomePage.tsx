@@ -1,9 +1,12 @@
 import { lazy, Suspense, useState } from 'react'
 import { Link } from 'react-router'
+import { useQuery } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
 import { ArrowRight, Bike, MapPin, PhoneCall, ShoppingBag } from 'lucide-react'
 import { localized } from '../../i18n'
 import { formatAmount } from '../../lib/money'
+import { menuImageUrl } from '../../lib/images'
+import { supabase } from '../../lib/supabase'
 import { dayLabel, phoneLabel, timeLabel } from '../../lib/format'
 import { OpeningHoursList } from '../../app/OpeningHoursList'
 import { karachiWeekMinute, openingStatus } from '../../../supabase/functions/_shared/opening-hours'
@@ -19,6 +22,23 @@ import archesLarge from '../../assets/menu-arches-1600.webp'
 // The map library is large, so the delivery-area map loads only when someone asks for it.
 const DeliveryAreaMap = lazy(() => import('../checkout/LocationPicker').then((module) => ({ default: module.DeliveryAreaMap })))
 
+// Banners the Super Admin uploads (Menu > Home banners) replace the arches strip.
+// shortcut: one branch, so nothing filters by branch_id; filter here when the site gets a branch picker.
+function useHomeBanners() {
+  return useQuery({
+    queryKey: ['home-banners'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('banners')
+        .select('id, image_path, title_en, title_ur')
+        .eq('is_active', true)
+        .order('sort_order')
+      if (error) throw error
+      return data
+    },
+  })
+}
+
 const steps = [
   { icon: ShoppingBag, title: 'home.stepOrder', body: 'home.stepOrderBody' },
   { icon: PhoneCall, title: 'home.stepCall', body: 'home.stepCallBody' },
@@ -32,6 +52,7 @@ export function HomePage() {
   const menu = useMenu()
   const [selected, setSelected] = useState<MenuItem | null>(null)
   const [showMap, setShowMap] = useState(false)
+  const banners = useHomeBanners().data ?? []
 
   const featured = menu.data?.flatMap((c) => c.items).filter((item) => item.is_featured) ?? []
   const deals = featured.filter((item) => item.is_deal)
@@ -48,16 +69,38 @@ export function HomePage() {
     <>
       <title>{t('brand')}</title>
 
-      <img
-        src={archesSmall}
-        srcSet={`${archesSmall} 800w, ${archesLarge} 1600w`}
-        sizes="(min-width: 1024px) 992px, 100vw"
-        width={1600}
-        height={269}
-        fetchPriority="high"
-        alt={t('home.archesAlt')}
-        className="-mx-4 -mt-6 block w-[calc(100%+2rem)] max-w-none sm:mx-0 sm:mt-0 sm:w-full sm:rounded-card"
-      />
+      {banners.length > 0 ? (
+        <ul className="-mx-4 -mt-6 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 sm:mx-0 sm:mt-0 sm:px-0">
+          {banners.map((banner, index) => {
+            const title = localized(lng, banner.title_en, banner.title_ur)
+            return (
+              <li key={banner.id} className={`shrink-0 snap-start ${banners.length > 1 ? 'w-[85%] sm:w-[70%]' : 'w-full'}`}>
+                <img
+                  src={menuImageUrl(banner.image_path, 'full')}
+                  alt={title}
+                  width={1600}
+                  height={700}
+                  fetchPriority={index === 0 ? 'high' : 'auto'}
+                  loading={index === 0 ? 'eager' : 'lazy'}
+                  className="aspect-[16/7] w-full rounded-card bg-peach object-cover"
+                />
+                {title && <p className="mt-1 font-bold">{title}</p>}
+              </li>
+            )
+          })}
+        </ul>
+      ) : (
+        <img
+          src={archesSmall}
+          srcSet={`${archesSmall} 800w, ${archesLarge} 1600w`}
+          sizes="(min-width: 1024px) 992px, 100vw"
+          width={1600}
+          height={269}
+          fetchPriority="high"
+          alt={t('home.archesAlt')}
+          className="-mx-4 -mt-6 block w-[calc(100%+2rem)] max-w-none sm:mx-0 sm:mt-0 sm:w-full sm:rounded-card"
+        />
+      )}
 
       {/* Space beside the text stays free for a dish photo once the team's photos arrive. */}
       <section className="mt-8 max-w-2xl">
