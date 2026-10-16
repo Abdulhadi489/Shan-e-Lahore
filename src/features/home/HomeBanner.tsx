@@ -25,7 +25,8 @@ function useHomeBanners() {
   })
 }
 
-// Rendered by CustomerLayout above the page column, so the arches span the whole window at any size.
+// Top of the home page, inside the page column so it always lines up with the content below it;
+// on phones it runs edge to edge.
 export function HomeBanner() {
   const { t, i18n } = useTranslation()
   const lng = i18n.language
@@ -36,19 +37,18 @@ export function HomeBanner() {
       <img
         src={archesSmall}
         srcSet={`${archesSmall} 800w, ${archesLarge} 1600w`}
-        sizes="100vw"
+        sizes="(min-width: 1280px) 1248px, 100vw"
         width={1600}
         height={269}
         fetchPriority="high"
         alt={t('home.archesAlt')}
-        className="block w-full"
+        className="-mx-4 -mt-6 block w-[calc(100%+2rem)] max-w-none sm:mx-0 sm:mt-0 sm:w-full sm:rounded-card"
       />
     )
   }
 
-  // Uploaded banners are 16:7 photos with captions, so they stay in the page column: full width they'd be taller than the screen.
   return (
-    <ul className="mx-auto flex w-full max-w-7xl snap-x snap-mandatory gap-3 overflow-x-auto px-4 pt-6">
+    <ul className="-mx-4 -mt-6 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 sm:mx-0 sm:mt-0 sm:px-0">
       {banners.map((banner, index) => {
         const title = localized(lng, banner.title_en, banner.title_ur)
         return (

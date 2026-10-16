@@ -10,6 +10,7 @@ import { karachiWeekMinute, openingStatus } from '../../../supabase/functions/_s
 import { useBranch } from '../../app/useBranch'
 import { ItemDialog } from '../menu/ItemDialog'
 import { ItemCard } from '../menu/MenuPage'
+import { HomeBanner } from './HomeBanner'
 import { useMenu, type MenuItem } from '../menu/useMenu'
 
 // The map library is large, so the delivery-area map loads only when someone asks for it.
@@ -44,8 +45,10 @@ export function HomePage() {
     <>
       <title>{t('brand')}</title>
 
+      <HomeBanner />
+
       {/* Space beside the text stays free for a dish photo once the team's photos arrive. */}
-      <section className="max-w-2xl">
+      <section className="mt-8 max-w-2xl">
         {status && (
           <p className={`flex items-center gap-2 font-bold ${status.open ? 'text-success' : 'text-danger'}`}>
             <span aria-hidden className={`size-2.5 rounded-full ${status.open ? 'bg-success' : 'bg-danger'}`} />

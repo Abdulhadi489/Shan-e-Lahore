@@ -1,7 +1,6 @@
-import { Link, NavLink, Outlet, useLocation } from 'react-router'
+import { Link, NavLink, Outlet } from 'react-router'
 import { useTranslation } from 'react-i18next'
 import { useCart } from '../features/checkout/cart'
-import { HomeBanner } from '../features/home/HomeBanner'
 
 export const infoPages = [
   { path: 'about', title: 'pages.about' },
@@ -32,7 +31,6 @@ function LanguageSwitch() {
 export function CustomerLayout() {
   const { t } = useTranslation()
   const cartCount = useCart().reduce((sum, line) => sum + line.quantity, 0)
-  const isHome = useLocation().pathname === '/'
   return (
     <div className="flex min-h-dvh flex-col">
       <header className="border-b border-line bg-raised">
@@ -55,7 +53,6 @@ export function CustomerLayout() {
         </div>
       </header>
 
-      {isHome && <HomeBanner />}
       <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-6">
         <Outlet />
       </main>
