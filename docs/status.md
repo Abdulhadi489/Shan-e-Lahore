@@ -48,6 +48,7 @@ Tick items as they land. Items come from `CLAUDE.md` section 15 and `docs/spec.m
 - [x] Dish photos: display on cards (small 320 px file) and in the dish pop-up (large file); empty space when a dish has none. Tested locally with a test image
 - [ ] First batch of real dish photos uploaded to dev (waiting on the team's photos)
 - [x] Static pages: about, contact (address, phone, hours and map from the database), terms, privacy, refund policy. **Draft text** written from facts we know (no invented promises such as refund deadlines); the restaurant must approve it
+- [x] Responsive on big screens (17 Oct): the arches banner spans the whole window, the page column grows to 1280 px, menus show four columns on wide screens. Checked at 375, 768, 1280 and 1920 px in English and Urdu, no sideways scrolling
 - [x] Home-page banners from the `banners` table, uploaded by the Super Admin (Menu > Home banners); they replace the three-arch strip, which shows while there are none
 
 ### Milestone 3: Admin and order handling
