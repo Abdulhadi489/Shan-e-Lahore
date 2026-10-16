@@ -13,6 +13,7 @@ import { ItemEditor } from './menu/ItemEditor'
 import { AddonGroupsPage } from './menu/AddonGroupsPage'
 import { BannersPage } from './menu/BannersPage'
 import { DeliveryPage } from './delivery/DeliveryPage'
+import { CustomerPage, CustomersPage } from './customers/CustomersPage'
 import { AvailabilityPage } from './availability/AvailabilityPage'
 import { LiveOrdersPage } from './orders/LiveOrdersPage'
 import { OrderPage } from './orders/OrderPage'
@@ -61,6 +62,8 @@ export function AdminApp() {
           <Route path="menu/addons" element={<AddonGroupsPage />} />
           <Route path="menu/banners" element={<BannersPage />} />
           <Route path="delivery" element={<DeliveryPage />} />
+          <Route path="customers" element={<CustomersPage />} />
+          <Route path="customers/:id" element={<CustomerPage />} />
         </Route>
       </Route>
       <Route path="*" element={<Navigate to="/admin" replace />} />

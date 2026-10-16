@@ -461,6 +461,12 @@ isOneToOne: false
       foreignKeyName: "orders_customer_id_fkey"
       columns: ["customer_id"]
 isOneToOne: false
+      referencedRelation: "customer_summaries"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "orders_customer_id_fkey"
+      columns: ["customer_id"]
+isOneToOne: false
       referencedRelation: "customers"
       referencedColumns: ["id"]
     },{
@@ -540,7 +546,15 @@ isOneToOne: false
                 }
           }
           Views: {
-            [_ in never]: never
+            "customer_summaries": {
+                  Row: {
+                    "cancelled_count": number | null,"delivered_spend": number | null,"id": string | null,"is_blocked": boolean | null,"last_order_at": string | null,"name": string | null,"order_count": number | null,"phone": string | null
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    
+                  ]
+                }
           }
           Functions: {
             "create_order":
@@ -548,6 +562,9 @@ isOneToOne: false
                            },
 "hit_rate_limit":
 { Args: { "limit_key": string,"max_count": number,"window_seconds": number }; Returns: boolean
+                           },
+"set_staff_access":
+{ Args: { "active": boolean,"actor_id": string,"new_branch_id": string,"new_role": Database["public"]['Enums']["user_role"],"target_user_id": string }; Returns: undefined
                            }
           }
           Enums: {

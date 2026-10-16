@@ -655,6 +655,27 @@
         "added": "added",
         "deleted": "deleted"
       }
+    },
+    "customers": {
+      "heading": "Customers",
+      "help": "One entry per phone number. Guest orders from the same number are counted together.",
+      "search": "Search by name or phone",
+      "searchButton": "Search",
+      "empty": "No customers found.",
+      "orders_one": "{{count}} order",
+      "orders_other": "{{count}} orders",
+      "cancelled": "{{count}} cancelled",
+      "spent": "{{amount}} delivered",
+      "lastOrder": "last order {{date}}",
+      "blocked": "Blocked",
+      "back": "Customers",
+      "block": "Block this number",
+      "unblock": "Unblock this number",
+      "blockConfirm": "Block {{phone}}? This number won't be able to place orders.",
+      "blockedHelp": "This number can't place orders.",
+      "history": "Order history",
+      "noOrders": "No orders.",
+      "showing": "Showing the 100 most recent customers. Search to find others."
     }
   }
 }
