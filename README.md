@@ -69,7 +69,7 @@ Local Supabase does not check the bot-check token, so the test key is enough the
 
 Only public values go in the frontend. The Supabase secret key and the Turnstile secret never go in any file in this repository: they live in Supabase's dashboard (Edge Function secrets, Authentication > Attack Protection).
 
-To log in locally, create accounts in the local dashboard (http://127.0.0.1:54323) with the same steps as "Creating a Super Admin" below. Don't use the emails the database tests create (`admin@`, `staff.one@`, `staff.two@`, `left.admin@`, `left.staff@` and `no.role@example.test`), or `supabase test db` fails. The seed adds two placeholder riders so orders can be sent out for delivery.
+To log in locally, create accounts in the local dashboard (http://127.0.0.1:54323) with the same steps as "Creating a Super Admin" below. `supabase functions serve` needs the dev server's address in `ALLOWED_ORIGINS` in `supabase/functions/.env`. Don't use the emails the database tests create (`admin@`, `staff.one@`, `staff.two@`, `left.admin@`, `left.staff@` and `no.role@example.test`), or `supabase test db` fails. The seed adds two placeholder riders so orders can be sent out for delivery.
 
 ## Environments
 
@@ -82,9 +82,9 @@ To log in locally, create accounts in the local dashboard (http://127.0.0.1:5432
 
 Schema changes always go local first, then `supabase db push` to dev, then to production. Data is never copied from production to the other two.
 
-## Edge Functions (orders)
+## Edge Functions
 
-Customers never write to the database directly. Four Edge Functions in `supabase/functions/` handle orders; the rules they share (pricing, delivery charge, discounts, opening hours, input schemas) live in `supabase/functions/_shared/` and are imported by the website too, so the price shown is the price charged.
+Customers never write to the database directly. Four Edge Functions in `supabase/functions/` handle orders, and two do the staff jobs that need the secret key; the rules they share (pricing, delivery charge, discounts, opening hours, input schemas) live in `supabase/functions/_shared/` and are imported by the website too, so the price shown is the price charged.
 
 | Function | Does |
 | --- | --- |
@@ -92,6 +92,10 @@ Customers never write to the database directly. Four Edge Functions in `supabase
 | `place-order` | Validates, rate-limits (10 per IP per hour, 3 per phone per 10 minutes), checks Turnstile, re-prices from the database and creates the order with `public.create_order()` |
 | `get-order-by-token` | The tracking page's data, masked (first name, masked phone, no address) |
 | `cancel-order-by-token` | Cancels only while the order waits for the confirmation call |
+| `edit-order` | Staff only: changes an order's dishes or address on the confirmation call, re-prices it like `place-order` and saves it with `public.replace_order_contents()` |
+| `admin-users` | Super Admins only: creates staff logins, changes a role or active state (`public.set_staff_access()`, which keeps two active Super Admins) and resets passwords |
+
+The staff functions check the caller's login themselves, and the two database functions they call can't be reached from the browser; both act as the staff member, so the audit log records who made the change.
 
 Run them locally (needs `supabase start` first):
 
@@ -116,7 +120,9 @@ How a customer order flows through the code:
 6. Staff work the order in `src/features/admin/orders/`: `useLiveOrders.ts` loads open orders, today's orders and refunds due in one query and refetches when Realtime reports a change (and every 30 seconds as a backup); `useNewOrderAlarm.ts` rings, shows a notification and keeps the screen awake; `LiveOrdersPage.tsx` is the list, `OrderPage.tsx` the call screen, `KitchenTicket.tsx` the print view. The prepared WhatsApp messages come from `src/lib/whatsapp.ts`.
 7. Status, payment and rider changes are direct updates to the `orders` table; the rules live in the database trigger `private.enforce_order_rules` (migration `20261012105428`), the third missed call in `call_attempts` cancels the order, and every status change is logged in `order_status_log` with who made it.
 
-Other pieces: `src/app/` (routes, customer layout, `useBranch.ts` for hours and delivery tiers), `src/features/home/HomePage.tsx`, `src/features/admin/` (login with Turnstile, route guard, `StaffLayout.tsx` with the alarm banner), `src/i18n/` (all text; Urdu in `ur.json`), `src/index.css` (design tokens).
+Staff screens are in `src/features/admin/`, one folder per section: `orders/` (above, plus `OrderEditor.tsx`), `availability/` (sold out, pause delivery), `menu/` (categories, dishes, add-ons, banners; `photos.ts` compresses and uploads), `delivery/`, `discounts/`, `customers/` (reads the `customer_summaries` view), `reports/` (`report.ts` does the sums and the CSV, tested) and `settings/`. `StaffLayout.tsx` holds the menu bar, the alarm banner and the Super Admin gate; `ui.tsx` the shared styles, form helpers and save helper. Staff screens write straight to the tables; RLS, column grants, triggers and CHECK constraints decide what each role may change.
+
+Other pieces: `src/app/` (routes, customer layout, `useBranch.ts` for hours and delivery tiers), `src/features/home/HomePage.tsx`, `src/features/admin/LoginPage.tsx` (login with Turnstile), `src/i18n/` (all text; Urdu in `ur.json`), `src/index.css` (design tokens).
 
 ## Checks and deploys
 
@@ -146,14 +152,14 @@ Public signup is off, so accounts are created by hand. Keep **at least two** Sup
 
 Until step 3, the new account can log in but sees nothing: every new account starts with the no-access role.
 
-Order Staff accounts will be created by a Super Admin from the admin panel (Settings > Staff, built in Milestone 3). Until then, use the same steps with `role = 'order_staff', branch_id = '<branch id>'`.
+Once two Super Admins exist, every other account is created in the admin panel: Settings > Staff accounts.
 
 ## Last-resort recovery
 
 If no Super Admin can log in (both passwords lost), a developer with access to the Supabase dashboard:
 
 1. Creates a fresh Super Admin with the three steps above.
-2. Deactivates the locked-out account, from Settings > Staff once it exists, or in the SQL Editor:
+2. Deactivates the locked-out account, from Settings > Staff accounts, or in the SQL Editor:
    ```sql
    update public.profiles set is_active = false where user_id = '<locked-out User UID>';
    ```

@@ -87,7 +87,7 @@ Planned layout; folders marked *(Milestone N)* don't exist yet. The detailed map
 │  ├─ assets/                # images bundled with the site (menu arches)
 │  ├─ features/
 │  │  ├─ home/  menu/  checkout/  tracking/
-│  │  └─ admin/              # login, route guard, Live Orders (orders/); menu, delivery, discounts, customers, reports, settings (Milestone 3)
+│  │  └─ admin/              # login, layout and one folder per section: orders, availability, menu, delivery, discounts, customers, reports, settings
 │  ├─ components/            # shared UI built on the design tokens (Turnstile)
 │  ├─ lib/                   # supabase client, whatsapp.ts, money.ts
 │  ├─ i18n/                  # en.json, ur.json, typed keys
@@ -100,8 +100,8 @@ Planned layout; folders marked *(Milestone N)* don't exist yet. The detailed map
    │  ├─ _shared/            # pure, tested rules also imported by the website: pricing, delivery, discount, opening-hours,
    │  │                      # phone, schemas, order; plus server-only http, db, load, rate-limit, turnstile
    │  ├─ quote-order/  place-order/  get-order-by-token/  cancel-order-by-token/
-   │  ├─ edit-order/         # staff change items or address on the call; server re-prices (Milestone 3)
-   │  └─ admin-users/        # create staff, deactivate staff, reset staff password, super_admin only (Milestone 3)
+   │  ├─ edit-order/         # staff change items or address on the call; server re-prices
+   │  └─ admin-users/        # create staff, change role or active state, reset staff password; super_admin only
    └─ seed.sql               # dev data: the real printed menu plus placeholders; never real customer data
 ```
 

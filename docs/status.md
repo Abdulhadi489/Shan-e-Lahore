@@ -8,13 +8,13 @@ New to the project? Read in this order: this file, `CLAUDE.md` (rules, stack, se
 
 Live (dev data): https://shan-e-lahore.onrender.com, backed by the hosted dev Supabase project `shan-e-lahore-dev`.
 
-## Summary (16 October)
+## Summary (17 October, early morning)
 
 | Milestone | State |
 | --- | --- |
 | 1. Foundation | Done |
-| 2. Customer ordering | Core done and live, static pages drafted. Left: real dish photos (display code done; team is taking them), admin-managed home banners (with Milestone 3), restaurant approval of the page texts |
-| 3. Admin and order handling | Live Orders live on the Render site (14 Oct); tested locally, not yet on dev with a real staff login. Next: staff switches, settings, menu management. Reports, discount codes and edit-order may slip to the week after launch (team decision) |
+| 2. Customer ordering | Done and live, static pages drafted. Left: real dish photos (upload screen built; team is taking them), restaurant approval of the page texts |
+| 3. Admin and order handling | **Built and tested locally (17 Oct), not pushed yet.** Live Orders is live since 14 Oct. Everything else (availability, settings, staff accounts, menu, photos, banners, delivery, customers, discount codes, reports, editing orders) waits on a push plus 4 migrations and 2 new Edge Functions on the dev project, each with the team's OK |
 | 4. Hardening and launch | Not started |
 
 ## Milestone checklists
@@ -48,7 +48,7 @@ Tick items as they land. Items come from `CLAUDE.md` section 15 and `docs/spec.m
 - [x] Dish photos: display on cards (small 320 px file) and in the dish pop-up (large file); empty space when a dish has none. Tested locally with a test image
 - [ ] First batch of real dish photos uploaded to dev (waiting on the team's photos)
 - [x] Static pages: about, contact (address, phone, hours and map from the database), terms, privacy, refund policy. **Draft text** written from facts we know (no invented promises such as refund deadlines); the restaurant must approve it
-- [ ] Home-page banners from the `banners` table (spec: managed by the Super Admin). The home page shows the fixed three-arch strip for now; build the display together with banner upload in Milestone 3
+- [x] Home-page banners from the `banners` table, uploaded by the Super Admin (Menu > Home banners); they replace the three-arch strip, which shows while there are none
 
 ### Milestone 3: Admin and order handling
 
@@ -58,19 +58,20 @@ Tick items as they land. Items come from `CLAUDE.md` section 15 and `docs/spec.m
 - [x] WhatsApp message builders in `src/lib/whatsapp.ts` (English and Urdu by the order's language): order received with payment instructions, confirmed, out for delivery with rider, cancelled with refund note, and the rider message with address and Google Maps link. Unit tested
 - [x] Kitchen ticket print view (80 mm `@page`, browser print dialog; prints to any printer or PDF). Not yet printed on paper
 - [x] Refund-due list (cancelled paid orders; staff mark refunded)
-- [ ] `edit-order` Edge Function: staff change items or address during the confirmation call; the server re-prices. **May come after launch** (team, 14 Oct): until then staff cancel and the customer orders again
-- [ ] Staff-only controls: sold-out switches for items, variants and add-on options; delivery on/off switch
-- [ ] Menu management (Super Admin): categories (including the "sides" switch), items, variants, add-on groups, deals, photo upload compressed in the browser to WebP as two files (`<name>.webp` up to 1200 px and `<name>-card.webp` at 320 px, see `docs/decisions.md`), banners, ordering, sold-out and hide switches, English and Urdu side by side
-- [ ] Delivery settings: branch pin on a map, km tiers, road factor, minimum order (currently 0, off), free-delivery threshold, delivery switch, change log
-- [ ] Discount codes. **May come after launch** (team, 14 Oct)
-- [ ] Customers: list with order count, spend and last order; order history; block switch
-- [ ] **May come after launch** (team, 14 Oct). Reports (Super Admin only): sales by period, status and cancel reasons, payment method, top items, distance tier, discount usage; CSV export (UTF-8 with BOM)
-- [ ] Settings: restaurant info, opening hours, payment accounts, WhatsApp number, riders; staff accounts through an `admin-users` Edge Function (create, deactivate, reset password)
+- [x] `edit-order` Edge Function: staff change dishes or the address during the confirmation call (only while it waits for the call); the server re-prices and `public.replace_order_contents()` saves and audits it
+- [x] Availability screen (Order Staff and Super Admin): sold-out switches for dishes, sizes and add-on choices; pause/resume delivery
+- [x] Menu management (Super Admin): categories (including the "sides" switch), items, variants, add-on groups, deals, photo upload compressed in the browser to WebP as two files (`<name>.webp` up to 1200 px and `<name>-card.webp` at 320 px, see `docs/decisions.md`), banners, ordering, sold-out and hide switches, English and Urdu side by side
+- [x] Delivery settings: branch pin on a map (moving it is now audited), km tiers, road factor, minimum order (currently 0, off), free-delivery threshold, change log; the delivery switch is on Availability
+- [x] Discount codes: add, edit, switch off, delete unused; usage count
+- [x] Customers: list with order count, cancellations, delivered spend and last order (`customer_summaries` view); search; order history; block switch
+- [x] Reports (Super Admin only): sales by period, status and cancel reasons, payment method, top items, distance tier, discount usage; CSV export (UTF-8 with BOM)
+- [x] Settings: restaurant info, opening hours, payment accounts, WhatsApp number, riders; staff accounts through the `admin-users` Edge Function (create, change role or active state, reset password; two active Super Admins always kept)
+- [ ] Push and deploy to dev (needs the team's OK): `supabase db push` for migrations `20261016193031_staff_access`, `20261016194545_audit_branches`, `20261016194933_customer_summaries`, `20261016195618_edit_order`; `supabase functions deploy admin-users edit-order place-order` (place-order only moved shared code); then a click-through on dev with real staff logins
 
 ### Milestone 4: Hardening and launch
 
 - [ ] End-to-end test of every path: COD; each transfer method; unpaid transfer; three missed calls; customer cancel; out of radius; closed hours including after midnight; sold-out item; invalid discount; rate limit; blocked number
-- [ ] Full RLS and Security Advisor pass on production; CSP check on the live domain
+- [ ] Full RLS and Security Advisor pass on production; CSP check on the live domain, including photo upload and the reports download
 - [ ] Mobile, RTL and accessibility review (keyboard-only walkthrough, screen reader spot checks)
 - [ ] Order station test on the restaurant's own laptop: alarm sound, notification, sleep settings, Chrome Memory Saver, WhatsApp Desktop on the restaurant number (README "Setting up the order station"); one kitchen ticket printed
 - [ ] Lighthouse and speed: the Supabase client library is the biggest download on every page (about 115 KB compressed)
@@ -88,9 +89,8 @@ Tick items as they land. Items come from `CLAUDE.md` section 15 and `docs/spec.m
 | --- | --- |
 | 13 Oct | Done ahead of plan: checkout back end and front end, tracking, sides |
 | 14 Oct | Live Orders (done, pushed) |
-| 15-16 Oct | Staff switches (sold out, pause delivery); Settings (riders, payment accounts, WhatsApp number, hours, staff accounts); first dish photos |
-| 17-18 Oct | Menu management, photo upload, home banners |
-| 19 Oct | Delivery settings; Customers list with block switch; edit-order, discount codes and reports if time allows |
+| 16-17 Oct | Rest of Milestone 3 built and tested locally: availability, settings and staff accounts, menu with photos and banners, delivery, customers, discount codes, reports, editing orders |
+| 17-19 Oct | Push and deploy to dev, team tests every screen with real logins; restaurant's real content goes in (menu, photos, prices, accounts, riders, staff) |
 | 20-21 Oct | Milestone 4 |
 | 22 Oct | Real content in production, Urdu fixes, domain |
 | 23 Oct | Launch |
@@ -112,7 +112,7 @@ Tick items as they land. Items come from `CLAUDE.md` section 15 and `docs/spec.m
 | --- | --- | --- |
 | GitHub | Private repo `Abdulhadi489/Shan-e-Lahore`, default branch `main` | Hadi owns it; Arslan has push access. CI minutes come from Hadi's free account (2,000 a month) |
 | Render | Blueprint `shan-e-lahore`, static site https://shan-e-lahore.onrender.com, deploys `main` after CI passes | Arslan's Render workspace; Hadi installed Render's GitHub app on his account for this repo only |
-| Supabase dev | Project `shan-e-lahore-dev` (ref `gdjvulhrumxwjmnaywnn`, Mumbai, free plan): 9 migrations, 4 Edge Functions | Super Admins on dev: Arslan and Sufyan. Edge Function secrets: `TURNSTILE_SECRET_KEY`, `ALLOWED_ORIGINS` (Render URL, localhost:5173, 127.0.0.1:5173) |
+| Supabase dev | Project `shan-e-lahore-dev` (ref `gdjvulhrumxwjmnaywnn`, Mumbai, free plan): 9 migrations, 4 Edge Functions (4 newer migrations and 2 functions are in git, not yet deployed) | Super Admins on dev: Arslan and Sufyan. Edge Function secrets: `TURNSTILE_SECRET_KEY`, `ALLOWED_ORIGINS` (Render URL, localhost:5173, 127.0.0.1:5173) |
 | Supabase production | Not created yet (Milestone 4) | |
 | Supabase organisation | "Shan-e-Lahore" (free plan), holds the dev project | Members (16 Oct): Arslan, Sufyan (joined); Hadi, Talha, Umair (invited). All five are Owners for now; recommended: Arslan and Sufyan Owners, the rest Developers (README "Joining the team"). MFA is off for every member; each should switch it on |
 | Cloudflare Turnstile | Widget "Shan-e-Lahore", site key `0x4AAAAAAFUjrlxajrhVCE3G`; hostnames `localhost` and `shan-e-lahore.onrender.com` | Arslan's Cloudflare account. The secret key is set in Supabase Auth (Attack Protection) and as the `TURNSTILE_SECRET_KEY` function secret |
@@ -122,7 +122,7 @@ Tick items as they land. Items come from `CLAUDE.md` section 15 and `docs/spec.m
 
 - Real: menu (106 dishes, from the printed menu of 2026-08-29), branch address, phone and map pin (31.523689, 74.344498), opening hours (05:00 to midnight daily).
 - Placeholder: delivery tiers (3/5/7 km at Rs 100/150/200), road factor 1.3. Minimum order is 0 (off, team decision).
-- Empty: payment accounts, WhatsApp number, riders, discount codes, banners, photos. While payment accounts are empty, the tracking page and the WhatsApp messages say the details come on the confirmation call. With no riders, orders can't be sent out for delivery on dev until the Riders screen lands (15-16 Oct; team chose to wait rather than add riders by SQL). The local seed has two placeholder riders.
+- Empty: payment accounts, WhatsApp number, riders, discount codes, banners, photos. While payment accounts are empty, the tracking page and the WhatsApp messages say the details come on the confirmation call. With no riders, orders can't be sent out for delivery on dev until someone adds riders in Settings (built; needs the push). The local seed has two placeholder riders.
 
 ## Known gaps and risks
 
@@ -130,3 +130,6 @@ Tick items as they land. Items come from `CLAUDE.md` section 15 and `docs/spec.m
 - All Urdu so far was written by Claude (except dish names, which are the restaurant's own) and needs review, including the customer WhatsApp messages (`whatsapp.*` in `src/i18n/ur.json`).
 - New-order alerts work only while the Live orders page is open and on a device that is awake; a locked phone never rings (no web push). See README "Setting up the order station".
 - Realtime sends anonymous subscribers an empty "401" notice when an order changes (no order data). Accepted, see `docs/decisions.md`.
+- The Milestone 3 screens were tested only against the local database, as a local Super Admin and a local Order Staff account. Photo upload, the Excel download and the staff functions have not yet run on dev or under the live security headers (CSP).
+- Upload menu photos from Chrome or Edge: Safari can't make WebP files, so its uploads are larger PNGs (they still display).
+- The staff screens are English only, and the dish pop-up used when editing an order follows the language last chosen on the customer site.
