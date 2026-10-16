@@ -2,7 +2,7 @@ import type { ReactNode } from 'react'
 import type { ParseKeys } from 'i18next'
 import { useTranslation } from 'react-i18next'
 
-// Title-only page; each one is replaced by its real feature page in Milestone 2.
+// A heading with optional content; used for "page not found".
 export function EmptyPage({ title, children }: { title: ParseKeys; children?: ReactNode }) {
   const { t } = useTranslation()
   const heading = t(title)

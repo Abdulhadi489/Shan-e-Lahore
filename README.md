@@ -2,7 +2,7 @@
 
 Delivery-only ordering website for Shan-e-Lahore, Lahore. Customers order as guests; staff and the Super Admin manage orders and the menu under `/admin`. Rules for contributors are in `CLAUDE.md`, features in `docs/spec.md`, and the reasons behind decisions in `docs/decisions.md`.
 
-**Start here:** `docs/status.md` shows what is done, what is next, what is waiting on the restaurant, and where everything is hosted. New to the team? Read "Joining the team" below first.
+**Start here:** `docs/status.md` shows what is done, what is next, what is waiting on the restaurant, and where everything is hosted. New to the team? Read "Joining the team" below first, then `docs/code-map.md` (every file explained, and where to change what).
 
 ## Joining the team
 

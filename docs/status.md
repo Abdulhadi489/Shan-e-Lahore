@@ -2,7 +2,7 @@
 
 The single place to see what is done, what is next and what is waiting on someone. **Update it with every push.**
 
-New to the project? Read in this order: this file, `CLAUDE.md` (rules, stack, security), `docs/spec.md` (features), `docs/decisions.md` (why things are the way they are), `README.md` (setup, environments, how to run and deploy, code map).
+New to the project? Read in this order: this file, `CLAUDE.md` (rules, stack, security), `docs/spec.md` (features), `docs/decisions.md` (why things are the way they are), `README.md` (setup, environments, how to run and deploy), `docs/code-map.md` (every file and where to change what).
 
 **Launch: Friday 23 October 2026.** Moved forward from 9 November by the team on 13 October.
 
