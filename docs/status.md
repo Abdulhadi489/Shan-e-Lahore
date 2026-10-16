@@ -67,7 +67,8 @@ Tick items as they land. Items come from `CLAUDE.md` section 15 and `docs/spec.m
 - [x] Reports (Super Admin only): sales by period, status and cancel reasons, payment method, top items, distance tier, discount usage; CSV export (UTF-8 with BOM)
 - [x] Settings: restaurant info, opening hours, payment accounts, WhatsApp number, riders; staff accounts through the `admin-users` Edge Function (create, change role or active state, reset password; two active Super Admins always kept)
 - [x] Pushed and deployed to dev (17 Oct, approved by Arslan): migrations `20261016193031_staff_access`, `20261016194545_audit_branches`, `20261016194933_customer_summaries`, `20261016195618_edit_order`; functions `admin-users`, `edit-order` (both keep verify_jwt on and check the login themselves) and `place-order` (shared code moved). Security Advisor on dev: only the two accepted warnings
-- [ ] Click-through on dev with real staff logins: every staff screen, a photo upload, a report download, an order edit
+- [x] Checked on dev with Arslan's real login (17 Oct, live site and CSP): every staff screen loads; photo upload saves both sizes and deleting the dish removes them; report and CSV download (BOM present); a discount code created and deleted; `admin-users` and `edit-order` answer with the real login; the Live orders page holds a branch-filtered Realtime subscription. Test data was removed
+- [ ] Still to try on dev during opening hours (05:00 to midnight): place a test order, edit it on the call, take it to delivered; the alarm on the order-station laptop
 
 ### Milestone 4: Hardening and launch
 
@@ -132,6 +133,7 @@ Tick items as they land. Items come from `CLAUDE.md` section 15 and `docs/spec.m
 - All Urdu so far was written by Claude (except dish names, which are the restaurant's own) and needs review, including the customer WhatsApp messages (`whatsapp.*` in `src/i18n/ur.json`).
 - New-order alerts work only while the Live orders page is open and on a device that is awake; a locked phone never rings (no web push). See README "Setting up the order station".
 - Realtime sends anonymous subscribers an empty "401" notice when an order changes (no order data). Accepted, see `docs/decisions.md`.
-- The Milestone 3 screens were tested against the local database, as a local Super Admin and a local Order Staff account. On dev only the functions' login refusal and CORS were checked; photo upload, the Excel download and the staff screens still need a click-through on dev under the live security headers (CSP).
+- On dev, placing and editing an order haven't been tried yet (it was after closing time); everything else in Milestone 3 was checked on dev with a real login.
+- Leaving a map makes the browser log 8 blocked `img-src data:` requests: Leaflet swaps unfinished tiles for a blank data image. Harmless; the CSP is not loosened for it.
 - Upload menu photos from Chrome or Edge: Safari can't make WebP files, so its uploads are larger PNGs (they still display).
 - The staff screens are English only, and the dish pop-up used when editing an order follows the language last chosen on the customer site.
