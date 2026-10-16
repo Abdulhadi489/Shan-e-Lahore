@@ -74,3 +74,4 @@ One line each: date, decision, why.
 - 2026-10-14: The kitchen ticket shows the order number, time, items, add-ons and customer notes; no prices or address. `@page` is 80 mm wide.
 - 2026-10-14: The CSP `connect-src` names `wss://` for our Supabase project explicitly for Realtime. Chrome matches `https://` to `wss://`, but older Safari may not.
 - 2026-10-14: If time runs short, Reports, Discount codes and staff editing an order on the call may come in the week after launch (team). The Customers list with the block switch stays in launch scope.
+- 2026-10-16: Team access: everyone has their own GitHub, staff-login and (for at most two deployers) Supabase Developer access; no shared passwords or keys. Work goes through branches and pull requests because pushing to `main` deploys; a free private repo can't enforce this (GitHub Pro, free for students, can). README "Joining the team".

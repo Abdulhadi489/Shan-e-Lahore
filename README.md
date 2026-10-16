@@ -2,7 +2,27 @@
 
 Delivery-only ordering website for Shan-e-Lahore, Lahore. Customers order as guests; staff and the Super Admin manage orders and the menu under `/admin`. Rules for contributors are in `CLAUDE.md`, features in `docs/spec.md`, and the reasons behind decisions in `docs/decisions.md`.
 
-**Start here:** `docs/status.md` shows what is done, what is next, what is waiting on the restaurant, and where everything is hosted.
+**Start here:** `docs/status.md` shows what is done, what is next, what is waiting on the restaurant, and where everything is hosted. New to the team? Read "Joining the team" below first.
+
+## Joining the team
+
+Everyone gets their own access. **Never share a password or key, not even inside the team**: if one leaks, only that account is switched off, and the order history keeps showing who did what. Working on your own computer needs no accounts or keys at all.
+
+| What | Who needs it | How to get it |
+| --- | --- | --- |
+| GitHub repo `Abdulhadi489/Shan-e-Lahore` (private) | Everyone who writes code | Hadi adds you: repo Settings > Collaborators > Add people |
+| Tools on your computer | Everyone who writes code | "Tools you need" below. Docker Desktop needs no Docker account |
+| Staff login to `/admin` on the dev site | Anyone testing staff screens | A Super Admin creates one with your own email ("Creating a Super Admin" below, with `order_staff`) |
+| Supabase dev project (dashboard, `supabase db push`, `supabase functions deploy`) | Only the people who deploy database changes and functions (keep it to two) | An Owner invites you with the Developer role: Supabase Dashboard > Organization > Team. Everyone else sends migrations in a pull request |
+| Render and Cloudflare | Nobody else | Render deploys `main` by itself after the checks pass; Cloudflare only holds the Turnstile keys |
+
+How we work:
+
+- **Pushing to `main` deploys the live site.** Work on a branch, push it, open a pull request, let CI pass and a teammate review, then merge. GitHub can't enforce this on a free private repo; with GitHub Pro (free for students through the GitHub Student Developer Pack) Hadi can protect `main`.
+- Before merging, update `docs/status.md` (`CLAUDE.md` section 16).
+- Each pull request uses Actions minutes from Hadi's free account (2,000 a month; CI takes about a minute, the database tests a few minutes).
+- Never paste keys, passwords or customer data into chats or AI tools. The secret keys (Supabase secret key, Turnstile secret, database password) stay in the dashboards.
+- Using an AI assistant? Point it at `AGENTS.md`; it reads `CLAUDE.md` from there.
 
 ## Tools you need
 
@@ -10,6 +30,9 @@ Delivery-only ordering website for Shan-e-Lahore, Lahore. Customers order as gue
 - Docker Desktop, running
 - Supabase CLI (`brew install supabase/tap/supabase`)
 - gitleaks (`brew install gitleaks`). The pre-commit hook refuses to commit without it.
+- Deno 2 (`brew install deno`), for the shared-rule tests
+
+The `brew` commands are for macOS; on Windows or Linux use each tool's own install page.
 
 ## First-time setup
 
@@ -46,7 +69,7 @@ Local Supabase does not check the bot-check token, so the test key is enough the
 
 Only public values go in the frontend. The Supabase secret key and the Turnstile secret never go in any file in this repository: they live in Supabase's dashboard (Edge Function secrets, Authentication > Attack Protection).
 
-To log in locally, create accounts in the local dashboard (http://127.0.0.1:54323) with the same steps as "Creating a Super Admin" below. The seed adds two placeholder riders so orders can be sent out for delivery.
+To log in locally, create accounts in the local dashboard (http://127.0.0.1:54323) with the same steps as "Creating a Super Admin" below. Don't use the emails the database tests create (`admin@`, `staff.one@`, `staff.two@`, `left.admin@`, `left.staff@` and `no.role@example.test`), or `supabase test db` fails. The seed adds two placeholder riders so orders can be sent out for delivery.
 
 ## Environments
 
