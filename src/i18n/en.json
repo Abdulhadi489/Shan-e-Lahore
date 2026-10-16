@@ -435,6 +435,38 @@
       "collectCash": "Collect {{amount}} in cash.",
       "collectNothing": "Already paid. Collect nothing.",
       "map": "Map: {{link}}"
+    },
+    "nav": {
+      "label": "Staff sections",
+      "liveOrders": "Live orders",
+      "availability": "Availability",
+      "menu": "Menu",
+      "delivery": "Delivery",
+      "discounts": "Discount codes",
+      "customers": "Customers",
+      "reports": "Reports",
+      "settings": "Settings"
+    },
+    "errors": {
+      "saveFailed": "Couldn't save. Check your connection and the values, then try again.",
+      "duplicate": "That already exists. Use a different value.",
+      "inUse": "It is still in use, so it can't be deleted. Hide it instead.",
+      "loadFailed": "Couldn't load this page. Check your connection and reload."
+    },
+    "availability": {
+      "heading": "Availability",
+      "deliveryOn": "Delivery is on. Customers can order.",
+      "deliveryOff": "Delivery is paused. Customers can't place orders.",
+      "pause": "Pause delivery",
+      "resume": "Resume delivery",
+      "pauseConfirm": "Pause delivery? Customers can't order until you resume it.",
+      "soldOut": "Sold out",
+      "soldOutHelp": "Untick what has run out. The menu shows it as sold out straight away.",
+      "search": "Search dishes",
+      "available": "Available",
+      "hidden": "hidden from the menu",
+      "addons": "Add-on choices",
+      "noMatch": "No dishes match."
     }
   }
 }

@@ -1,8 +1,6 @@
 import { useState } from 'react'
 import { Link, useParams } from 'react-router'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
-import type { PostgrestError } from '@supabase/supabase-js'
 import { ArrowLeft, MapPin, MessageCircle, Phone, Printer } from 'lucide-react'
 import i18n from '../../../i18n'
 import { clockLabel, phoneLabel } from '../../../lib/format'
@@ -11,13 +9,8 @@ import { supabase } from '../../../lib/supabase'
 import { customerMessage, googleMapsLink, riderMessage, whatsappLink } from '../../../lib/whatsapp'
 import { Constants, type Enums, type TablesUpdate } from '../../../types/database'
 import { useStaff } from '../StaffLayout'
+import { card, dangerButton, inputClass, primaryButton, secondaryButton, useDbMutation } from '../ui'
 
-const card = 'rounded-card border border-line bg-raised p-4'
-const primaryButton =
-  'rounded-control bg-brand px-4 py-3 font-bold text-ink hover:bg-peach disabled:cursor-not-allowed disabled:opacity-60'
-const secondaryButton =
-  'flex items-center gap-2 rounded-control border border-ink-muted bg-raised px-4 py-2 font-bold hover:border-brand-deep disabled:opacity-60'
-const inputClass = 'rounded-control border border-ink-muted bg-raised px-3 py-2'
 // wa.me and Google Maps open in a new tab so this page, and its new-order alarm, stays open.
 const newTab = { target: '_blank', rel: 'noopener noreferrer' }
 
@@ -25,17 +18,10 @@ export function OrderPage() {
   const { t } = useTranslation(undefined, { lng: 'en' })
   const { id } = useParams()
   const { branch, orders } = useStaff()
-  const queryClient = useQueryClient()
   const [transactionId, setTransactionId] = useState('')
   const [cancelReason, setCancelReason] = useState<Enums<'cancel_reason'> | ''>('')
   // Every rule (allowed steps, paid before confirm, rider before delivery) is checked by the database trigger.
-  const save = useMutation({
-    mutationFn: async (change: PromiseLike<{ error: PostgrestError | null }>) => {
-      const { error } = await change
-      if (error) throw error
-    },
-    onSettled: () => queryClient.invalidateQueries({ queryKey: ['live-orders', branch.id] }),
-  })
+  const save = useDbMutation(['live-orders', branch.id])
 
   const o = orders.data?.find((order) => order.id === id)
   if (orders.isPending) return <p>{t('admin.loading')}</p>
@@ -322,7 +308,7 @@ export function OrderPage() {
                 <button
                   type="submit"
                   disabled={save.isPending}
-                  className="rounded-control border border-danger px-4 py-2 font-bold text-danger disabled:opacity-60"
+                  className={dangerButton}
                 >
                   {t('admin.orders.cancel')}
                 </button>
