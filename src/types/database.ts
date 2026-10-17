@@ -79,14 +79,14 @@ isOneToOne: false
                   ]
                 },"banners": {
                   Row: {
-                    "branch_id": string,"created_at": string,"id": string,"image_path": string,"is_active": boolean,"sort_order": number,"title_en": string,"title_ur": string,"updated_at": string
+                    "branch_id": string,"created_at": string,"id": string,"image_path": string,"is_active": boolean,"item_id": string | null,"sort_order": number,"title_en": string,"title_ur": string,"updated_at": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "branch_id": string,"created_at"?: string,"id"?: string,"image_path": string,"is_active"?: boolean,"sort_order"?: number,"title_en"?: string,"title_ur"?: string,"updated_at"?: string
+                    "branch_id": string,"created_at"?: string,"id"?: string,"image_path": string,"is_active"?: boolean,"item_id"?: string | null,"sort_order"?: number,"title_en"?: string,"title_ur"?: string,"updated_at"?: string
                   }
                   Update: {
-                    "branch_id"?: string,"created_at"?: string,"id"?: string,"image_path"?: string,"is_active"?: boolean,"sort_order"?: number,"title_en"?: string,"title_ur"?: string,"updated_at"?: string
+                    "branch_id"?: string,"created_at"?: string,"id"?: string,"image_path"?: string,"is_active"?: boolean,"item_id"?: string | null,"sort_order"?: number,"title_en"?: string,"title_ur"?: string,"updated_at"?: string
                   }
                   Relationships: [
                     {
@@ -95,6 +95,12 @@ isOneToOne: false
 isOneToOne: false
       referencedRelation: "branches"
       referencedColumns: ["id"]
+    },{
+      foreignKeyName: "banners_item_id_fkey"
+      columns: ["item_id","branch_id"]
+isOneToOne: false
+      referencedRelation: "items"
+      referencedColumns: ["id","branch_id"]
     }
                   ]
                 },"branch_settings": {
@@ -562,6 +568,9 @@ isOneToOne: false
                            },
 "hit_rate_limit":
 { Args: { "limit_key": string,"max_count": number,"window_seconds": number }; Returns: boolean
+                           },
+"replace_order_contents":
+{ Args: { "actor_id": string,"lines": Json,"order_data": Json,"target_order_id": string }; Returns: undefined
                            },
 "set_staff_access":
 { Args: { "active": boolean,"actor_id": string,"new_branch_id": string,"new_role": Database["public"]['Enums']["user_role"],"target_user_id": string }; Returns: undefined

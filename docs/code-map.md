@@ -90,7 +90,7 @@ Using an AI assistant? Point it at `AGENTS.md`; it reads `CLAUDE.md`, the projec
 | File | What it is |
 | --- | --- |
 | `home/HomePage.tsx` | Home: open/closed status, headline with the hero dish photo, deals, categories, popular dishes, how ordering works, hours, delivery charges, map on request |
-| `home/HomeBanner.tsx` | The banner at the top: uploaded banners, or the arches when there are none |
+| `home/HeroPhoto.tsx` | The photo beside the headline: the first active banner, or the first featured dish photo; opens the linked dish when tapped |
 | `menu/useMenu.ts` | Loads the whole menu in one request |
 | `menu/MenuPage.tsx` | Menu with the sticky category bar and dish cards |
 | `menu/ItemDialog.tsx` | The dish pop-up: size and add-on choices, quantity, add to cart (staff reuse it when editing an order) |
@@ -123,7 +123,7 @@ Using an AI assistant? Point it at `AGENTS.md`; it reads `CLAUDE.md`, the projec
 | `menu/MenuAdminPage.tsx` | Categories and their dishes; the Menu sub-menu |
 | `menu/ItemEditor.tsx` | Add or edit a dish: details, photo, sizes, add-on groups |
 | `menu/AddonGroupsPage.tsx` | Add-on groups and their choices |
-| `menu/BannersPage.tsx` | Home banners |
+| `menu/BannersPage.tsx` | Home banners, each optionally linked to a dish |
 | `menu/photos.ts` | Shrinks photos in the browser and uploads them (two sizes) |
 | `delivery/DeliveryPage.tsx` | Distance charges, delivery rules, restaurant pin, change log |
 | `customers/CustomersPage.tsx` | Customer list, search, order history, block a number |
@@ -176,6 +176,7 @@ Run in order by `supabase db reset` (local) and `supabase db push` (hosted). Nev
 | `…194545_audit_branches.sql` | Logs changes to the restaurant pin |
 | `…194933_customer_summaries.sql` | The customer totals view for the Customers screen |
 | `…195618_edit_order.sql` | `replace_order_contents`: saves an edited order |
+| `…165652_banner_dish_link.sql` | `banners.item_id`: the dish a banner opens (same branch; cleared if the dish is deleted) |
 
 ### `supabase/tests/` (pgTAP: proves who can and can't do what)
 
@@ -184,7 +185,7 @@ Run in order by `supabase db reset` (local) and `supabase db push` (hosted). Nev
 | `_fixtures.psql` | Shared test data: two branches, staff of each, a Super Admin, deactivated accounts, guests, orders |
 | `00_security_baseline_test.sql` | Every table locked, nothing public except the menu, no unsafe functions |
 | `01_menu_test.sql` … `09_category_sides_test.sql` | Menu, accounts, customers, order access, order rules (statuses, payments, missed calls), admin tables, photo storage, order creation, sides |
-| `10_staff_access_test.sql` … `13_edit_order_test.sql` | Staff role changes, pin audit, customer view, order editing |
+| `10_staff_access_test.sql` … `14_banner_dish_link_test.sql` | Staff role changes, pin audit, customer view, order editing, banner dish link |
 
 ### `supabase/functions/` (server code, Deno)
 

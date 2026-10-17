@@ -4,14 +4,17 @@ import { useTranslation } from 'react-i18next'
 import { ArrowRight, Bike, MapPin, PhoneCall, ShoppingBag } from 'lucide-react'
 import { localized } from '../../i18n'
 import { formatAmount } from '../../lib/money'
-import { menuImageUrl } from '../../lib/images'
 import { dayLabel, phoneLabel, timeLabel } from '../../lib/format'
 import { OpeningHoursList } from '../../app/OpeningHoursList'
 import { karachiWeekMinute, openingStatus } from '../../../supabase/functions/_shared/opening-hours'
 import { useBranch } from '../../app/useBranch'
 import { ItemDialog } from '../menu/ItemDialog'
 import { ItemCard } from '../menu/MenuPage'
-import { HomeBanner } from './HomeBanner'
+import { HeroPhoto } from './HeroPhoto'
+
+// The three arches from the printed menu and the shop's signboard: ثقافت، اپنائیت، روایت.
+import archesSmall from '../../assets/menu-arches-800.webp'
+import archesLarge from '../../assets/menu-arches-1600.webp'
 import { useMenu, type MenuItem } from '../menu/useMenu'
 
 // The map library is large, so the delivery-area map loads only when someone asks for it.
@@ -35,6 +38,7 @@ export function HomePage() {
   const deals = featured.filter((item) => item.is_deal)
   const popular = featured.filter((item) => !item.is_deal)
   const heroDish = [...deals, ...popular].find((item) => item.image_path)
+  const allItems = menu.data?.flatMap((c) => c.items) ?? []
 
   const settings = branch.data?.branch_settings
   const hours = branch.data?.opening_hours ?? []
@@ -47,10 +51,18 @@ export function HomePage() {
     <>
       <title>{t('brand')}</title>
 
-      <HomeBanner />
+      <img
+        src={archesSmall}
+        srcSet={`${archesSmall} 800w, ${archesLarge} 1600w`}
+        sizes="(min-width: 120rem) 2000px, 100vw"
+        width={1600}
+        height={269}
+        fetchPriority="high"
+        alt={t('home.archesAlt')}
+        className="block w-full rounded-card"
+      />
 
-      {/* The first featured dish with a photo (deals first) sits beside the headline when both fit and below it
-          when they don't; it changes by itself when the Super Admin adds photos. Sizes follow the window smoothly. */}
+      {/* Text sizes follow the window smoothly; the photo (HeroPhoto) sits beside the headline or wraps below it. */}
       <div className="mt-8 flex flex-wrap items-center gap-x-[clamp(1.5rem,3vw,3rem)] gap-y-6">
         <section className="min-w-0 flex-[1_1_26rem]">
           {status && (
@@ -87,21 +99,7 @@ export function HomePage() {
             )}
           </div>
         </section>
-        {heroDish?.image_path && (
-          <button type="button" onClick={() => setSelected(heroDish)} className="min-w-0 flex-[1_1_26rem] text-start">
-            <img
-              src={menuImageUrl(heroDish.image_path, 'full')}
-              alt={localized(lng, heroDish.name_en, heroDish.name_ur)}
-              width={1200}
-              height={750}
-              loading="lazy"
-              className="aspect-[16/10] w-full rounded-card bg-peach object-cover"
-            />
-            <span className="mt-2 block font-bold">
-              {localized(lng, heroDish.name_en, heroDish.name_ur)} · {price(heroDish.base_price)}
-            </span>
-          </button>
-        )}
+        <HeroPhoto items={allItems} featuredDish={heroDish} onOpen={setSelected} />
       </div>
 
       {deals.length > 0 && (

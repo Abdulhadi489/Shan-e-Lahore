@@ -49,8 +49,7 @@ Tick items as they land. Items come from `CLAUDE.md` section 15 and `docs/spec.m
 - [ ] First batch of real dish photos uploaded to dev (waiting on the team's photos)
 - [x] Static pages: about, contact (address, phone, hours and map from the database), terms, privacy, refund policy. **Draft text** written from facts we know (no invented promises such as refund deadlines); the restaurant must approve it
 - [x] Fluid, responsive layout (17 Oct): no size-specific rules on customer pages. Grids add columns as space allows, headline and text grow smoothly with the window, the hero photo sits beside the headline when both fit and below it when not, the page fills the window up to about 2,000 px. The top bar spans the window and stays visible while scrolling; the footer is centred. Checked by sliding the width from 320 to 2,600 px (what zooming does), English and Urdu: no sideways scrolling, nothing disappears
-- [x] Home hero photo: the photo of the first featured dish that has one (deals first), set from the admin panel; nothing shows until a featured dish has a photo
-- [x] Home-page banners from the `banners` table, uploaded by the Super Admin (Menu > Home banners); they replace the three-arch strip, which shows while there are none
+- [x] Home hero photo beside the headline: the first active Home banner (Menu > Home banners), otherwise the photo of the first featured dish that has one. A banner can link to a dish, which opens when tapped; without a link it is just a picture. The three-arch strip always shows at the top
 
 ### Milestone 3: Admin and order handling
 
@@ -117,7 +116,7 @@ Tick items as they land. Items come from `CLAUDE.md` section 15 and `docs/spec.m
 | --- | --- | --- |
 | GitHub | Private repo `Abdulhadi489/Shan-e-Lahore`, default branch `main` | Hadi owns it; Arslan has push access. CI minutes come from Hadi's free account (2,000 a month) |
 | Render | Blueprint `shan-e-lahore`, static site https://shan-e-lahore.onrender.com, deploys `main` after CI passes | Arslan's Render workspace; Hadi installed Render's GitHub app on his account for this repo only |
-| Supabase dev | Project `shan-e-lahore-dev` (ref `gdjvulhrumxwjmnaywnn`, Mumbai, free plan): 13 migrations, 6 Edge Functions (4 for customers, `admin-users` and `edit-order` for staff) | Super Admins on dev: Arslan and Sufyan. Edge Function secrets: `TURNSTILE_SECRET_KEY`, `ALLOWED_ORIGINS` (Render URL, localhost:5173, 127.0.0.1:5173) |
+| Supabase dev | Project `shan-e-lahore-dev` (ref `gdjvulhrumxwjmnaywnn`, Mumbai, free plan): 14 migrations (latest 17 Oct: banner dish link), 6 Edge Functions (4 for customers, `admin-users` and `edit-order` for staff) | Super Admins on dev: Arslan and Sufyan. Edge Function secrets: `TURNSTILE_SECRET_KEY`, `ALLOWED_ORIGINS` (Render URL, localhost:5173, 127.0.0.1:5173) |
 | Supabase production | Not created yet (Milestone 4) | |
 | Supabase organisation | "Shan-e-Lahore" (free plan), holds the dev project | Members (16 Oct): Arslan, Sufyan (joined); Hadi, Talha, Umair (invited). All five are Owners for now; recommended: Arslan and Sufyan Owners, the rest Developers (README "Joining the team"). MFA is off for every member; each should switch it on |
 | Cloudflare Turnstile | Widget "Shan-e-Lahore", site key `0x4AAAAAAFUjrlxajrhVCE3G`; hostnames `localhost` and `shan-e-lahore.onrender.com` | Arslan's Cloudflare account. The secret key is set in Supabase Auth (Attack Protection) and as the `TURNSTILE_SECRET_KEY` function secret |

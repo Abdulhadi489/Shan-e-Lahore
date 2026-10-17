@@ -3,8 +3,8 @@ import { useTranslation } from 'react-i18next'
 import { menuImageUrl } from '../../../lib/images'
 import { supabase } from '../../../lib/supabase'
 import { useStaff } from '../StaffLayout'
-import { card, dangerButton, inputClass, labelClass, primaryButton, SaveError, secondaryButton, submitted, text, useDbMutation } from '../ui'
-import { MenuNav } from './MenuAdminPage'
+import { card, dangerButton, inputClass, labelClass, optional, primaryButton, SaveError, secondaryButton, submitted, text, useDbMutation } from '../ui'
+import { MenuNav, useAdminMenu } from './MenuAdminPage'
 import { removeMenuPhoto, uploadMenuPhoto } from './photos'
 
 export function BannersPage() {
@@ -17,7 +17,7 @@ export function BannersPage() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('banners')
-        .select('id, image_path, title_en, title_ur, sort_order, is_active')
+        .select('id, image_path, title_en, title_ur, sort_order, is_active, item_id')
         .eq('branch_id', branch.id)
         .order('sort_order')
       if (error) throw error
@@ -25,14 +25,16 @@ export function BannersPage() {
     },
   })
   const save = useDbMutation(key, ['home-banners'])
+  const menu = useAdminMenu(branch.id)
   const upload = useMutation({
-    mutationFn: async ({ file, titleEn, titleUr }: { file: File; titleEn: string; titleUr: string }) => {
+    mutationFn: async ({ file, titleEn, titleUr, itemId }: { file: File; titleEn: string; titleUr: string; itemId: string | null }) => {
       const image_path = await uploadMenuPhoto(file, 'banners')
       const { error } = await supabase.from('banners').insert({
         branch_id: branch.id,
         image_path,
         title_en: titleEn,
         title_ur: titleUr,
+        item_id: itemId,
         sort_order: (banners.data?.length ?? 0) + 1,
       })
       if (error) {
@@ -43,7 +45,7 @@ export function BannersPage() {
     onSettled: () => Promise.all([key, ['home-banners']].map((queryKey) => queryClient.invalidateQueries({ queryKey }))),
   })
 
-  const titleFields = (banner?: { title_en: string; title_ur: string }) => (
+  const titleFields = (banner?: { title_en: string; title_ur: string; item_id: string | null }) => (
     <>
       <label className={labelClass}>
         {t('admin.menu.banners.titleEn')} <span className="text-sm text-ink-muted">({t('admin.settings.optional')})</span>
@@ -52,6 +54,21 @@ export function BannersPage() {
       <label className={labelClass}>
         {t('admin.menu.banners.titleUr')} <span className="text-sm text-ink-muted">({t('admin.settings.optional')})</span>
         <input name="title_ur" maxLength={80} defaultValue={banner?.title_ur} dir="rtl" lang="ur" className={inputClass} />
+      </label>
+      <label className={labelClass}>
+        {t('admin.menu.banners.dish')}
+        <select name="item_id" defaultValue={banner?.item_id ?? ''} className={inputClass}>
+          <option value="">{t('admin.menu.banners.noDish')}</option>
+          {menu.data?.map((category) => (
+            <optgroup key={category.id} label={category.name_en}>
+              {category.items.map((item) => (
+                <option key={item.id} value={item.id}>
+                  {item.name_en}
+                </option>
+              ))}
+            </optgroup>
+          ))}
+        </select>
       </label>
     </>
   )
@@ -77,6 +94,7 @@ export function BannersPage() {
                     .update({
                       title_en: text(form, 'title_en'),
                       title_ur: text(form, 'title_ur'),
+                      item_id: optional(form, 'item_id'),
                       sort_order: Number(text(form, 'sort_order')),
                       is_active: form.get('is_active') === 'on',
                     })
@@ -122,7 +140,7 @@ export function BannersPage() {
           const element = event.currentTarget
           if (!(file instanceof File) || file.size === 0) return
           upload.mutate(
-            { file, titleEn: text(form, 'title_en'), titleUr: text(form, 'title_ur') },
+            { file, titleEn: text(form, 'title_en'), titleUr: text(form, 'title_ur'), itemId: optional(form, 'item_id') },
             { onSuccess: () => element.reset() },
           )
         }}
