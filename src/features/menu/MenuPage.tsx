@@ -88,7 +88,7 @@ export function MenuPage() {
 
       {menu.data && menu.data.length > 0 && (
         <>
-          <nav aria-label={t('menu.categories')} className="sticky top-0 z-10 -mx-4 mt-4 overflow-x-auto border-b border-line bg-surface px-4 py-2">
+          <nav aria-label={t('menu.categories')} className="sticky top-(--header-h) z-10 -mx-(--page-pad) mt-4 overflow-x-auto border-b border-line bg-surface px-(--page-pad) py-2">
             <ul className="flex gap-2 whitespace-nowrap">
               {menu.data.map((category) => (
                 <li key={category.id}>
@@ -101,9 +101,9 @@ export function MenuPage() {
           </nav>
 
           {menu.data.map((category) => (
-            <section key={category.id} id={`category-${category.id}`} className="mt-8 scroll-mt-16">
+            <section key={category.id} id={`category-${category.id}`} className="mt-8 scroll-mt-[calc(var(--header-h)+5rem)]">
               <h2 className="font-heading text-2xl font-bold">{localized(lng, category.name_en, category.name_ur)}</h2>
-              <ul className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+              <ul className="mt-3 grid grid-cols-cards gap-3">
                 {category.items.map((item) => (
                   <li key={item.id}>
                     <ItemCard item={item} onSelect={setSelected} />

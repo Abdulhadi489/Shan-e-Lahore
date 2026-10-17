@@ -24,6 +24,7 @@ Using an AI assistant? Point it at `AGENTS.md`; it reads `CLAUDE.md`, the projec
 | --- | --- |
 | Any text on the site, English or Urdu | `src/i18n/en.json` and `src/i18n/ur.json` (same keys in both; a test fails if Urdu is missing) |
 | Colours, fonts, corner radius | `src/index.css` (design tokens; only these may be used) |
+| How the layout adapts to the screen | Fluid rules, no size-specific breakpoints on customer pages: `grid-cols-cards` (as many columns as fit), `clamp()` for text that grows with the window, `flex-wrap` with a basis for side-by-side-or-stacked. Test by sliding the window width, not only at a few sizes |
 | The menu, prices, hours, delivery charges, staff, riders | Nothing in code: the admin panel at `/admin` |
 | How prices, delivery or discounts are calculated | `supabase/functions/_shared/` (pricing, delivery, discount, order) and their `_test.ts` files |
 | Who may read or change a table | A **new** migration in `supabase/migrations/` plus a pgTAP test in `supabase/tests/` |
@@ -79,7 +80,7 @@ Using an AI assistant? Point it at `AGENTS.md`; it reads `CLAUDE.md`, the projec
 | File | What it is |
 | --- | --- |
 | `AppRoutes.tsx` | Every customer address (`/`, `/menu`, `/cart`, `/checkout`, `/track/:token`, info pages) and `/admin` |
-| `CustomerLayout.tsx` | Header (logo, Menu, Cart, language switch), page column, footer links |
+| `CustomerLayout.tsx` | Top bar (logo, Menu, Cart, language; full width, stays visible and shares its height as `--header-h`), the page column and its fluid edge `--page-pad`, centred footer links |
 | `useBranch.ts` | Loads the restaurant's details, hours and delivery charges |
 | `OpeningHoursList.tsx` | The opening-hours table (home and contact pages) |
 | `EmptyPage.tsx` | Simple page with a heading, used for "page not found" |
@@ -88,7 +89,7 @@ Using an AI assistant? Point it at `AGENTS.md`; it reads `CLAUDE.md`, the projec
 
 | File | What it is |
 | --- | --- |
-| `home/HomePage.tsx` | Home: open/closed status, headline, deals, categories, popular dishes, how ordering works, hours, delivery charges, map on request |
+| `home/HomePage.tsx` | Home: open/closed status, headline with the hero dish photo, deals, categories, popular dishes, how ordering works, hours, delivery charges, map on request |
 | `home/HomeBanner.tsx` | The banner at the top: uploaded banners, or the arches when there are none |
 | `menu/useMenu.ts` | Loads the whole menu in one request |
 | `menu/MenuPage.tsx` | Menu with the sticky category bar and dish cards |
@@ -146,7 +147,7 @@ Using an AI assistant? Point it at `AGENTS.md`; it reads `CLAUDE.md`, the projec
 | `i18n/index.ts` | Language setup, Urdu right-to-left switch, remembers the choice |
 | `i18n/i18next.d.ts` | Makes a missing text key a TypeScript error |
 | `i18n/dictionaries.test.ts` | Fails if a customer text has no Urdu |
-| `components/Turnstile.tsx` | The Cloudflare bot check widget |
+| `components/Turnstile.tsx` | The Cloudflare bot check widget (compact when there is less than 300 px) |
 
 ## `supabase/` (database and server)
 

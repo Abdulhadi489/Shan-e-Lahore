@@ -6,7 +6,7 @@ type TurnstileApi = {
     options: {
       sitekey: string
       theme: 'light'
-      size: 'flexible'
+      size: 'flexible' | 'compact'
       callback: (token: string) => void
       'expired-callback': () => void
       'error-callback': (code: string) => void
@@ -60,7 +60,8 @@ export function Turnstile({
         widgetId = turnstile.render(container.current, {
           sitekey: import.meta.env.VITE_TURNSTILE_SITE_KEY,
           theme: 'light',
-          size: 'flexible',
+          // The flexible widget is at least 300 px wide, which would push very small phones sideways.
+          size: container.current.clientWidth < 300 ? 'compact' : 'flexible',
           callback: (token) => {
             setErrorCode(null)
             onToken(token)

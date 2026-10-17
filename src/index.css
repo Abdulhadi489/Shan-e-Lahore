@@ -29,6 +29,12 @@
 }
 
 @layer base {
+  /* Everything sized in rem grows smoothly on big screens: the browser's normal size up to about 1,600 px wide,
+     then up to an eighth larger by about 2,400 px, so text stays in proportion on a 27-inch screen. */
+  html {
+    font-size: clamp(1rem, 0.25vw + 0.75rem, 1.125rem);
+  }
+
   body {
     background-color: var(--color-surface);
     color: var(--color-ink);
@@ -88,4 +94,9 @@
 @page {
   size: 80mm auto;
   margin: 4mm;
+}
+
+/* Card grids add a column whenever there is room (like a video site's grid); one column on small phones. */
+@utility grid-cols-cards {
+  grid-template-columns: repeat(auto-fill, minmax(min(18rem, 100%), 1fr));
 }

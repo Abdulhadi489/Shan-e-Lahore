@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react'
 import { Link, NavLink, Outlet } from 'react-router'
 import { useTranslation } from 'react-i18next'
 import { useCart } from '../features/checkout/cart'
@@ -31,10 +32,24 @@ function LanguageSwitch() {
 export function CustomerLayout() {
   const { t } = useTranslation()
   const cartCount = useCart().reduce((sum, line) => sum + line.quantity, 0)
+  const root = useRef<HTMLDivElement>(null)
+  const header = useRef<HTMLElement>(null)
+
+  // The top bar stays on screen; its height (taller when it wraps on small phones) is shared as --header-h
+  // so the menu's category bar, the checkout summary and jump links stop just below it.
+  useEffect(() => {
+    const bar = header.current
+    if (!bar) return
+    const observer = new ResizeObserver(() => root.current?.style.setProperty('--header-h', `${bar.offsetHeight}px`))
+    observer.observe(bar)
+    return () => observer.disconnect()
+  }, [])
+
   return (
-    <div className="flex min-h-dvh flex-col">
-      <header className="border-b border-line bg-raised">
-        <div className="mx-auto flex max-w-7xl flex-wrap items-center gap-x-4 gap-y-2 px-4 py-3">
+    <div ref={root} className="flex min-h-dvh flex-col [--header-h:0px] [--page-pad:clamp(1rem,3vw,2.5rem)]">
+      {/* Spans the whole window like a shop's top bar and stays visible; the page below stays in the reading column. */}
+      <header ref={header} className="sticky top-0 z-20 border-b border-line bg-raised">
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-2 px-(--page-pad) py-3">
           <Link to="/" className="font-heading text-2xl font-bold text-brand-deep">
             {t('brand')}
           </Link>
@@ -53,12 +68,12 @@ export function CustomerLayout() {
         </div>
       </header>
 
-      <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-6">
+      <main className="mx-auto w-full max-w-[120rem] flex-1 px-(--page-pad) py-6">
         <Outlet />
       </main>
 
       <footer className="border-t border-line bg-peach">
-        <nav aria-label={t('nav.info')} className="mx-auto flex max-w-7xl flex-wrap gap-x-6 gap-y-2 px-4 py-6">
+        <nav aria-label={t('nav.info')} className="mx-auto flex max-w-[120rem] flex-wrap justify-center gap-x-6 gap-y-2 px-(--page-pad) py-6">
           {infoPages.map((page) => (
             <NavLink key={page.path} to={`/${page.path}`} className={navLinkClass}>
               {t(page.title)}

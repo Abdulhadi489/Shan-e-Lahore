@@ -116,8 +116,8 @@ export function CheckoutPage() {
       <h1 className="font-heading text-3xl font-bold">{t('pages.checkout')}</h1>
       <p className="mt-2 max-w-[60ch] font-bold text-brand-deep">{t('checkout.callNotice')}</p>
 
-      <form onSubmit={handleSubmit(submit)} noValidate className="mt-6 grid gap-8 lg:grid-cols-[1fr_22rem]">
-        <div className="flex flex-col gap-8">
+      <form onSubmit={handleSubmit(submit)} noValidate className="mt-6 flex max-w-6xl flex-wrap items-start gap-8">
+        <div className="flex min-w-0 flex-[999_1_30rem] flex-col gap-8">
           <section>
             <h2 className="font-heading text-2xl font-bold">{t('checkout.location')}</h2>
             {branch.data && (
@@ -187,7 +187,7 @@ export function CheckoutPage() {
           </fieldset>
         </div>
 
-        <aside className="flex flex-col gap-4 self-start rounded-card border border-line bg-raised p-4 lg:sticky lg:top-4">
+        <aside className="sticky top-[calc(var(--header-h)+1rem)] flex min-w-0 flex-[1_1_20rem] flex-col gap-4 rounded-card border border-line bg-raised p-4">
           <h2 className="font-heading text-2xl font-bold">{t('checkout.summary')}</h2>
           <ul className="flex flex-col gap-2">
             {lines.map((line, index) => {

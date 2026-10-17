@@ -69,7 +69,7 @@ export function StaffLayout({ userId }: { userId: string }) {
     <div className="min-h-dvh">
       <title>{`${t('admin.title')} · ${t('brand')}`}</title>
       <header className="border-b border-line bg-raised print:hidden">
-        <div className="mx-auto flex max-w-5xl flex-wrap items-center gap-x-4 gap-y-2 px-4 py-3">
+        <div className="mx-auto flex max-w-7xl flex-wrap items-center gap-x-4 gap-y-2 px-4 py-3">
           <p className="font-heading text-xl font-bold text-brand-deep">
             {t('brand')} <span className="text-ink-muted">{t('admin.title')}</span>
           </p>
@@ -88,7 +88,7 @@ export function StaffLayout({ userId }: { userId: string }) {
           </button>
         </div>
         {hasAccess && (
-          <nav aria-label={t('admin.nav.label')} className="mx-auto flex max-w-5xl flex-wrap gap-x-4 gap-y-1 px-4 pb-2">
+          <nav aria-label={t('admin.nav.label')} className="mx-auto flex max-w-7xl flex-wrap gap-x-4 gap-y-1 px-4 pb-2">
             {staffSections
               .filter((section) => isSuperAdmin || !section.superAdmin)
               .map((section) => (
@@ -106,7 +106,7 @@ export function StaffLayout({ userId }: { userId: string }) {
       </header>
       {branch.data && !alarm.on && (
         <div className="bg-peach print:hidden">
-          <div className="mx-auto flex max-w-5xl flex-wrap items-center gap-3 px-4 py-3">
+          <div className="mx-auto flex max-w-7xl flex-wrap items-center gap-3 px-4 py-3">
             <p className="font-bold">{t('admin.alerts.off')}</p>
             <button type="button" onClick={alarm.turnOn} className="rounded-control bg-brand px-4 py-2 font-bold text-ink">
               {t('admin.alerts.turnOn')}
@@ -129,7 +129,7 @@ export function StaffLayout({ userId }: { userId: string }) {
           </button>
         )}
       </div>
-      <main className="mx-auto max-w-5xl px-4 py-6 print:p-0">{content}</main>
+      <main className="mx-auto max-w-7xl px-4 py-6 print:p-0">{content}</main>
     </div>
   )
 }

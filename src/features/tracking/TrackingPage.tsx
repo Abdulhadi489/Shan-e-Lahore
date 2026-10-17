@@ -54,8 +54,8 @@ export function TrackingPage() {
       <h1 className="font-heading text-3xl font-bold">{t('tracking.heading', { number: o.orderNumber })}</h1>
       <p className="mt-1 text-ink-muted">{t('tracking.thanks', { name: o.firstName })}</p>
 
-      <div className="mt-6 grid gap-8 lg:grid-cols-[1fr_22rem]">
-        <div className="flex flex-col gap-6">
+      <div className="mt-6 flex max-w-6xl flex-wrap items-start gap-8">
+        <div className="flex min-w-0 flex-[999_1_30rem] flex-col gap-6">
           {o.status === 'cancelled' ? (
             <section role="status" className="rounded-card border-2 border-danger bg-raised p-4">
               <p className="text-lg font-bold text-danger">{t('tracking.cancelled')}</p>
@@ -170,7 +170,7 @@ export function TrackingPage() {
           {cancel.isError && <p role="alert" className="text-danger">{t('tracking.cancelFailed')}</p>}
         </div>
 
-        <aside className="self-start rounded-card border border-line bg-raised p-4">
+        <aside className="min-w-0 flex-[1_1_20rem] rounded-card border border-line bg-raised p-4">
           <h2 className="font-heading text-2xl font-bold">{t('checkout.summary')}</h2>
           <ul className="mt-3 flex flex-col gap-2 text-sm">
             {o.items.map((item, index) => (

@@ -47,7 +47,7 @@ export function LiveOrdersPage() {
       ) : shown.length === 0 ? (
         <p className="mt-4 text-ink-muted">{t('admin.orders.empty')}</p>
       ) : (
-        <ul className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        <ul className="mt-4 grid grid-cols-cards gap-3">
           {shown.map((o) => {
             const missedCalls = o.call_attempts[0]?.count ?? 0
             return (

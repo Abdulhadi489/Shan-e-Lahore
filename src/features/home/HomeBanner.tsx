@@ -25,8 +25,7 @@ function useHomeBanners() {
   })
 }
 
-// Top of the home page, inside the page column so it always lines up with the content below it;
-// on phones it runs edge to edge.
+// Top of the home page, inside the page column so it always lines up with the content below it.
 export function HomeBanner() {
   const { t, i18n } = useTranslation()
   const lng = i18n.language
@@ -42,17 +41,17 @@ export function HomeBanner() {
         height={269}
         fetchPriority="high"
         alt={t('home.archesAlt')}
-        className="-mx-4 -mt-6 block w-[calc(100%+2rem)] max-w-none sm:mx-0 sm:mt-0 sm:w-full sm:rounded-card"
+        className="block w-full rounded-card"
       />
     )
   }
 
   return (
-    <ul className="-mx-4 -mt-6 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 sm:mx-0 sm:mt-0 sm:px-0">
+    <ul className="flex snap-x snap-mandatory gap-3 overflow-x-auto">
       {banners.map((banner, index) => {
         const title = localized(lng, banner.title_en, banner.title_ur)
         return (
-          <li key={banner.id} className={`shrink-0 snap-start ${banners.length > 1 ? 'w-[85%] sm:w-[70%] lg:w-[calc(50%-0.375rem)]' : 'w-full'}`}>
+          <li key={banner.id} className={`shrink-0 snap-start ${banners.length > 1 ? 'w-[max(calc(50%-0.375rem),min(85%,36rem))]' : 'w-full'}`}>
             <img
               src={menuImageUrl(banner.image_path, 'full')}
               alt={title}

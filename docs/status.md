@@ -48,7 +48,8 @@ Tick items as they land. Items come from `CLAUDE.md` section 15 and `docs/spec.m
 - [x] Dish photos: display on cards (small 320 px file) and in the dish pop-up (large file); empty space when a dish has none. Tested locally with a test image
 - [ ] First batch of real dish photos uploaded to dev (waiting on the team's photos)
 - [x] Static pages: about, contact (address, phone, hours and map from the database), terms, privacy, refund policy. **Draft text** written from facts we know (no invented promises such as refund deadlines); the restaurant must approve it
-- [x] Responsive on big screens (17 Oct): the page column grows to 1280 px with the banner inside it (edge to edge on phones only), menus show four columns on wide screens. A full-window banner was tried and dropped: on big or zoomed-out screens it grew far wider and taller than the content. Checked at 375, 1280, 1920 and 3840 px in English and Urdu, no sideways scrolling
+- [x] Fluid, responsive layout (17 Oct): no size-specific rules on customer pages. Grids add columns as space allows, headline and text grow smoothly with the window, the hero photo sits beside the headline when both fit and below it when not, the page fills the window up to about 2,000 px. The top bar spans the window and stays visible while scrolling; the footer is centred. Checked by sliding the width from 320 to 2,600 px (what zooming does), English and Urdu: no sideways scrolling, nothing disappears
+- [x] Home hero photo: the photo of the first featured dish that has one (deals first), set from the admin panel; nothing shows until a featured dish has a photo
 - [x] Home-page banners from the `banners` table, uploaded by the Super Admin (Menu > Home banners); they replace the three-arch strip, which shows while there are none
 
 ### Milestone 3: Admin and order handling

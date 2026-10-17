@@ -24,7 +24,7 @@ export function ContactPage() {
       {branch.isError && <p role="alert" className="mt-4">{t('menu.error')}</p>}
 
       {b && (
-        <div className="mt-6 grid gap-8 md:grid-cols-2">
+        <div className="mt-6 grid max-w-6xl grid-cols-[repeat(auto-fit,minmax(min(20rem,100%),1fr))] gap-8">
           <div className="flex flex-col gap-6">
             <section>
               <h2 className="font-heading text-xl font-bold">{t('info.address')}</h2>
