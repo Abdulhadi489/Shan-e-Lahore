@@ -33,6 +33,9 @@
      then up to an eighth larger by about 2,400 px, so text stays in proportion on a 27-inch screen. */
   html {
     font-size: clamp(1rem, 0.25vw + 0.75rem, 1.125rem);
+    /* Shared by the customer and staff layouts; --header-h is set by useHeaderHeight. */
+    --page-pad: clamp(1rem, 3vw, 2.5rem);
+    --header-h: 0px;
   }
 
   body {

@@ -95,8 +95,9 @@ export function LocationPicker({
       </button>
       {locationError && <p role="alert" className="mb-3 text-sm text-danger">{t('checkout.locationError')}</p>}
 
-      {/* Leaflet lays out tiles left-to-right; the map itself never flips in Urdu. */}
-      <div dir="ltr" className="relative h-80 overflow-hidden rounded-card border border-line">
+      {/* Leaflet lays out tiles left-to-right; the map itself never flips in Urdu. isolate keeps Leaflet's
+          z-indexes inside the map, so it scrolls under the sticky top bar. */}
+      <div dir="ltr" className="relative isolate h-80 overflow-hidden rounded-card border border-line">
         <MapContainer center={pin ?? branch} zoom={12} scrollWheelZoom={false} className="h-full w-full">
           <TileLayer url={tiles} attribution={attribution} />
           <Circle center={branch} radius={radiusKm * 1000} className="map-delivery-area" />
@@ -128,7 +129,7 @@ export function LocationPicker({
 // radiusKm 0 shows just the restaurant (contact page).
 export function DeliveryAreaMap({ branch, radiusKm, zoom = 11 }: { branch: Pin; radiusKm: number; zoom?: number }) {
   return (
-    <div dir="ltr" className="h-72 overflow-hidden rounded-card border border-line">
+    <div dir="ltr" className="isolate h-72 overflow-hidden rounded-card border border-line">
       <MapContainer center={branch} zoom={zoom} scrollWheelZoom={false} className="h-full w-full">
         <TileLayer url={tiles} attribution={attribution} />
         {radiusKm > 0 && <Circle center={branch} radius={radiusKm * 1000} className="map-delivery-area" />}

@@ -84,7 +84,7 @@ export function BannersPage() {
       <div className="mt-4 flex flex-col gap-4">
         {banners.data?.map((banner) => (
           <section key={banner.id} className={`${card} ${banner.is_active ? '' : 'border-dashed'}`}>
-            <img src={menuImageUrl(banner.image_path, 'full')} alt="" className="aspect-[16/7] w-full max-w-xl rounded-card bg-peach object-cover" />
+            <img src={menuImageUrl(banner.image_path, 'full')} alt="" className="aspect-[16/10] w-full max-w-xl rounded-card bg-peach object-cover" />
             <form
               onSubmit={(event) => {
                 const form = submitted(event)

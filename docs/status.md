@@ -53,6 +53,7 @@ Tick items as they land. Items come from `CLAUDE.md` section 15 and `docs/spec.m
 
 ### Milestone 3: Admin and order handling
 
+- [x] Staff pages share the customer site's top bar and footer (18 Oct): the bar stays visible while scrolling and the ringing alarm sits in it
 - [x] **Live Orders**: Realtime list for the staff member's branch (tabs New, Kitchen, On the way, Done today, Refund due); alarm repeating until tapped and a browser notification on laptops; screen kept awake; tap-to-call. Order station setup is in README ("Setting up the order station")
 - [x] Call-attempt button (the third missed call auto-cancels; enforced by the database)
 - [x] Verify transfer payment with transaction ID; confirm; cancel with reason; status buttons; rider assignment (`out_for_delivery` needs a rider; enforced by the database)

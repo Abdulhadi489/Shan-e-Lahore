@@ -1,7 +1,9 @@
-import { Navigate, NavLink, Outlet, useOutletContext } from 'react-router'
+import { Link, Navigate, NavLink, Outlet, useOutletContext } from 'react-router'
 import { useQuery, type UseQueryResult } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
 import { BellRing } from 'lucide-react'
+import { navLinkClass } from '../../app/CustomerLayout'
+import { useHeaderHeight } from '../../app/useHeaderHeight'
 import { supabase } from '../../lib/supabase'
 import { useStaffBranch, type StaffBranch } from './useStaffBranch'
 import { useLiveOrders, type LiveOrder } from './orders/useLiveOrders'
@@ -30,6 +32,7 @@ const staffSections = [
 // Wraps every staff screen, so the new-order alarm keeps ringing whichever screen is open.
 export function StaffLayout({ userId }: { userId: string }) {
   const { t } = useTranslation(undefined, { lng: 'en' })
+  const header = useHeaderHeight()
   const profile = useQuery({
     queryKey: ['profile', userId],
     queryFn: async () => {
@@ -66,70 +69,73 @@ export function StaffLayout({ userId }: { userId: string }) {
   }
 
   return (
-    <div className="min-h-dvh">
+    <div className="flex min-h-dvh flex-col">
       <title>{`${t('admin.title')} · ${t('brand')}`}</title>
-      <header className="border-b border-line bg-raised print:hidden">
-        <div className="mx-auto flex max-w-7xl flex-wrap items-center gap-x-4 gap-y-2 px-4 py-3">
-          <p className="font-heading text-xl font-bold text-brand-deep">
+      {/* The customer site's top bar. A ringing alarm sits inside it so it shows wherever staff have scrolled. */}
+      <header ref={header} className="sticky top-0 z-20 border-b border-line bg-raised print:hidden">
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-2 px-(--page-pad) py-3">
+          <Link to="/admin" className="font-heading text-2xl font-bold text-brand-deep">
             {t('brand')} <span className="text-ink-muted">{t('admin.title')}</span>
-          </p>
-          {profile.data && (
-            <p className="text-sm text-ink-muted">
-              {t('admin.signedInAs', { name: profile.data.full_name, role: t(`admin.roles.${profile.data.role}`) })}
-            </p>
-          )}
-          {alarm.on && <p className="text-sm font-bold text-success">{t('admin.alerts.on')}</p>}
+          </Link>
           <button
             type="button"
             onClick={() => void supabase.auth.signOut()}
-            className="ms-auto rounded-control border border-ink-muted px-3 py-1 hover:border-brand-deep"
+            className="ms-auto rounded-control border border-line px-3 py-1 hover:border-brand-deep"
           >
             {t('admin.signOut')}
           </button>
         </div>
         {hasAccess && (
-          <nav aria-label={t('admin.nav.label')} className="mx-auto flex max-w-7xl flex-wrap gap-x-4 gap-y-1 px-4 pb-2">
+          // One scrolling line on phones, like the menu's category bar, so the bar stays short.
+          <nav aria-label={t('admin.nav.label')} className="flex gap-x-5 overflow-x-auto whitespace-nowrap px-(--page-pad) pb-3">
             {staffSections
               .filter((section) => isSuperAdmin || !section.superAdmin)
               .map((section) => (
-                <NavLink
-                  key={section.key}
-                  to={section.to}
-                  end={section.key === 'liveOrders'}
-                  className="border-b-2 border-transparent py-1 font-bold text-ink-muted hover:text-ink aria-[current=page]:border-brand aria-[current=page]:text-ink"
-                >
+                <NavLink key={section.key} to={section.to} end={section.key === 'liveOrders'} className={navLinkClass}>
                   {t(`admin.nav.${section.key}`)}
                 </NavLink>
               ))}
           </nav>
         )}
+        <div role="alert">
+          {alarm.unseen.length > 0 && (
+            <button
+              type="button"
+              onClick={alarm.acknowledge}
+              className="flex w-full items-center justify-center gap-3 bg-brand px-4 py-4 text-lg font-bold text-ink"
+            >
+              <BellRing aria-hidden className="size-6 shrink-0" />
+              {t('admin.alerts.ringing', {
+                count: alarm.unseen.length,
+                numbers: alarm.unseen.map((o) => `${branch.data?.order_prefix}-${o.order_number}`).join(', '),
+              })}
+            </button>
+          )}
+        </div>
       </header>
       {branch.data && !alarm.on && (
-        <div className="bg-peach print:hidden">
-          <div className="mx-auto flex max-w-7xl flex-wrap items-center gap-3 px-4 py-3">
-            <p className="font-bold">{t('admin.alerts.off')}</p>
-            <button type="button" onClick={alarm.turnOn} className="rounded-control bg-brand px-4 py-2 font-bold text-ink">
-              {t('admin.alerts.turnOn')}
-            </button>
-          </div>
+        <div className="flex flex-wrap items-center gap-3 bg-peach px-(--page-pad) py-3 print:hidden">
+          <p className="font-bold">{t('admin.alerts.off')}</p>
+          <button type="button" onClick={alarm.turnOn} className="rounded-control bg-brand px-4 py-2 font-bold text-ink">
+            {t('admin.alerts.turnOn')}
+          </button>
         </div>
       )}
-      <div role="alert" className="print:hidden">
-        {alarm.unseen.length > 0 && (
-          <button
-            type="button"
-            onClick={alarm.acknowledge}
-            className="flex w-full items-center justify-center gap-3 bg-brand px-4 py-4 text-lg font-bold text-ink"
-          >
-            <BellRing aria-hidden className="size-6 shrink-0" />
-            {t('admin.alerts.ringing', {
-              count: alarm.unseen.length,
-              numbers: alarm.unseen.map((o) => `${branch.data?.order_prefix}-${o.order_number}`).join(', '),
-            })}
-          </button>
-        )}
-      </div>
-      <main className="mx-auto max-w-7xl px-4 py-6 print:p-0">{content}</main>
+
+      <main className="mx-auto w-full max-w-[120rem] flex-1 px-(--page-pad) py-6 print:p-0">{content}</main>
+
+      <footer className="border-t border-line bg-peach print:hidden">
+        <div className="mx-auto flex max-w-[120rem] flex-wrap justify-center gap-x-6 gap-y-2 px-(--page-pad) py-6">
+          {profile.data && (
+            <p>{t('admin.signedInAs', { name: profile.data.full_name, role: t(`admin.roles.${profile.data.role}`) })}</p>
+          )}
+          {alarm.on && <p className="font-bold text-success">{t('admin.alerts.on')}</p>}
+          {/* A new tab, because leaving the staff pages would stop the new-order alarm. */}
+          <a href="/" target="_blank" rel="noopener" className="hover:text-brand-deep">
+            {t('admin.customerSite')}
+          </a>
+        </div>
+      </footer>
     </div>
   )
 }

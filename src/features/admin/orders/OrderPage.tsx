@@ -143,7 +143,7 @@ export function OrderPage() {
           </section>
         </div>
 
-        <div className="flex flex-col gap-4 lg:sticky lg:top-4 lg:self-start">
+        <div className="flex flex-col gap-4 lg:sticky lg:top-[calc(var(--header-h)+1rem)] lg:self-start">
           {(isOpen || o.payment_status === 'refund_due') && (
             <section className={`${card} flex flex-col gap-3`}>
               {o.status === 'pending_confirmation' && (

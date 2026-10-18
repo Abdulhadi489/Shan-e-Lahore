@@ -80,7 +80,8 @@ Using an AI assistant? Point it at `AGENTS.md`; it reads `CLAUDE.md`, the projec
 | File | What it is |
 | --- | --- |
 | `AppRoutes.tsx` | Every customer address (`/`, `/menu`, `/cart`, `/checkout`, `/track/:token`, info pages) and `/admin` |
-| `CustomerLayout.tsx` | Top bar (logo, Menu, Cart, language; full width, stays visible and shares its height as `--header-h`), the page column and its fluid edge `--page-pad`, centred footer links |
+| `CustomerLayout.tsx` | Top bar (logo, Menu, Cart, language; full width, stays visible), the page column, centred footer links; exports `navLinkClass`, also used by the staff menu |
+| `useHeaderHeight.ts` | Shares the sticky top bar's height as `--header-h` (customer and staff layouts); `--page-pad`, the fluid page edge, is in `index.css` |
 | `useBranch.ts` | Loads the restaurant's details, hours and delivery charges |
 | `OpeningHoursList.tsx` | The opening-hours table (home and contact pages) |
 | `EmptyPage.tsx` | Simple page with a heading, used for "page not found" |
@@ -110,7 +111,7 @@ Using an AI assistant? Point it at `AGENTS.md`; it reads `CLAUDE.md`, the projec
 | --- | --- |
 | `AdminApp.tsx` | Staff routes and login check |
 | `LoginPage.tsx` | Staff login (email, password, bot check) |
-| `StaffLayout.tsx` | Staff header, menu bar (Order Staff see two sections, Super Admins eight), new-order alarm banner, Super Admin gate |
+| `StaffLayout.tsx` | Same top bar and footer as the customer site: staff menu (Order Staff see two sections, Super Admins eight), the ringing new-order alarm inside the sticky bar, the alerts-off reminder, Super Admin gate |
 | `useStaffBranch.ts` | Loads the staff member's branch, payment details and riders |
 | `ui.tsx` | Shared button and input styles, the save helper, error and "Saved" messages, form helpers |
 | `orders/useLiveOrders.ts` | Today's and open orders, updated instantly by Realtime (30-second backup check) |

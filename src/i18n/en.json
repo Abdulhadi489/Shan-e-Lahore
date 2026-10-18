@@ -318,6 +318,7 @@
     "signOut": "Sign out",
     "liveOrders": "Live orders",
     "signedInAs": "Signed in as {{name}} ({{role}})",
+    "customerSite": "Customer website (opens in a new tab)",
     "roles": {
       "super_admin": "Super Admin",
       "order_staff": "Order Staff",
