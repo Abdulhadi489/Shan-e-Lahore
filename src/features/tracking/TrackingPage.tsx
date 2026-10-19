@@ -1,3 +1,4 @@
+import { PageTitle } from '../../app/PageTitle'
 import { useParams } from 'react-router'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
@@ -38,7 +39,7 @@ export function TrackingPage() {
     return (
       <>
         <title>{`${t('pages.tracking')} · ${t('brand')}`}</title>
-        <h1 className="font-heading text-3xl font-bold">{t('pages.tracking')}</h1>
+        <PageTitle title={t('pages.tracking')} urdu={t('pages.tracking', { lng: 'ur' })} />
         <p role="alert" className="mt-3">{t(notFound ? 'tracking.notFound' : 'menu.error')}</p>
       </>
     )
@@ -51,57 +52,59 @@ export function TrackingPage() {
   return (
     <>
       <title>{`${t('tracking.heading', { number: o.orderNumber })} · ${t('brand')}`}</title>
-      <h1 className="font-heading text-3xl font-bold">{t('tracking.heading', { number: o.orderNumber })}</h1>
+      <PageTitle title={t('tracking.heading', { number: o.orderNumber })} urdu={t('pages.tracking', { lng: 'ur' })} />
       <p className="mt-1 text-ink-muted">{t('tracking.thanks', { name: o.firstName })}</p>
 
       <div className="mt-6 flex max-w-6xl flex-wrap items-start gap-8">
         <div className="flex min-w-0 flex-[999_1_30rem] flex-col gap-6">
           {o.status === 'cancelled' ? (
             <section role="status" className="rounded-card border-2 border-danger bg-raised p-4">
-              <p className="text-lg font-bold text-danger">{t('tracking.cancelled')}</p>
+              <p className="text-lg font-medium text-danger">{t('tracking.cancelled')}</p>
               {o.cancelReason && <p className="mt-1">{t(`tracking.reasons.${o.cancelReason as 'other'}`)}</p>}
               {o.paymentStatus === 'refund_due' && <p className="mt-1">{t('tracking.refundDue')}</p>}
               {o.paymentStatus === 'refunded' && <p className="mt-1">{t('tracking.refunded')}</p>}
             </section>
           ) : (
             <section aria-label={t('tracking.progress')}>
-              <ol className="flex flex-col gap-3">
+              {/* The five stages in order, joined by a gold line; reached stages are orange. */}
+              <ol className="relative grid grid-cols-5 gap-1 rounded-card border border-line bg-raised px-2 py-5 text-center text-xs sm:text-sm">
+                <span aria-hidden className="absolute inset-x-[10%] top-9 h-px bg-line" />
                 {steps.map((step, index) => {
                   const done = index <= currentStep
                   const time = o.times[step.time]
                   return (
-                    <li key={step.status} aria-current={index === currentStep ? 'step' : undefined} className="flex items-center gap-3">
+                    <li key={step.status} aria-current={index === currentStep ? 'step' : undefined} className="relative flex flex-col items-center gap-2">
                       <span
-                        className={`flex size-8 shrink-0 items-center justify-center rounded-full border-2 ${done ? 'border-success bg-success text-raised' : 'border-line bg-raised'}`}
+                        className={`flex size-9 items-center justify-center rounded-full font-medium ${done ? 'bg-brand text-ink' : 'bg-peach text-ink-muted'}`}
                       >
-                        {done && <Check aria-hidden className="size-4" />}
+                        {done ? <Check aria-hidden className="size-4" /> : index + 1}
                       </span>
-                      <span className={index === currentStep ? 'font-bold' : done ? '' : 'text-ink-muted'}>
+                      <span className={index === currentStep ? 'font-medium' : done ? '' : 'text-ink-muted'}>
                         {t(`tracking.steps.${step.status}`)}
-                        {time && <span className="ms-2 text-sm text-ink-muted">{clockLabel(lng, time)}</span>}
+                        {time && <span className="block text-ink-muted">{clockLabel(lng, time)}</span>}
                       </span>
                     </li>
                   )
                 })}
               </ol>
               {o.status === 'pending_confirmation' && (
-                <p className="mt-4 rounded-card bg-peach p-4 font-bold">{t('tracking.pendingNotice', { phone: o.maskedPhone })}</p>
+                <p className="mt-4 rounded-card border border-line bg-raised p-5 font-medium">{t('tracking.pendingNotice', { phone: o.maskedPhone })}</p>
               )}
               {o.status === 'confirmed' && o.estimatedDeliveryMinutes && (
                 <p className="mt-4">{t('tracking.estimate', { minutes: o.estimatedDeliveryMinutes })}</p>
               )}
               {o.rider && (
-                <p className="mt-4 rounded-card bg-peach p-4">
+                <p className="mt-4 rounded-card border border-line bg-raised p-5">
                   {t('tracking.rider', { name: o.rider.name })}{' '}
-                  <a href={`tel:+${o.rider.phone}`} dir="ltr" className="font-bold underline">{localPhone(o.rider.phone)}</a>
+                  <a href={`tel:+${o.rider.phone}`} dir="ltr" className="font-medium underline">{localPhone(o.rider.phone)}</a>
                 </p>
               )}
             </section>
           )}
 
           {o.status !== 'cancelled' && (
-            <section className="rounded-card border border-line bg-raised p-4">
-              <h2 className="font-heading text-2xl font-bold">{t('tracking.payment')}</h2>
+            <section className="rounded-card border border-line bg-raised p-5">
+              <h2 className="font-heading text-2xl font-semibold">{t('tracking.payment')}</h2>
               {!isTransfer && <p className="mt-2">{t('tracking.payCod', { total: price(o.total) })}</p>}
               {isTransfer && o.paymentStatus === 'unpaid' && (
                 <>
@@ -121,7 +124,7 @@ export function TrackingPage() {
                       <dt className="text-ink-muted">{t('tracking.accountTitle')}</dt>
                       <dd>{o.paymentAccount.title}</dd>
                       <dt className="text-ink-muted">{t('tracking.accountNumber')}</dt>
-                      <dd dir="ltr" className="font-bold rtl:text-end">
+                      <dd dir="ltr" className="font-medium rtl:text-end">
                         {o.paymentMethod === 'bank_transfer' ? o.paymentAccount.number : localPhone(o.paymentAccount.number)}
                       </dd>
                       {o.paymentAccount.iban && (
@@ -135,7 +138,7 @@ export function TrackingPage() {
                   {o.whatsappNumber && (
                     <a
                       href={whatsappLink(o.whatsappNumber, t('tracking.screenshotMessage', { number: o.orderNumber }))}
-                      className="mt-4 inline-block rounded-control bg-brand px-4 py-2 font-bold text-ink hover:bg-peach"
+                      className="mt-4 inline-flex min-h-12 items-center rounded-full bg-brand px-6 font-medium text-ink hover:bg-peach"
                     >
                       {t('tracking.sendScreenshot')}
                     </a>
@@ -143,13 +146,13 @@ export function TrackingPage() {
                   <p className="mt-3 text-sm text-ink-muted">{t('tracking.transferNote')}</p>
                 </>
               )}
-              {isTransfer && o.paymentStatus === 'paid' && <p className="mt-2 font-bold text-success">{t('tracking.paid')}</p>}
+              {isTransfer && o.paymentStatus === 'paid' && <p className="mt-2 font-medium text-success">{t('tracking.paid')}</p>}
             </section>
           )}
 
           <div className="flex flex-wrap gap-3">
             {o.branchPhone && (
-              <a href={`tel:+${o.branchPhone}`} className="flex items-center gap-2 rounded-control border border-ink-muted bg-raised px-4 py-2 font-bold">
+              <a href={`tel:+${o.branchPhone}`} className="flex min-h-12 items-center gap-2 rounded-full bg-brand px-6 font-medium text-ink hover:bg-peach">
                 <PhoneCall aria-hidden className="size-5" />
                 {t('tracking.callRestaurant')}
               </a>
@@ -161,7 +164,7 @@ export function TrackingPage() {
                 onClick={() => {
                   if (window.confirm(t('tracking.cancelConfirm'))) cancel.mutate()
                 }}
-                className="rounded-control border border-danger px-4 py-2 font-bold text-danger disabled:opacity-60"
+                className="min-h-12 rounded-full border border-ink px-6 font-medium disabled:opacity-60 ltr:uppercase ltr:tracking-[0.12em]"
               >
                 {t('tracking.cancel')}
               </button>
@@ -170,8 +173,8 @@ export function TrackingPage() {
           {cancel.isError && <p role="alert" className="text-danger">{t('tracking.cancelFailed')}</p>}
         </div>
 
-        <aside className="min-w-0 flex-[1_1_20rem] rounded-card border border-line bg-raised p-4">
-          <h2 className="font-heading text-2xl font-bold">{t('checkout.summary')}</h2>
+        <aside className="heritage-dark min-w-0 flex-[1_1_20rem] rounded-card border border-gold p-6">
+          <h2 className="font-heading text-2xl font-semibold">{t('checkout.summary')}</h2>
           <ul className="mt-3 flex flex-col gap-2 text-sm">
             {o.items.map((item, index) => (
               <li key={index} className="flex justify-between gap-3">
@@ -192,7 +195,7 @@ export function TrackingPage() {
             {o.discountAmount > 0 && (
               <div className="flex justify-between text-success"><dt>{t('checkout.discount')}</dt><dd>− {price(o.discountAmount)}</dd></div>
             )}
-            <div className="flex justify-between text-lg font-bold"><dt>{t('checkout.total')}</dt><dd>{price(o.total)}</dd></div>
+            <div className="flex justify-between text-lg font-medium"><dt>{t('checkout.total')}</dt><dd>{price(o.total)}</dd></div>
           </dl>
         </aside>
       </div>

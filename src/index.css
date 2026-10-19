@@ -2,6 +2,9 @@
 @import '@fontsource/pt-sans-narrow/latin-700.css';
 /* Regular weight only: Nastaliq has no real bold, and each weight is 156 KB. */
 @import '@fontsource/noto-nastaliq-urdu/arabic-400.css';
+@import '@fontsource/cormorant-garamond/latin-600.css';
+@import '@fontsource/jost/latin-400.css';
+@import '@fontsource/jost/latin-500.css';
 
 /*
   Design tokens. Colours are measured from the logo and the printed menu.
@@ -20,12 +23,49 @@
   --color-line: #eed9c8;
   --color-danger: #b3261e;
   --color-success: #2e6b3b;
+  /* Heritage look of the customer site (header, lace trim, footer, skyline sketch). */
+  --color-espresso: #2a1a12;
+  --color-gold: #c79a45;
+  --color-skyline: #b98b3e;
 
   --radius-*: initial;
   --radius-control: 0.5rem;
   --radius-card: 0.75rem;
 
   --font-heading: 'PT Sans Narrow', var(--font-sans);
+}
+
+/* The customer site's heritage palette and type. Same token names with new values, so every customer page
+   follows without per-component colours, and the staff screens keep the palette above.
+   Text on orange is espresso (ink); white or cream on this orange fails AA. */
+.heritage {
+  --color-brand: #e5680f;
+  --color-brand-deep: #a8480a;
+  --color-surface: #f4e9d8;
+  --color-raised: #fbf4e8;
+  --color-ink: #1e120c;
+  --color-ink-muted: #4a3426;
+  --color-line: #c79a45;
+  --color-success: #1e6b38;
+  --font-heading: 'Cormorant Garamond', ui-serif, Georgia, serif;
+  font-family: 'Jost', var(--font-sans);
+}
+/* Espresso summary cards (cart, checkout, tracking): the same token names turned light, so the card's
+   existing text, borders and inputs read on the dark background. Buttons on orange use text-espresso. */
+.heritage-dark {
+  --color-ink: #f4e9d8;
+  --color-ink-muted: #dcc6a6;
+  --color-raised: #3a261b;
+  --color-line: #8a6a3a;
+  --color-danger: #ffa194;
+  --color-success: #94d6a4;
+  --color-brand-deep: #f7a35c;
+  background-color: var(--color-espresso);
+  color: var(--color-ink);
+}
+html[lang='ur'] .heritage {
+  --font-heading: var(--font-sans);
+  font-family: var(--font-sans);
 }
 
 @layer base {
@@ -102,4 +142,13 @@
 /* Card grids add a column whenever there is room (like a video site's grid); one column on small phones. */
 @utility grid-cols-cards {
   grid-template-columns: repeat(auto-fill, minmax(min(18rem, 100%), 1fr));
+}
+
+/* Sideways rows (menu categories, sides, popular dishes) still scroll by swipe, trackpad, Shift + wheel and keyboard;
+   only the grey bar under them is hidden. */
+@utility scrollbar-none {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
 }

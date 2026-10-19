@@ -89,7 +89,7 @@ export function LocationPicker({
         type="button"
         onClick={locateMe}
         disabled={locating}
-        className="mb-3 rounded-control bg-brand px-4 py-2 font-bold text-ink hover:bg-peach disabled:opacity-60"
+        className="mb-3 min-h-11 rounded-full bg-brand px-5 font-medium text-ink hover:bg-peach disabled:opacity-60"
       >
         {locating ? t('checkout.locating') : t('checkout.useMyLocation')}
       </button>
@@ -127,9 +127,20 @@ export function LocationPicker({
 
 // Read-only map of the delivery area for the home page.
 // radiusKm 0 shows just the restaurant (contact page).
-export function DeliveryAreaMap({ branch, radiusKm, zoom = 11 }: { branch: Pin; radiusKm: number; zoom?: number }) {
+// boxClass sizes the map: a bordered 18 rem box by default; the contact page's arch frame passes h-full.
+export function DeliveryAreaMap({
+  branch,
+  radiusKm,
+  zoom = 11,
+  boxClass = 'h-72 rounded-card border border-line',
+}: {
+  branch: Pin
+  radiusKm: number
+  zoom?: number
+  boxClass?: string
+}) {
   return (
-    <div dir="ltr" className="isolate h-72 overflow-hidden rounded-card border border-line">
+    <div dir="ltr" className={`isolate overflow-hidden ${boxClass}`}>
       <MapContainer center={branch} zoom={zoom} scrollWheelZoom={false} className="h-full w-full">
         <TileLayer url={tiles} attribution={attribution} />
         {radiusKm > 0 && <Circle center={branch} radius={radiusKm * 1000} className="map-delivery-area" />}

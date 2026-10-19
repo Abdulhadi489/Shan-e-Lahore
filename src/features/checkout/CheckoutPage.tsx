@@ -1,3 +1,4 @@
+import { PageTitle } from '../../app/PageTitle'
 import { useState } from 'react'
 import { Link, Navigate, useNavigate } from 'react-router'
 import { useForm, useWatch } from 'react-hook-form'
@@ -31,7 +32,7 @@ const knownErrors = new Set([
 ])
 const errorKey = (code: string) => `errors.${knownErrors.has(code) ? code : 'SERVER_ERROR'}` as ParseKeys
 
-const inputClass = 'w-full rounded-control border border-ink-muted bg-raised px-3 py-2'
+const inputClass = 'w-full min-h-11 rounded-control border border-ink-muted bg-raised px-3 py-2'
 
 export function CheckoutPage() {
   const { t, i18n } = useTranslation()
@@ -113,13 +114,13 @@ export function CheckoutPage() {
   return (
     <>
       <title>{`${t('pages.checkout')} · ${t('brand')}`}</title>
-      <h1 className="font-heading text-3xl font-bold">{t('pages.checkout')}</h1>
-      <p className="mt-2 max-w-[60ch] font-bold text-brand-deep">{t('checkout.callNotice')}</p>
+      <PageTitle title={t('pages.checkout')} urdu={t('pages.checkout', { lng: 'ur' })} />
+      <p className="mt-2 max-w-[60ch] font-medium text-brand-deep">{t('checkout.callNotice')}</p>
 
       <form onSubmit={handleSubmit(submit)} noValidate className="mt-6 flex max-w-6xl flex-wrap items-start gap-8">
         <div className="flex min-w-0 flex-[999_1_30rem] flex-col gap-8">
           <section>
-            <h2 className="font-heading text-2xl font-bold">{t('checkout.location')}</h2>
+            <h2 className="font-heading text-2xl font-semibold">{t('checkout.location')}</h2>
             {branch.data && (
               <div className="mt-3">
                 <LocationPicker
@@ -130,7 +131,7 @@ export function CheckoutPage() {
                 />
               </div>
             )}
-            <p aria-live="polite" className="mt-3 font-bold">
+            <p aria-live="polite" className="mt-3 font-medium">
               {!pin
                 ? t('checkout.dropPin')
                 : quote.isPending
@@ -142,7 +143,7 @@ export function CheckoutPage() {
           </section>
 
           <section className="flex flex-col gap-4">
-            <h2 className="font-heading text-2xl font-bold">{t('checkout.address')}</h2>
+            <h2 className="font-heading text-2xl font-semibold">{t('checkout.address')}</h2>
             <label className="flex flex-col gap-1">
               {t('checkout.addressLabel')}
               <textarea rows={2} maxLength={300} autoComplete="street-address" className={inputClass} {...register('address')} />
@@ -155,7 +156,7 @@ export function CheckoutPage() {
           </section>
 
           <section className="flex flex-col gap-4">
-            <h2 className="font-heading text-2xl font-bold">{t('checkout.details')}</h2>
+            <h2 className="font-heading text-2xl font-semibold">{t('checkout.details')}</h2>
             <label className="flex flex-col gap-1">
               {t('checkout.nameLabel')}
               <input maxLength={60} autoComplete="name" className={inputClass} {...register('name')} />
@@ -174,11 +175,11 @@ export function CheckoutPage() {
           </section>
 
           <fieldset className="flex flex-col gap-2">
-            <legend className="mb-2 font-heading text-2xl font-bold">{t('checkout.payment')}</legend>
+            <legend className="mb-2 font-heading text-2xl font-semibold">{t('checkout.payment')}</legend>
             {paymentMethods.map((method) => (
-              <label key={method} className="flex items-center gap-3 rounded-control border border-line bg-raised px-3 py-3">
+              <label key={method} className="flex min-h-12 items-center gap-3 rounded-control border border-line bg-raised px-4 py-3">
                 <input type="radio" value={method} {...register('paymentMethod')} />
-                <span className="font-bold">{t(`payment.${method}`)}</span>
+                <span className="font-medium">{t(`payment.${method}`)}</span>
               </label>
             ))}
             <p className="text-sm text-ink-muted">
@@ -187,8 +188,8 @@ export function CheckoutPage() {
           </fieldset>
         </div>
 
-        <aside className="sticky top-[calc(var(--header-h)+1rem)] flex min-w-0 flex-[1_1_20rem] flex-col gap-4 rounded-card border border-line bg-raised p-4">
-          <h2 className="font-heading text-2xl font-bold">{t('checkout.summary')}</h2>
+        <aside className="heritage-dark sticky top-[calc(var(--header-h)+1rem)] flex min-w-0 flex-[1_1_20rem] flex-col gap-4 rounded-card border border-gold p-6">
+          <h2 className="font-heading text-3xl font-semibold">{t('checkout.summary')}</h2>
           <ul className="flex flex-col gap-2">
             {lines.map((line, index) => {
               const item = items.get(line.itemId)
@@ -200,7 +201,7 @@ export function CheckoutPage() {
                   <span>
                     {line.quantity} × {item ? localized(lng, item.name_en, item.name_ur) : '…'}
                     {variant && ` (${localized(lng, variant.name_en, variant.name_ur)})`}
-                    {broken && <span className="block font-bold text-danger">{t('cart.unavailable')}</span>}
+                    {broken && <span className="block font-medium text-danger">{t('cart.unavailable')}</span>}
                   </span>
                   {unit && 'price' in unit && <span className="shrink-0">{price(unit.price * line.quantity)}</span>}
                 </li>
@@ -208,7 +209,7 @@ export function CheckoutPage() {
             })}
           </ul>
 
-          <label htmlFor="discount-code" className="-mb-2 text-sm font-bold">{t('checkout.discountLabel')}</label>
+          <label htmlFor="discount-code" className="-mb-2 text-sm font-medium">{t('checkout.discountLabel')}</label>
           <div className="flex gap-2">
             <input
               id="discount-code"
@@ -218,7 +219,7 @@ export function CheckoutPage() {
               dir="ltr"
               className={`${inputClass} uppercase`}
             />
-            <button type="button" onClick={applyCode} className="rounded-control border border-ink-muted px-3 font-bold">
+            <button type="button" onClick={applyCode} className="min-h-11 rounded-full border border-ink-muted px-4 font-medium">
               {t('checkout.apply')}
             </button>
           </div>
@@ -238,27 +239,27 @@ export function CheckoutPage() {
                 <dd>− {price(quote.data.discountAmount)}</dd>
               </div>
             )}
-            <div className="mt-1 flex justify-between border-t border-line pt-2 text-lg font-bold">
+            <div className="mt-1 flex justify-between border-t border-line pt-2 text-lg font-medium">
               <dt>{t('checkout.total')}</dt>
               <dd>{quote.data?.distanceKm != null ? price(quote.data.total) : '…'}</dd>
             </div>
           </dl>
 
           {problems.length > 0 && (
-            <ul role="alert" className="flex flex-col gap-1 text-sm font-bold text-danger">
+            <ul role="alert" className="flex flex-col gap-1 text-sm font-medium text-danger">
               {problems.map((problem) => (
                 <li key={problem}>{t(errorKey(problem), { km: maxKm, minimum: price(settings?.min_order_amount ?? 0) })}</li>
               ))}
             </ul>
           )}
           {problems.includes('ITEM_UNAVAILABLE_OR_CHANGED') && (
-            <Link to="/cart" className="text-sm font-bold text-brand-deep underline">{t('checkout.backToCart')}</Link>
+            <Link to="/cart" className="text-sm font-medium text-brand-deep underline">{t('checkout.backToCart')}</Link>
           )}
-          {quote.isError && <p role="alert" className="text-sm font-bold text-danger">{t(errorKey(quote.error instanceof OrderApiError ? quote.error.code : 'NETWORK'))}</p>}
+          {quote.isError && <p role="alert" className="text-sm font-medium text-danger">{t(errorKey(quote.error instanceof OrderApiError ? quote.error.code : 'NETWORK'))}</p>}
 
           <Turnstile key={attempt} onToken={setCaptchaToken} unavailableMessage={t('checkout.botCheckUnavailable')} />
           {order.isError && (
-            <p role="alert" className="text-sm font-bold text-danger">
+            <p role="alert" className="text-sm font-medium text-danger">
               {t(errorKey(order.error instanceof OrderApiError ? order.error.code : 'NETWORK'), { km: maxKm, minimum: price(settings?.min_order_amount ?? 0) })}
             </p>
           )}
@@ -266,7 +267,7 @@ export function CheckoutPage() {
           <button
             type="submit"
             disabled={!canPlace || order.isPending}
-            className="rounded-control bg-brand px-4 py-3 text-lg font-bold text-ink hover:bg-peach active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60"
+            className="min-h-12 rounded-full bg-brand px-4 py-3 text-lg font-medium text-espresso hover:bg-peach active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60"
           >
             {order.isPending
               ? t('checkout.placing')
