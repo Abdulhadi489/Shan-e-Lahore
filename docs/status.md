@@ -75,7 +75,7 @@ Tick items as they land. Items come from `CLAUDE.md` section 15 and `docs/spec.m
 - [x] `edit-order` Edge Function: staff change dishes or the address during the confirmation call (only while it waits for the call); the server re-prices and `public.replace_order_contents()` saves and audits it
 - [x] Availability screen (Order Staff and Super Admin): sold-out switches for dishes, sizes and add-on choices; pause/resume delivery
 - [x] Menu management (Super Admin): categories (including the "sides" switch), items, variants, add-on groups, deals, photo upload compressed in the browser to WebP as two files (`<name>.webp` up to 1200 px and `<name>-card.webp` at 320 px, see `docs/decisions.md`), banners, ordering, sold-out and hide switches, English and Urdu side by side
-- [x] Delivery settings: branch pin on a map (moving it is now audited), km tiers, road factor, minimum order (currently 0, off), free-delivery threshold, change log; the delivery switch is on Availability
+- [x] Delivery settings: branch pin on a map (moving it is now audited), km tiers, road factor, minimum order (Rs 600 on dev since 18 Oct), free-delivery threshold, change log; the delivery switch is on Availability
 - [x] Discount codes: add, edit, switch off, delete unused; usage count
 - [x] Customers: list with order count, cancellations, delivered spend and last order (`customer_summaries` view); search; order history; block switch
 - [x] Reports (Super Admin only): sales by period, status and cancel reasons, payment method, top items, distance tier, discount usage; CSV export (UTF-8 with BOM)
@@ -143,7 +143,7 @@ Tick items as they land. Items come from `CLAUDE.md` section 15 and `docs/spec.m
 ## Data in the dev project
 
 - Real: menu (106 dishes, from the printed menu of 2026-08-29), branch address, phone and map pin (31.523689, 74.344498), opening hours: the restaurant's real hours since 25 Oct are 04:00 to 03:00 every day (the hour in between is the switch from the main menu to nashta). The seed has them; **the hosted dev project still has 05:00 to 23:00 until a Super Admin changes Settings > Opening hours** (or a deployer runs the SQL below).
-- Real delivery charges (restaurant, 25 Oct): Rs 70 up to 1 km, then Rs 30 more for each started km (2 km Rs 100, 3 km Rs 130), delivering in the whole of Lahore. Stored as 45 tiers (1 to 45 km by road, about 35 km in a straight line with the 1.3 road factor). The seed has them; **the hosted dev project still has the old 3/5/7 km placeholder tiers** until a deployer runs the SQL below in the dashboard SQL editor (typing 45 tiers in Delivery is possible but slow). Road factor 1.3. Minimum order is 0 (off, team decision).
+- Real delivery charges (restaurant, 25 Oct): Rs 70 up to 1 km, then Rs 30 more for each started km (2 km Rs 100, 3 km Rs 130), delivering in the whole of Lahore. Stored as 45 tiers (1 to 45 km by road, about 35 km in a straight line with the 1.3 road factor). The seed has them; **the hosted dev project still has the old 3/5/7 km placeholder tiers** until a deployer runs the SQL below in the dashboard SQL editor (typing 45 tiers in Delivery is possible but slow). Road factor 1.3. Minimum order is Rs 600 (set on 18 Oct in the Supabase dashboard, so the change log has no name; kept by the team on 19 Oct). The local seed still has no minimum. Change settings from the admin panel (Delivery), not the dashboard, so the log records who did it.
 
   ```sql
   -- Hosted dev project only, run once in Dashboard > SQL editor. Replaces the delivery tiers and hours of the active branch.
