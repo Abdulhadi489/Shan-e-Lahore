@@ -32,7 +32,7 @@ How we work:
 - gitleaks (`brew install gitleaks`). The pre-commit hook refuses to commit without it.
 - Deno 2 (`brew install deno`), for the shared-rule tests
 
-The `brew` commands are for macOS; on Windows or Linux use each tool's own install page.
+The `brew` commands are for macOS; on Windows or Linux use each tool's own install page. On Windows, gitleaks installs with `winget install Gitleaks.Gitleaks`; open a new terminal afterwards (or restart the app you run it from) so it is found.
 
 ## First-time setup
 
@@ -42,6 +42,8 @@ supabase start
 ```
 
 `npm install` also switches on the secret-scanning pre-commit hook. `supabase start` runs the database, auth and storage locally in Docker and loads the placeholder menu from `supabase/seed.sql`. The local dashboard (Studio) is at http://127.0.0.1:54323.
+
+On Windows, start it as `supabase start -x logflare,vector`. The analytics containers (local logs only, which the site doesn't use) fail their health check on Windows, and the CLI then stops everything else.
 
 ## Everyday commands
 
