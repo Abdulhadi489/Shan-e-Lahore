@@ -19,27 +19,33 @@ export function CartPage() {
   const branch = useBranch()
   const price = (amount: number) => t('price', { amount: formatAmount(amount) })
   const title = <title>{`${t('pages.cart')} · ${t('brand')}`}</title>
-  const heading = <PageTitle title={t('pages.cart')} urdu={t('pages.cart', { lng: 'ur' })} />
+  const heading = (
+    <div className="[&_h1]:justify-center">
+      <PageTitle title={t('pages.cart')} urdu={t('pages.cart', { lng: 'ur' })} />
+    </div>
+  )
 
   if (lines.length === 0) {
     return (
       <>
         {title}
         {heading}
-        <p className="mt-4">{t('cart.empty')}</p>
-        <Link to="/menu" className="mt-4 inline-flex min-h-12 items-center rounded-full bg-brand px-6 font-medium text-ink hover:bg-peach">
-          {t('cart.browseMenu')}
-        </Link>
+        <div className="text-center">
+          <p className="mt-4">{t('cart.empty')}</p>
+          <Link to="/menu" className="mt-4 inline-flex min-h-12 items-center rounded-full bg-brand px-6 font-medium text-ink hover:bg-peach">
+            {t('cart.browseMenu')}
+          </Link>
+        </div>
       </>
     )
   }
-  if (menu.isPending || branch.isPending) return <>{title}{heading}<p className="mt-4">{t('menu.loading')}</p></>
+  if (menu.isPending || branch.isPending) return <>{title}{heading}<p className="mt-4 text-center">{t('menu.loading')}</p></>
   if (menu.isError || branch.isError) {
     return (
       <>
         {title}
         {heading}
-        <p role="alert" className="mt-4">{t('menu.error')}</p>
+        <p role="alert" className="mt-4 text-center">{t('menu.error')}</p>
       </>
     )
   }
@@ -60,8 +66,8 @@ export function CartPage() {
     <>
       {title}
       {heading}
-      <div className="mt-6 flex max-w-6xl flex-wrap items-start gap-x-8 gap-y-8">
-        <div className="surface-panel min-w-0 flex-[999_1_30rem]">
+      <div className="mx-auto mt-6 flex max-w-[760px] flex-col gap-8">
+        <div className="surface-panel min-w-0">
           <ul className="flex flex-col divide-y divide-dashed divide-line border-b border-dashed border-line">
             {rows.map(({ line, key, item, unit }) => {
               const variant = item?.variants.find((v) => v.id === line.variantId)
@@ -128,7 +134,7 @@ export function CartPage() {
           </div>
         </div>
 
-        <aside className="heritage-dark sticky top-[calc(var(--header-h)+1rem)] flex min-w-0 flex-[1_1_20rem] flex-col gap-3 rounded-card border border-gold p-6">
+        <aside className="heritage-dark flex min-w-0 flex-col gap-3 rounded-card border border-gold p-6">
           <h2 className="font-heading text-3xl font-semibold">{t('checkout.summary')}</h2>
           <p className="flex justify-between border-t border-line pt-3 text-lg font-medium">
             <span>{t('cart.subtotal')}</span>

@@ -15,7 +15,6 @@ export const infoPages = [
   { path: 'contact', title: 'pages.contact' },
   { path: 'terms', title: 'pages.terms' },
   { path: 'privacy', title: 'pages.privacy' },
-  { path: 'refund-policy', title: 'pages.refund' },
 ] as const
 
 export const navLinkClass = ({ isActive }: { isActive: boolean }) =>
