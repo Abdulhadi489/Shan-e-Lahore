@@ -5,6 +5,8 @@
 @import '@fontsource/cormorant-garamond/latin-600.css';
 @import '@fontsource/jost/latin-400.css';
 @import '@fontsource/jost/latin-500.css';
+/* Only the header wordmark, like the shop's signboard letters. */
+@import '@fontsource/jost/latin-800.css';
 
 /*
   Design tokens. Colours are measured from the logo and the printed menu.
@@ -13,16 +15,16 @@
 */
 @theme {
   --color-*: initial;
-  --color-brand: #f39100;
-  --color-brand-deep: #9e4410;
+  --color-brand: #e5680f;
+  --color-brand-deep: #a8480a;
   --color-peach: #faddca;
-  --color-surface: #fff8f2;
-  --color-raised: #ffffff;
-  --color-ink: #22211e;
-  --color-ink-muted: #665345;
-  --color-line: #eed9c8;
+  --color-surface: #f4e9d8;
+  --color-raised: #fbf4e8;
+  --color-ink: #1e120c;
+  --color-ink-muted: #4a3426;
+  --color-line: #c79a45;
   --color-danger: #b3261e;
-  --color-success: #2e6b3b;
+  --color-success: #1e6b38;
   /* Heritage look of the customer site (header, lace trim, footer, skyline sketch). */
   --color-espresso: #2a1a12;
   --color-gold: #c79a45;
@@ -33,20 +35,19 @@
   --radius-card: 0.75rem;
 
   --font-heading: 'PT Sans Narrow', var(--font-sans);
+
+  /* The floating View cart bar rises into place (only for visitors who allow motion). */
+  --animate-slide-up: slide-up 0.3s ease-out;
+  @keyframes slide-up {
+    from {
+      transform: translateY(150%);
+    }
+  }
 }
 
-/* The customer site's heritage palette and type. Same token names with new values, so every customer page
-   follows without per-component colours, and the staff screens keep the palette above.
+/* The customer site's fonts (the colours above are the whole site's: one orange, the top bar's, and one off-white).
    Text on orange is espresso (ink); white or cream on this orange fails AA. */
 .heritage {
-  --color-brand: #e5680f;
-  --color-brand-deep: #a8480a;
-  --color-surface: #f4e9d8;
-  --color-raised: #fbf4e8;
-  --color-ink: #1e120c;
-  --color-ink-muted: #4a3426;
-  --color-line: #c79a45;
-  --color-success: #1e6b38;
   --font-heading: 'Cormorant Garamond', ui-serif, Georgia, serif;
   font-family: 'Jost', var(--font-sans);
 }
@@ -59,7 +60,7 @@
   --color-line: #8a6a3a;
   --color-danger: #ffa194;
   --color-success: #94d6a4;
-  --color-brand-deep: #f7a35c;
+  --color-brand-deep: #e5680f;
   background-color: var(--color-espresso);
   color: var(--color-ink);
 }
@@ -93,6 +94,9 @@ html[lang='ur'] .heritage {
     --font-sans: 'Noto Nastaliq Urdu', ui-sans-serif, system-ui, sans-serif;
     --font-heading: var(--font-sans);
     font-synthesis: none;
+    /* Nastaliq letters look much smaller than Latin at the same size, so the small sizes step up one notch. */
+    --text-xs: 0.875rem;
+    --text-sm: 1rem;
     /* Nastaliq stacks letters diagonally and needs about twice the usual line height. */
     line-height: 2.2;
     --text-xs--line-height: 2.2;
@@ -150,5 +154,18 @@ html[lang='ur'] .heritage {
   scrollbar-width: none;
   &::-webkit-scrollbar {
     display: none;
+  }
+}
+
+/* Solid off-white panel for reading-heavy columns (cart lines, checkout form, home info row), so the skyline sketch
+   never shows through text. */
+@utility surface-panel {
+  background-color: var(--color-raised);
+  border: 1px solid var(--color-line);
+  border-radius: 1rem;
+  padding: 1rem;
+  box-shadow: 0 2px 12px rgb(42 26 18 / 0.06);
+  @media (width >= 40rem) {
+    padding: 1.5rem;
   }
 }

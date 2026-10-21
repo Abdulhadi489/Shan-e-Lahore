@@ -12,7 +12,6 @@ import { useBranch } from '../../app/useBranch'
 import { ItemDialog } from '../menu/ItemDialog'
 import { ItemCard } from '../menu/MenuPage'
 import { HeroPhoto } from './HeroPhoto'
-import { HeritageArches } from './HeritageArches'
 import { HeroVideo } from './HeroVideo'
 
 import { useMenu, type MenuItem } from '../menu/useMenu'
@@ -53,11 +52,10 @@ export function HomePage() {
   return (
     <>
       <title>{t('brand')}</title>
-
-      <HeritageArches />
-
-      <div className="mt-10 flex flex-wrap items-center gap-x-[clamp(1.5rem,4vw,4rem)] gap-y-10">
-        <section className="min-w-0 flex-[1_1_26rem]">
+      {/* Full-width hero right under the lace, the shop video behind centred text. */}
+      <div className="relative isolate -mx-(--page-pad) -mt-6 flex min-h-[max(560px,min(720px,85svh))] items-center justify-center overflow-hidden px-(--page-pad) py-16 text-center">
+        <HeroVideo poster={heroDish?.image_path ? menuImageUrl(heroDish.image_path, 'full') : undefined} />
+        <section className="flex w-full flex-col items-center">
           {status && (
             <p
               className={`inline-flex items-center gap-2 rounded-full bg-raised px-3 py-1 text-sm font-medium ring-1 ring-line ${status.open ? 'text-success' : 'text-danger'}`}
@@ -73,16 +71,21 @@ export function HomePage() {
             </p>
           )}
 
-          <h1 className="mt-4 font-heading text-[clamp(2.5rem,1.6rem+3vw,5rem)] leading-[1.05] font-semibold text-ink rtl:text-[clamp(1.875rem,1.25rem+2vw,3.75rem)] rtl:leading-snug">
+          {/* The shadow keeps the cream text readable on the video's brightest frames. */}
+          <h1 className="mt-4 max-w-[900px] font-heading text-[clamp(2.25rem,1.4rem+3vw,5rem)] leading-[1.05] font-semibold text-raised [text-shadow:0_2px_16px_var(--color-ink)] rtl:text-[clamp(1.875rem,1.25rem+2vw,3.75rem)] rtl:leading-snug">
             {t('home.headline')}
           </h1>
-          <p className="mt-4 max-w-[45ch] text-[clamp(1.0625rem,0.95rem+0.3vw,1.375rem)] text-ink-muted">{t('home.subhead')}</p>
-          {settings && !settings.delivery_enabled && <p className="mt-3 font-medium text-danger">{t('home.deliveryPaused')}</p>}
+          <p className="mt-4 max-w-[560px] text-[clamp(1.0625rem,0.95rem+0.3vw,1.375rem)] text-surface [text-shadow:0_1px_10px_var(--color-ink)]">
+            {t('home.subhead')}
+          </p>
+          {settings && !settings.delivery_enabled && (
+            <p className="mt-3 rounded-full bg-raised px-3 py-1 font-medium text-danger">{t('home.deliveryPaused')}</p>
+          )}
 
-          <div className="mt-8 flex flex-wrap gap-3">
+          <div className="mt-8 flex w-full flex-col items-stretch gap-3 sm:w-auto sm:flex-row sm:justify-center">
             <Link
               to="/menu"
-              className="flex min-h-12 items-center gap-2 rounded-control bg-brand px-6 font-medium text-ink hover:bg-brand-deep hover:text-raised active:scale-[0.98]"
+              className="flex min-h-12 items-center justify-center gap-2 rounded-control bg-brand px-6 font-medium text-ink hover:bg-brand-deep hover:text-raised active:scale-[0.98]"
             >
               {t('home.order')}
               <ArrowRight aria-hidden className="size-5 rtl:-scale-x-100" />
@@ -90,18 +93,17 @@ export function HomePage() {
             {branch.data && (
               <a
                 href={`tel:+${branch.data.phone}`}
-                className="flex min-h-12 items-center gap-2 rounded-control border-2 border-ink px-6 font-medium text-ink hover:bg-raised active:scale-[0.98]"
+                className="flex min-h-12 items-center justify-center gap-2 rounded-control border-2 border-raised bg-ink/45 px-6 font-medium text-raised hover:bg-ink/65 active:scale-[0.98]"
               >
-                <PhoneCall aria-hidden className="size-5 text-brand-deep" />
+                <PhoneCall aria-hidden className="size-5" />
                 <span dir="ltr">{phoneLabel(branch.data.phone)}</span>
               </a>
             )}
           </div>
         </section>
-        <HeroVideo poster={heroDish?.image_path ? menuImageUrl(heroDish.image_path, 'full') : undefined} />
       </div>
 
-      {/* The arch took HeroPhoto's place beside the headline; the admin's home banner or featured dish follows it. */}
+      {/* The admin's home banner or featured dish follows the hero. */}
       <div className="mt-16 flex max-w-4xl">
         <HeroPhoto items={allItems} featuredDish={heroDish} onOpen={setSelected} />
       </div>
@@ -179,8 +181,9 @@ export function HomePage() {
         </ol>
       </section>
 
-      <section className="mt-20 grid grid-cols-[repeat(auto-fit,minmax(min(16rem,100%),1fr))] gap-10 border-t border-line pt-10">
-        <div>
+      {/* One off-white panel so the skyline never shows through; dividers run between the columns (stacked on phones). */}
+      <section className="surface-panel mt-20 flex flex-col divide-y divide-line md:flex-row md:divide-x md:divide-y-0">
+        <div className="min-w-0 flex-1 py-6 first:pt-0 last:pb-0 md:px-8 md:py-0 md:first:ps-0 md:last:pe-0">
           <h2 className="font-heading text-xl font-semibold text-ink">{t('home.findUs')}</h2>
           {branch.data && (
             <>
@@ -203,7 +206,7 @@ export function HomePage() {
           )}
         </div>
 
-        <div>
+        <div className="min-w-0 flex-1 py-6 first:pt-0 last:pb-0 md:px-8 md:py-0 md:first:ps-0 md:last:pe-0">
           <h2 className="font-heading text-xl font-semibold text-ink">{t('home.hours')}</h2>
           <div className="mt-3 text-ink-muted">
             <OpeningHoursList hours={hours} />
@@ -211,7 +214,7 @@ export function HomePage() {
         </div>
 
         {tiers.length > 0 && (
-          <div>
+          <div className="min-w-0 flex-1 py-6 first:pt-0 last:pb-0 md:px-8 md:py-0 md:first:ps-0 md:last:pe-0">
             <h2 className="font-heading text-xl font-semibold text-ink">{t('home.delivery')}</h2>
             <dl className="mt-3 text-ink-muted">
               {tiers.map((tier) => (

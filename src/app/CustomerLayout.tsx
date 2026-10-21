@@ -1,9 +1,12 @@
-import { Link, NavLink, Outlet } from 'react-router'
+import { Link, NavLink, Outlet, useLocation } from 'react-router'
 import { useTranslation } from 'react-i18next'
 import { PhoneCall } from 'lucide-react'
 import { useCart } from '../features/checkout/cart'
 import { phoneLabel } from '../lib/format'
+import laceBand from '../assets/lace-folk-band.webp'
+import { CartBar } from './CartBar'
 import { SkylineBackdrop } from './SkylineBackdrop'
+import { Wordmark } from './Wordmark'
 import { useBranch } from './useBranch'
 import { useHeaderHeight } from './useHeaderHeight'
 
@@ -26,7 +29,7 @@ function LanguageSwitch() {
       type="button"
       lang={other}
       onClick={() => void i18n.changeLanguage(other)}
-      className="flex size-12 shrink-0 items-center justify-center rounded-full border border-ink hover:bg-surface/50"
+      className="flex h-12 min-w-12 shrink-0 items-center justify-center rounded-full border border-ink px-3 hover:bg-surface/50"
     >
       {t('languageName', { lng: other })}
     </button>
@@ -35,23 +38,20 @@ function LanguageSwitch() {
 
 // Header pills sit on orange, where only espresso text passes contrast; the active page is a cream pill.
 const pillClass = ({ isActive }: { isActive: boolean }) =>
-  `flex min-h-11 items-center rounded-full px-4 text-sm font-medium ltr:uppercase ltr:tracking-[0.15em] ${isActive ? 'bg-surface' : 'hover:bg-surface/50'}`
+  `flex min-h-11 min-w-11 items-center justify-center rounded-full px-3 text-sm font-medium ltr:uppercase ltr:tracking-[0.08em] sm:px-4 ltr:sm:tracking-[0.15em] ${isActive ? 'bg-surface' : 'hover:bg-surface/50'}`
 
 const footerLinkClass = ({ isActive }: { isActive: boolean }) =>
   `inline-flex min-h-11 items-center ${isActive ? 'font-medium underline underline-offset-4' : 'hover:underline'}`
 
-// Pointed gold arches with an orange dot, repeated along the bottom of the header like a lace border.
+// Folk-art border of flowers and birds under the header. The tile is exactly one repeat of the band, so it
+// repeats sideways without a seam; it is scaled to the strip's height.
 function LaceTrim() {
   return (
-    <svg aria-hidden className="block h-[26px] w-full border-t-2 border-gold bg-espresso text-gold">
-      <defs>
-        <pattern id="lace-arch" width="26" height="24" patternUnits="userSpaceOnUse">
-          <path d="M2 24V15Q2 8 13 3Q24 8 24 15V24" fill="none" stroke="currentColor" strokeWidth="1.5" />
-          <circle cx="13" cy="16" r="2" className="fill-brand" />
-        </pattern>
-      </defs>
-      <rect width="100%" height="100%" fill="url(#lace-arch)" />
-    </svg>
+    <div
+      aria-hidden
+      className="h-10 w-full bg-repeat-x bg-[length:auto_100%] sm:h-14"
+      style={{ backgroundImage: `url(${laceBand})` }}
+    />
   )
 }
 
@@ -60,6 +60,9 @@ export function CustomerLayout() {
   const cartCount = useCart().reduce((sum, line) => sum + line.quantity, 0)
   const header = useHeaderHeight()
   const phone = useBranch().data?.phone
+  const { pathname } = useLocation()
+  // Not where the cart already is, or where the order is placed or followed.
+  const showCartBar = cartCount > 0 && pathname !== '/cart' && pathname !== '/checkout' && !pathname.startsWith('/track/')
 
   const phoneLink = phone && (
     <a href={`tel:+${phone}`} className="flex min-h-11 items-center gap-2 rounded-full bg-raised px-4 font-medium ltr:tracking-[0.08em]">
@@ -76,8 +79,8 @@ export function CustomerLayout() {
           The lace trim is inside so sticky parts of the page stop below it. */}
       <header ref={header} className="sticky top-0 z-20 [&_:focus-visible]:outline-ink">
         <div className="flex min-h-[76px] flex-wrap items-center gap-x-4 gap-y-2 bg-brand px-(--page-pad) py-3">
-          <Link to="/" className="inline-flex min-h-11 items-center font-heading text-2xl font-semibold ltr:uppercase ltr:tracking-[0.12em] sm:text-3xl">
-            {t('brand')}
+          <Link to="/" aria-label={t('brand')} className="inline-flex min-h-11 items-center">
+            <Wordmark />
           </Link>
           <nav aria-label={t('nav.main')} className="ms-auto flex items-center gap-1">
             <NavLink to="/" end className={pillClass}>
@@ -104,7 +107,8 @@ export function CustomerLayout() {
         <Outlet />
       </main>
 
-      <footer className="border-t-8 border-dotted border-gold bg-brand [&_:focus-visible]:outline-ink">
+      {/* Extra room at the bottom while the cart bar floats there, so it never covers the footer links. */}
+      <footer className={`border-t-8 border-dotted border-gold bg-brand [&_:focus-visible]:outline-ink ${showCartBar ? 'pb-24' : ''}`}>
         <div className="mx-auto flex min-h-16 max-w-[120rem] flex-wrap items-center gap-x-6 gap-y-2 px-(--page-pad) py-3">
           <Link to="/" className="inline-flex min-h-11 items-center gap-3 font-heading text-xl font-semibold ltr:uppercase ltr:tracking-[0.12em]">
             {t('brand')}
@@ -122,6 +126,7 @@ export function CustomerLayout() {
           <div className="ms-auto">{phoneLink}</div>
         </div>
       </footer>
+      {showCartBar && <CartBar />}
     </div>
   )
 }

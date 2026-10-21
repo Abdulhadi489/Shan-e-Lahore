@@ -3,7 +3,7 @@ import { useId, type ReactNode } from 'react'
 // A pointed Mughal arch, drawn in a 1 x 1 box so the same outline clips the content and draws the frame at any size.
 const ARCH = 'M0 1V0.38C0 0.18 0.3 0.06 0.5 0C0.7 0.06 1 0.18 1 0.38V1Z'
 
-// The home video and the contact map sit inside this arch with an orange outline; 360 x 420 at most.
+// The contact map sits inside this arch with an orange outline; 360 x 420 at most.
 export function ArchFrame({ children }: { children: ReactNode }) {
   // useId's punctuation is not safe inside url(#…).
   const clipId = `arch-${useId().replace(/\W/g, '')}`

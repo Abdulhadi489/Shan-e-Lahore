@@ -14,7 +14,7 @@ export function OpeningHoursList({ hours }: { hours: Hours }) {
       {[1, 2, 3, 4, 5, 6, 0].map((weekday) => {
         const day = hours.find((h) => h.weekday === weekday)
         return (
-          <div key={weekday} className={`flex justify-between gap-4 py-0.5 ${weekday === today ? 'font-bold' : ''}`}>
+          <div key={weekday} className={`flex items-baseline justify-between gap-4 py-0.5 ${weekday === today ? 'font-bold' : ''}`}>
             <dt>{dayLabel(lng, weekday)}</dt>
             <dd>
               {!day || day.is_closed

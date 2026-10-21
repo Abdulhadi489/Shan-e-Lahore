@@ -117,8 +117,8 @@ export function CheckoutPage() {
       <PageTitle title={t('pages.checkout')} urdu={t('pages.checkout', { lng: 'ur' })} />
       <p className="mt-2 max-w-[60ch] font-medium text-brand-deep">{t('checkout.callNotice')}</p>
 
-      <form onSubmit={handleSubmit(submit)} noValidate className="mt-6 flex max-w-6xl flex-wrap items-start gap-8">
-        <div className="flex min-w-0 flex-[999_1_30rem] flex-col gap-8">
+      <form onSubmit={handleSubmit(submit)} noValidate className="mt-6 flex max-w-6xl flex-wrap items-start gap-x-8 gap-y-8">
+        <div className="surface-panel flex min-w-0 flex-[999_1_30rem] flex-col gap-8">
           <section>
             <h2 className="font-heading text-2xl font-semibold">{t('checkout.location')}</h2>
             {branch.data && (
@@ -219,7 +219,7 @@ export function CheckoutPage() {
               dir="ltr"
               className={`${inputClass} uppercase`}
             />
-            <button type="button" onClick={applyCode} className="min-h-11 rounded-full border border-ink-muted px-4 font-medium">
+            <button type="button" onClick={applyCode} className="min-h-11 shrink-0 rounded-full border border-ink-muted px-4 font-medium whitespace-nowrap">
               {t('checkout.apply')}
             </button>
           </div>

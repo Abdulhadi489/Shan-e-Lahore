@@ -9,7 +9,7 @@ import { MAX_QUANTITY, unitPrice } from '../../../supabase/functions/_shared/pri
 import { useBranch } from '../../app/useBranch'
 import { useMenu } from '../menu/useMenu'
 import { SidesRow } from '../menu/SidesRow'
-import { lineKey, setQuantity, useCart } from './cart'
+import { cartSubtotal, lineKey, setQuantity, useCart } from './cart'
 
 export function CartPage() {
   const { t, i18n } = useTranslation()
@@ -51,7 +51,7 @@ export function CartPage() {
     const result = item ? unitPrice(item, line) : null
     return { line, key: lineKey(line), item, unit: result && 'price' in result ? result.price : null }
   })
-  const subtotal = rows.reduce((sum, row) => sum + (row.unit ?? 0) * row.line.quantity, 0)
+  const subtotal = cartSubtotal(lines, items)
   const minimum = branch.data.branch_settings?.min_order_amount ?? 0
   const hasUnavailable = rows.some((row) => row.unit === null)
   const canCheckout = !hasUnavailable && subtotal >= minimum
@@ -60,8 +60,8 @@ export function CartPage() {
     <>
       {title}
       {heading}
-      <div className="mt-6 flex max-w-6xl flex-wrap items-start gap-x-10 gap-y-8">
-        <div className="min-w-0 flex-[999_1_30rem]">
+      <div className="mt-6 flex max-w-6xl flex-wrap items-start gap-x-8 gap-y-8">
+        <div className="surface-panel min-w-0 flex-[999_1_30rem]">
           <ul className="flex flex-col divide-y divide-dashed divide-line border-b border-dashed border-line">
             {rows.map(({ line, key, item, unit }) => {
               const variant = item?.variants.find((v) => v.id === line.variantId)

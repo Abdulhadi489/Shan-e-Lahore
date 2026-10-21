@@ -22,6 +22,7 @@
   },
   "cart": {
     "goToCheckout": "Go to checkout",
+    "viewCart": "View cart",
     "empty": "Your cart is empty.",
     "browseMenu": "Browse the menu",
     "subtotal": "Subtotal",
@@ -89,7 +90,6 @@
     "stepDeliver": "Our rider delivers",
     "stepDeliverBody": "The restaurant's own riders bring your order to your door.",
     "findUs": "Find us",
-    "archesAlt": "Saqafat, Apnaiyat and Riwayat (culture, belonging, tradition) written in Urdu on the arches from Shan-e-Lahore's menu",
     "showMap": "Show the delivery area on a map",
     "mapLoading": "Loading the map…"
   },
