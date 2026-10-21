@@ -35,8 +35,8 @@ export function SidesRow({ excludeItemId }: { excludeItemId?: string }) {
 
   return (
     <section aria-labelledby={headingId}>
-      <h3 id={headingId} className="font-bold">{t('sides.title')}</h3>
-      <ul className="-mx-1 mt-2 flex gap-2 overflow-x-auto px-1 pb-2">
+      <h3 id={headingId} className="font-medium">{t('sides.title')}</h3>
+      <ul className="-mx-1 mt-2 flex gap-2 overflow-x-auto scrollbar-none px-1 pb-2">
         {sides.map((item) => {
           const name = localized(lng, item.name_en, item.name_ur)
           const price = t('price', { amount: formatAmount(item.base_price) })
@@ -49,14 +49,14 @@ export function SidesRow({ excludeItemId }: { excludeItemId?: string }) {
                 onClick={() => addToCart({ itemId: item.id, variantId: null, addonOptionIds: [], quantity: 1 })}
                 className="flex h-full w-36 flex-col gap-1 rounded-control border border-line bg-raised p-2 text-start text-sm hover:border-brand-deep active:scale-[0.98]"
               >
-                <span className="font-bold">{name}</span>
+                <span className="font-medium">{name}</span>
                 <span className="mt-auto flex w-full items-center justify-between gap-2">
                   <span>{price}</span>
-                  <span aria-hidden className="flex size-7 items-center justify-center rounded-full bg-brand text-lg font-bold text-ink">
+                  <span aria-hidden className="flex size-7 items-center justify-center rounded-full bg-brand text-lg font-medium text-ink">
                     +
                   </span>
                 </span>
-                {count > 0 && <span className="font-bold text-success">{t('sides.inCart', { count })}</span>}
+                {count > 0 && <span className="font-medium text-success">{t('sides.inCart', { count })}</span>}
               </button>
             </li>
           )

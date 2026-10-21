@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { localized } from '../../i18n'
 import { formatAmount } from '../../lib/money'
 import { menuImageUrl } from '../../lib/images'
+import { PageTitle } from '../../app/PageTitle'
 import { ItemDialog } from './ItemDialog'
 import { useMenu, type MenuItem } from './useMenu'
 
@@ -18,39 +19,43 @@ export function ItemCard({ item, onSelect }: { item: MenuItem; onSelect: (item: 
   const lowest = item.variants.length > 0 ? Math.min(...item.variants.map((v) => v.price)) : item.base_price
   const price = t('price', { amount: formatAmount(lowest) })
 
+  // Arch-topped photo like a jharoka window; the whole card opens the dish, the "Add" pill only shows where to tap.
   return (
     <button
       type="button"
       onClick={() => onSelect(item)}
       disabled={soldOut}
-      className="flex h-full w-full gap-3 rounded-card border border-line bg-raised p-3 text-start hover:border-brand-deep disabled:cursor-not-allowed"
+      className="flex h-full w-full flex-col overflow-hidden rounded-card border border-line bg-raised text-start hover:border-brand-deep disabled:cursor-not-allowed"
     >
       {item.image_path ? (
         <img
           src={menuImageUrl(item.image_path, 'card')}
           alt=""
-          width={80}
-          height={80}
+          width={400}
+          height={220}
           loading="lazy"
           decoding="async"
-          className="size-20 shrink-0 rounded-control bg-peach object-cover"
+          className="aspect-[20/11] w-full rounded-t-full bg-espresso object-cover"
         />
       ) : (
-        // Empty photo space until the dish has a photo.
-        <span aria-hidden className="size-20 shrink-0 rounded-control bg-peach" />
+        // Espresso arch until the dish has a photo.
+        <span aria-hidden className="aspect-[20/11] w-full rounded-t-full bg-linear-to-b from-brand-deep to-espresso" />
       )}
-      <span className="flex flex-1 flex-col">
-        <span className="font-bold">{localized(lng, item.name_en, item.name_ur)}</span>
+      <span className="flex flex-1 flex-col gap-1 p-4">
+        <span className="font-heading text-xl leading-snug font-semibold">{localized(lng, item.name_en, item.name_ur)}</span>
         {item.description_en && (
           <span className="text-sm text-ink-muted">{localized(lng, item.description_en, item.description_ur)}</span>
         )}
-        <span className="mt-auto pt-1 font-bold text-brand-deep">
+        <span className="mt-auto flex flex-wrap items-center justify-between gap-2 pt-2 font-medium">
           {soldOut ? (
             <span className="text-danger">{t('menu.soldOut')}</span>
-          ) : item.variants.length > 1 ? (
-            t('menu.from', { price })
           ) : (
-            price
+            <>
+              {item.variants.length > 1 ? t('menu.from', { price }) : price}
+              <span aria-hidden className="rounded-full bg-brand px-4 py-1.5 text-sm ltr:uppercase ltr:tracking-[0.12em]">
+                {t('item.add')}
+              </span>
+            </>
           )}
         </span>
       </span>
@@ -73,13 +78,13 @@ export function MenuPage() {
   return (
     <>
       <title>{`${t('pages.menu')} · ${t('brand')}`}</title>
-      <h1 className="font-heading text-3xl font-bold">{t('pages.menu')}</h1>
+      <PageTitle title={t('pages.menu')} urdu={t('pages.menu', { lng: 'ur' })} />
 
       {menu.isPending && <p className="mt-4">{t('menu.loading')}</p>}
       {menu.isError && (
         <div role="alert" className="mt-4">
           <p>{t('menu.error')}</p>
-          <button type="button" onClick={() => void menu.refetch()} className="mt-2 rounded-control border border-ink-muted px-3 py-1">
+          <button type="button" onClick={() => void menu.refetch()} className="mt-2 min-h-11 rounded-full border border-ink px-5">
             {t('menu.retry')}
           </button>
         </div>
@@ -88,11 +93,14 @@ export function MenuPage() {
 
       {menu.data && menu.data.length > 0 && (
         <>
-          <nav aria-label={t('menu.categories')} className="sticky top-(--header-h) z-10 -mx-(--page-pad) mt-4 overflow-x-auto border-b border-line bg-surface px-(--page-pad) py-2">
+          <nav aria-label={t('menu.categories')} className="sticky top-(--header-h) z-10 -mx-(--page-pad) mt-4 overflow-x-auto scrollbar-none border-b border-line bg-surface px-(--page-pad) py-2">
             <ul className="flex gap-2 whitespace-nowrap">
               {menu.data.map((category) => (
                 <li key={category.id}>
-                  <a href={`#category-${category.id}`} className="block rounded-full border border-line bg-raised px-3 py-1 hover:border-brand-deep">
+                  <a
+                    href={`#category-${category.id}`}
+                    className="flex min-h-11 items-center rounded-full border border-ink px-4 text-sm font-medium hover:bg-brand ltr:uppercase ltr:tracking-[0.12em]"
+                  >
                     {localized(lng, category.name_en, category.name_ur)}
                   </a>
                 </li>
@@ -102,8 +110,8 @@ export function MenuPage() {
 
           {menu.data.map((category) => (
             <section key={category.id} id={`category-${category.id}`} className="mt-8 scroll-mt-[calc(var(--header-h)+5rem)]">
-              <h2 className="font-heading text-2xl font-bold">{localized(lng, category.name_en, category.name_ur)}</h2>
-              <ul className="mt-3 grid grid-cols-cards gap-3">
+              <h2 className="font-heading text-3xl font-semibold">{localized(lng, category.name_en, category.name_ur)}</h2>
+              <ul className="mt-4 grid grid-cols-[repeat(auto-fill,minmax(min(14rem,100%),1fr))] gap-4">
                 {category.items.map((item) => (
                   <li key={item.id}>
                     <ItemCard item={item} onSelect={setSelected} />

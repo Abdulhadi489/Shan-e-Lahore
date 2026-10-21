@@ -8,7 +8,9 @@ New to the project? Read in this order: this file, `CLAUDE.md` (rules, stack, se
 
 Live (dev data): https://shan-e-lahore.onrender.com, backed by the hosted dev Supabase project `shan-e-lahore-dev`.
 
-## Summary (17 October, early morning)
+## Summary (21 October)
+
+19-21 Oct: the customer site's heritage redesign is on branch `Khan-Branch` with an open pull request into `main` (CI green on the 19 Oct push, waiting for review). The 21 Oct changes below are not committed or pushed yet. Not merged or deployed.
 
 | Milestone | State |
 | --- | --- |
@@ -37,7 +39,7 @@ Tick items as they land. Items come from `CLAUDE.md` section 15 and `docs/spec.m
 
 ### Milestone 2: Customer ordering
 
-- [x] Home: three-arch banner, open/closed status, Order and Call buttons, deals, category strip, popular dishes, how ordering works, hours, delivery charges, delivery-area map on request
+- [x] Home: video hero (three-arch banner until 21 Oct), open/closed status, Order and Call buttons, deals, category strip, popular dishes, how ordering works, hours, delivery charges, delivery-area map on request
 - [x] Menu: sticky category bar, dish cards, sold-out state, item dialog enforcing size and add-on rules
 - [x] Cart: quantities, re-pricing from the live menu, unavailable-dish warnings, kept in localStorage
 - [x] "Add with your order" one-tap sides (breads, raita/salad; drinks once listed)
@@ -49,7 +51,17 @@ Tick items as they land. Items come from `CLAUDE.md` section 15 and `docs/spec.m
 - [ ] First batch of real dish photos uploaded to dev (waiting on the team's photos)
 - [x] Static pages: about, contact (address, phone, hours and map from the database), terms, privacy, refund policy. **Draft text** written from facts we know (no invented promises such as refund deadlines); the restaurant must approve it
 - [x] Fluid, responsive layout (17 Oct): no size-specific rules on customer pages. Grids add columns as space allows, headline and text grow smoothly with the window, the hero photo sits beside the headline when both fit and below it when not, the page fills the window up to about 2,000 px. The top bar spans the window and stays visible while scrolling; the footer is centred. Checked by sliding the width from 320 to 2,600 px (what zooming does), English and Urdu: no sideways scrolling, nothing disappears
-- [x] Home hero photo beside the headline: the first active Home banner (Menu > Home banners), otherwise the photo of the first featured dish that has one. A banner can link to a dish, which opens when tapped; without a link it is just a picture. The three-arch strip always shows at the top
+- [x] Home hero photo: the first active Home banner (Menu > Home banners), otherwise the photo of the first featured dish that has one. A banner can link to a dish, which opens when tapped; without a link it is just a picture. Since the redesign it sits below the video hero
+- [x] Heritage redesign of the customer site (19-21 Oct, Talha, branch `Khan-Branch`, pull request open). Look only; no logic, database or Edge Function changes. Every text is the site's own. As it stands on 21 Oct:
+  - Orange top bar: the logo's round emblem (redrawn in SVG) and a signboard-style wordmark with a fork-and-spoon "O" (Jost 800), Home, Menu and Cart pills, language button, phone pill (hidden on phones). Under it a folk-art flower-and-bird border (`src/assets/lace-folk-band.webp`, one true repeat, so no seams). Orange footer band with a gold dotted edge
+  - Faint gold Badshahi Masjid sketch behind every customer page (`src/assets/lahore-sketch.svg`, drawn by `scripts/lahore-sketch.ts`)
+  - Home: the shop video (`src/assets/topvideo.mp4`) fills a full-width hero right under the border, with the open-now pill, headline, text and buttons centred on a dark wash (poster is the featured dish photo; reduced-motion visitors see the poster). The three-arch band and the `menu-arches-*.webp` images were removed on 21 Oct. The Find us / hours / delivery row sits in an off-white panel with dividers
+  - Page titles show the Urdu page name beside the English one; Menu cards have arch-topped photos; Cart and Checkout columns sit in off-white panels next to an espresso summary card; Tracking shows numbered steps; the Contact map sits in the arch frame
+  - Floating "View cart" bar (count and subtotal) on every customer page except cart, checkout and tracking
+  - One palette for the whole site, staff screens included (21 Oct): orange #E5680F, off-white #FBF4E8; dark orange #A8480A only for small text on cream
+  - Urdu spacing fixed (21 Oct): titles no longer overlap the text below, small Urdu text is one size larger, hours line up with their days, buttons fit their labels
+  - Fonts Cormorant Garamond (headings) and Jost (text), self-hosted; Urdu stays Noto Nastaliq. Sideways rows hide their scrollbar
+  - Checked: typecheck, lint, tests and build; Home, Menu, Cart, Checkout and Contact in English and Urdu at desktop and 375 px (no sideways scroll, tap targets 44 px+). **Not checked:** the Tracking page with a real order, and a real phone
 
 ### Milestone 3: Admin and order handling
 
@@ -96,6 +108,8 @@ Tick items as they land. Items come from `CLAUDE.md` section 15 and `docs/spec.m
 | 16-17 Oct | Rest of Milestone 3 built and tested locally: availability, settings and staff accounts, menu with photos and banners, delivery, customers, discount codes, reports, editing orders |
 | 17 Oct | Pushed and deployed to dev |
 | 17-19 Oct | Team tests every screen on dev with real logins; restaurant's real content goes in (menu, photos, prices, accounts, riders, staff) |
+| 19 Oct | Heritage redesign of the customer site (pull request from `Khan-Branch`); next: the staff login page in the same look |
+| 21 Oct | Video hero, folk-art border, logo emblem, View cart bar, one site-wide palette, Urdu spacing fixes (on `Khan-Branch`, not pushed yet) |
 | 20-21 Oct | Milestone 4 |
 | 22 Oct | Real content in production, Urdu fixes, domain |
 | 23 Oct | Launch |
@@ -139,3 +153,8 @@ Tick items as they land. Items come from `CLAUDE.md` section 15 and `docs/spec.m
 - Leaving a map makes the browser log 8 blocked `img-src data:` requests: Leaflet swaps unfinished tiles for a blank data image. Harmless; the CSP is not loosened for it.
 - Upload menu photos from Chrome or Edge: Safari can't make WebP files, so its uploads are larger PNGs (they still display).
 - The staff screens are English only, and the dish pop-up used when editing an order follows the language last chosen on the customer site.
+- Redesign (19 Oct) page weight: the hero video is 2.9 MB and downloads in full on every home visit (autoplay ignores `preload`); compress it to under 1 MB before launch. English pages now also load the Urdu font (about 156 KB) for the Urdu page names, and the skyline sketch is a 288 KB SVG (about 53 KB compressed).
+- The redesign added the Urdu words "ہوم" (`nav.home`) and "کارٹ دیکھیں" (`cart.viewCart`); they need the Urdu review with the rest.
+- Open review points on the redesign (21 Oct), not fixed yet: dish cards without a photo show a large empty arch, making the menu much longer on phones; the sticky top bar is two rows plus the border on phones; the video autoplays on phones (team to choose: tap-to-play on phones, skip on data-saver, or load after the page); the admin Home banner now sits below the hero (needs Arslan's decision); the unused `@supabase/ssr` package is still in `package.json`; staff screens share the colours but not yet the fonts.
+- The folk-art border comes from an image the team supplied; confirm the restaurant may use it.
+- Local Supabase on Windows: start it with `supabase start -x logflare,vector` (the analytics container fails health checks on Windows); see README.

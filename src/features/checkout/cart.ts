@@ -1,6 +1,6 @@
 import { useSyncExternalStore } from 'react'
 import { z } from 'zod'
-import { MAX_QUANTITY } from '../../../supabase/functions/_shared/pricing'
+import { MAX_QUANTITY, type PricedItem, unitPrice } from '../../../supabase/functions/_shared/pricing'
 import { cartLine } from '../../../supabase/functions/_shared/schemas'
 
 // Only dish choices and quantities: names and prices are always read fresh from the menu.
@@ -51,6 +51,16 @@ export function setQuantity(key: string, quantity: number) {
       ? lines.filter((l) => lineKey(l) !== key)
       : lines.map((l) => (lineKey(l) === key ? { ...l, quantity: Math.min(quantity, MAX_QUANTITY) } : l)),
   )
+}
+
+// The cart's total at today's menu prices. A dish or choice no longer on sale counts as 0; the cart page flags it.
+// The server prices the order again when it is placed.
+export function cartSubtotal(cart: CartLine[], items: Map<string, PricedItem>) {
+  return cart.reduce((sum, line) => {
+    const item = items.get(line.itemId)
+    const result = item ? unitPrice(item, line) : null
+    return sum + (result && 'price' in result ? result.price * line.quantity : 0)
+  }, 0)
 }
 
 export function clearCart() {

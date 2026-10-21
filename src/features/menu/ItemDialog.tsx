@@ -54,7 +54,7 @@ function ItemChoices({ item, onDone, onAdd }: { item: MenuItem; onDone: () => vo
       )}
       <div className="flex items-start gap-3">
         <div className="flex-1">
-          <h2 className="font-heading text-2xl font-bold">{localized(lng, item.name_en, item.name_ur)}</h2>
+          <h2 className="font-heading text-2xl font-semibold">{localized(lng, item.name_en, item.name_ur)}</h2>
           {item.description_en && (
             <p className="mt-1 text-ink-muted">{localized(lng, item.description_en, item.description_ur)}</p>
           )}
@@ -66,7 +66,7 @@ function ItemChoices({ item, onDone, onAdd }: { item: MenuItem; onDone: () => vo
 
       {item.variants.length > 0 && (
         <fieldset className="flex flex-col gap-2">
-          <legend className="mb-2 font-bold">
+          <legend className="mb-2 font-medium">
             {t('item.size')} <span className="text-sm font-normal text-ink-muted">· {t('item.required')}</span>
           </legend>
           {item.variants.map((variant) => (
@@ -89,7 +89,7 @@ function ItemChoices({ item, onDone, onAdd }: { item: MenuItem; onDone: () => vo
         const picked = group.options.filter((o) => addonIds.includes(o.id)).length
         return (
           <fieldset key={group.id} className="flex flex-col gap-2">
-            <legend className="mb-2 font-bold">
+            <legend className="mb-2 font-medium">
               {localized(lng, group.name_en, group.name_ur)}{' '}
               <span className="text-sm font-normal text-ink-muted">
                 · {t(group.min_select > 0 ? 'item.required' : 'item.optional')} · {t(groupRule(group).key, groupRule(group))}
@@ -120,7 +120,7 @@ function ItemChoices({ item, onDone, onAdd }: { item: MenuItem; onDone: () => vo
       })}
 
       <div className="flex items-center gap-3">
-        <span className="font-bold">{t('item.quantity')}</span>
+        <span className="font-medium">{t('item.quantity')}</span>
         <button
           type="button"
           aria-label={t('item.decrease')}
@@ -130,7 +130,7 @@ function ItemChoices({ item, onDone, onAdd }: { item: MenuItem; onDone: () => vo
         >
           −
         </button>
-        <output aria-live="polite" className="min-w-8 text-center text-lg font-bold">
+        <output aria-live="polite" className="min-w-8 text-center text-lg font-medium">
           {quantity}
         </output>
         <button
@@ -147,7 +147,7 @@ function ItemChoices({ item, onDone, onAdd }: { item: MenuItem; onDone: () => vo
       <button
         type="submit"
         disabled={'error' in result}
-        className="rounded-control bg-brand px-4 py-3 font-bold text-ink hover:bg-peach disabled:cursor-not-allowed disabled:opacity-60"
+        className="rounded-control bg-brand px-4 py-3 font-medium text-ink hover:bg-peach disabled:cursor-not-allowed disabled:opacity-60"
       >
         {'error' in result ? t('item.add') : t('item.addWithPrice', { price: price(result.price * quantity) })}
       </button>

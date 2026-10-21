@@ -15,9 +15,12 @@
     "prepare": "git config core.hooksPath .githooks"
   },
   "dependencies": {
+    "@fontsource/cormorant-garamond": "5.3.0",
+    "@fontsource/jost": "5.3.0",
     "@fontsource/noto-nastaliq-urdu": "5.3.0",
     "@fontsource/pt-sans-narrow": "5.3.0",
     "@hookform/resolvers": "5.9.1",
+    "@supabase/ssr": "0.12.7",
     "@supabase/supabase-js": "2.117.2",
     "@tanstack/react-query": "5.104.0",
     "browser-image-compression": "2.0.2",
@@ -46,7 +49,7 @@
     "tailwindcss": "4.3.3",
     "typescript": "6.0.3",
     "typescript-eslint": "8.70.1",
-    "vite": "8.3.1",
+    "vite": "8.3.5",
     "vitest": "5.0.2"
   },
   "allowScripts": {

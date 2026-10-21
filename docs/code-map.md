@@ -23,7 +23,7 @@ Using an AI assistant? Point it at `AGENTS.md`; it reads `CLAUDE.md`, the projec
 | I want to change… | Edit |
 | --- | --- |
 | Any text on the site, English or Urdu | `src/i18n/en.json` and `src/i18n/ur.json` (same keys in both; a test fails if Urdu is missing) |
-| Colours, fonts, corner radius | `src/index.css` (design tokens; only these may be used) |
+| Colours, fonts, corner radius | `src/index.css` (design tokens; only these may be used). The customer site's heritage colours and fonts are the `.heritage` block there (staff screens keep the original values); the dark summary cards are `.heritage-dark` |
 | How the layout adapts to the screen | Fluid rules, no size-specific breakpoints on customer pages: `grid-cols-cards` (as many columns as fit), `clamp()` for text that grows with the window, `flex-wrap` with a basis for side-by-side-or-stacked. Test by sliding the window width, not only at a few sizes |
 | The menu, prices, hours, delivery charges, staff, riders | Nothing in code: the admin panel at `/admin` |
 | How prices, delivery or discounts are calculated | `supabase/functions/_shared/` (pricing, delivery, discount, order) and their `_test.ts` files |
@@ -56,6 +56,7 @@ Using an AI assistant? Point it at `AGENTS.md`; it reads `CLAUDE.md`, the projec
 | `.github/workflows/database.yml` | Database checks when `supabase/` changes: builds a fresh database, runs the pgTAP tests, lint and Security Advisor |
 | `.github/dependabot.yml` | Weekly dependency update pull requests |
 | `.claude/skills/design-taste-frontend/` | A reviewed design guide for AI assistants (`CLAUDE.md` wins where they differ) |
+| `scripts/lahore-sketch.ts` | Draws the mosque sketch SVG (`node scripts/lahore-sketch.ts > src/assets/lahore-sketch.svg`) |
 
 ## `docs/`
 
@@ -71,8 +72,10 @@ Using an AI assistant? Point it at `AGENTS.md`; it reads `CLAUDE.md`, the projec
 | File | What it is |
 | --- | --- |
 | `main.tsx` | Starts the app: React, the data cache (TanStack Query), the router |
-| `index.css` | Tailwind setup, design tokens (colours, fonts, radius), Urdu line heights, map markers, print size for kitchen tickets |
-| `assets/menu-arches-800.webp`, `menu-arches-1600.webp` | The three-arches banner from the printed menu, two sizes |
+| `index.css` | Tailwind setup, design tokens (colours, fonts, radius), the one site-wide palette (orange #E5680F, off-white #FBF4E8), the customer fonts (`.heritage`), the dark summary cards (`.heritage-dark`), Urdu line heights, map markers, print size for kitchen tickets, `scrollbar-none`, `surface-panel` (solid off-white reading panel) |
+| `assets/topvideo.mp4` | The shop video in the home page's arch (2.9 MB) |
+| `assets/lace-folk-band.webp` | The folk-art flower-and-bird border under the header (one true repeat of the band, so it tiles without a seam) |
+| `assets/lahore-sketch.svg` | The faint Badshahi Masjid drawing behind customer pages, made by `scripts/lahore-sketch.ts` |
 | `types/database.ts` | Generated TypeScript types of every table; regenerate after a migration (`README.md`) |
 
 ### `src/app/` (shared by the customer pages)
@@ -80,7 +83,11 @@ Using an AI assistant? Point it at `AGENTS.md`; it reads `CLAUDE.md`, the projec
 | File | What it is |
 | --- | --- |
 | `AppRoutes.tsx` | Every customer address (`/`, `/menu`, `/cart`, `/checkout`, `/track/:token`, info pages) and `/admin` |
-| `CustomerLayout.tsx` | Top bar (logo, Menu, Cart, language; full width, stays visible), the page column, centred footer links; exports `navLinkClass`, also used by the staff menu |
+| `CustomerLayout.tsx` | Orange top bar (brand, Home, Menu, Cart, language, phone; full width, stays visible) with the folk-art border under it, the skyline background, the page column, orange footer band with the info links; exports `navLinkClass`, used by the staff menu |
+| `SkylineBackdrop.tsx` | Cream page with the gold mosque sketch, fixed behind every customer page |
+| `PageTitle.tsx` | Page heading with the Urdu page name beside it (English pages only) |
+| `CartBar.tsx` | Floating "View cart" bar (count, subtotal) while the cart has dishes; hidden on cart, checkout and tracking |
+| `Wordmark.tsx` | Header brand: the round emblem from the logo (redrawn in SVG) and the name; in English heavy off-white capitals with a fork-and-spoon "O", in Urdu the Urdu name |
 | `useHeaderHeight.ts` | Shares the sticky top bar's height as `--header-h` (customer and staff layouts); `--page-pad`, the fluid page edge, is in `index.css` |
 | `useBranch.ts` | Loads the restaurant's details, hours and delivery charges |
 | `OpeningHoursList.tsx` | The opening-hours table (home and contact pages) |
@@ -90,13 +97,14 @@ Using an AI assistant? Point it at `AGENTS.md`; it reads `CLAUDE.md`, the projec
 
 | File | What it is |
 | --- | --- |
-| `home/HomePage.tsx` | Home: open/closed status, headline with the hero dish photo, deals, categories, popular dishes, how ordering works, hours, delivery charges, map on request |
-| `home/HeroPhoto.tsx` | The photo beside the headline: the first active banner, or the first featured dish photo; opens the linked dish when tapped |
+| `home/HomePage.tsx` | Home: full-width video hero with the open/closed status, headline and buttons centred, the banner or featured dish photo, deals, categories, popular dishes, how ordering works, hours, delivery charges, map on request |
+| `home/HeroVideo.tsx` | The shop video filling the hero behind the centred headline, with a dark wash (poster for reduced motion or blocked autoplay) |
+| `home/HeroPhoto.tsx` | The photo below the headline: the first active banner, or the first featured dish photo; opens the linked dish when tapped |
 | `menu/useMenu.ts` | Loads the whole menu in one request |
 | `menu/MenuPage.tsx` | Menu with the sticky category bar and dish cards |
 | `menu/ItemDialog.tsx` | The dish pop-up: size and add-on choices, quantity, add to cart (staff reuse it when editing an order) |
 | `menu/SidesRow.tsx` | "Add with your order" one-tap sides (naan, raita…) |
-| `checkout/cart.ts` | The cart, kept in the browser (dish choices only, never customer details) |
+| `checkout/cart.ts` | The cart, kept in the browser (dish choices only, never customer details), and `cartSubtotal` (tested in `cart.test.ts`) |
 | `checkout/CartPage.tsx` | Cart: quantities, live prices, unavailable-dish warnings |
 | `checkout/CheckoutPage.tsx` | Checkout: map pin, address, name, phone, payment method, discount code, bot check, place order |
 | `checkout/LocationPicker.tsx` | The Leaflet map (pick a pin, delivery area); also used by staff screens |
@@ -149,6 +157,7 @@ Using an AI assistant? Point it at `AGENTS.md`; it reads `CLAUDE.md`, the projec
 | `i18n/i18next.d.ts` | Makes a missing text key a TypeScript error |
 | `i18n/dictionaries.test.ts` | Fails if a customer text has no Urdu |
 | `components/Turnstile.tsx` | The Cloudflare bot check widget (compact when there is less than 300 px) |
+| `components/ArchFrame.tsx` | The pointed Mughal arch with an orange outline; holds the contact map |
 
 ## `supabase/` (database and server)
 
