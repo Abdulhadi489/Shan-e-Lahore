@@ -45,7 +45,7 @@ export function ItemCard({ item, onSelect }: { item: MenuItem; onSelect: (item: 
       <span className="flex flex-1 flex-col gap-1 p-4">
         <span className="font-heading text-xl leading-snug font-semibold">{localized(lng, item.name_en, item.name_ur)}</span>
         {item.description_en && (
-          <span className="text-sm text-ink-muted max-sm:line-clamp-2">{localized(lng, item.description_en, item.description_ur)}</span>
+          <span className="text-base text-ink-muted max-sm:line-clamp-2 sm:text-sm">{localized(lng, item.description_en, item.description_ur)}</span>
         )}
         <span className="mt-auto flex flex-wrap items-center justify-between gap-2 pt-2 font-medium">
           {soldOut ? (
@@ -88,7 +88,8 @@ export function MenuPage() {
       <title>{`${t('pages.menu')} · ${t('brand')}`}</title>
       <PageBanner image={banners.menu} title={t('pages.menu')} />
 
-      {menu.isPending && <p className="mt-4">{t('menu.loading')}</p>}
+      {/* Tall while loading, so the footer is not on screen to be pushed down when the dishes arrive. */}
+      {menu.isPending && <p className="mt-4 min-h-[80svh]">{t('menu.loading')}</p>}
       {menu.isError && (
         <div role="alert" className="mt-4">
           <p>{t('menu.error')}</p>

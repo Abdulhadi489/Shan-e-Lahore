@@ -159,7 +159,7 @@ export function CheckoutPage() {
             <h2 className="font-heading text-2xl font-semibold">{t('checkout.details')}</h2>
             <label className="flex flex-col gap-1">
               {t('checkout.nameLabel')}
-              <input maxLength={60} autoComplete="name" className={inputClass} {...register('name')} />
+              <input maxLength={60} autoComplete="name" autoCapitalize="words" className={inputClass} {...register('name')} />
               {fieldError('name')}
             </label>
             <label className="flex flex-col gap-1">
@@ -217,6 +217,9 @@ export function CheckoutPage() {
               onChange={(event) => setCodeInput(event.target.value)}
               maxLength={20}
               dir="ltr"
+              autoCapitalize="characters"
+              autoComplete="off"
+              spellCheck={false}
               className={`${inputClass} uppercase`}
             />
             <button type="button" onClick={applyCode} className="min-h-11 shrink-0 rounded-full border border-ink-muted px-4 font-medium whitespace-nowrap">

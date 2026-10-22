@@ -74,13 +74,13 @@ export function StaffLayout({ userId }: { userId: string }) {
       {/* The customer site's top bar. A ringing alarm sits inside it so it shows wherever staff have scrolled. */}
       <header ref={header} className="sticky top-0 z-20 border-b border-line bg-raised print:hidden">
         <div className="flex flex-wrap items-center gap-x-4 gap-y-2 px-(--page-pad) py-3">
-          <Link to="/admin" className="font-heading text-2xl font-bold text-brand-deep">
+          <Link to="/admin" className="inline-flex min-h-11 items-center font-heading text-2xl font-bold text-brand-deep">
             {t('brand')} <span className="text-ink-muted">{t('admin.title')}</span>
           </Link>
           <button
             type="button"
             onClick={() => void supabase.auth.signOut()}
-            className="ms-auto rounded-control border border-line px-3 py-1 hover:border-brand-deep"
+            className="ms-auto min-h-11 rounded-control border border-line px-3 py-1 hover:border-brand-deep"
           >
             {t('admin.signOut')}
           </button>
@@ -91,7 +91,7 @@ export function StaffLayout({ userId }: { userId: string }) {
             {staffSections
               .filter((section) => isSuperAdmin || !section.superAdmin)
               .map((section) => (
-                <NavLink key={section.key} to={section.to} end={section.key === 'liveOrders'} className={navLinkClass}>
+                <NavLink key={section.key} to={section.to} end={section.key === 'liveOrders'} className={(state) => `${navLinkClass(state)} inline-flex min-h-11 items-center`}>
                   {t(`admin.nav.${section.key}`)}
                 </NavLink>
               ))}
