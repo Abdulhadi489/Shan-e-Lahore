@@ -43,7 +43,7 @@ function CentreButton({ onChange }: { onChange: (pin: Pin) => void }) {
         const { lat, lng } = map.getCenter()
         onChange({ lat, lng })
       }}
-      className="absolute bottom-3 start-3 z-[1000] rounded-control border border-ink-muted bg-raised px-3 py-2 text-sm font-bold"
+      className="absolute bottom-3 start-3 z-[1000] min-h-11 rounded-control border border-ink-muted bg-raised px-3 py-2 text-sm font-bold"
     >
       {t('checkout.pinAtCentre')}
     </button>
@@ -101,7 +101,7 @@ export function LocationPicker({
         <MapContainer center={pin ?? branch} zoom={12} scrollWheelZoom={false} className="h-full w-full">
           <TileLayer url={tiles} attribution={attribution} />
           <Circle center={branch} radius={radiusKm * 1000} className="map-delivery-area" />
-          <Marker position={branch} icon={branchIcon} interactive={false} />
+          <Marker position={branch} icon={branchIcon} interactive={false} keyboard={false} />
           {pin && (
             <Marker
               position={pin}
@@ -144,7 +144,7 @@ export function DeliveryAreaMap({
       <MapContainer center={branch} zoom={zoom} scrollWheelZoom={false} className="h-full w-full">
         <TileLayer url={tiles} attribution={attribution} />
         {radiusKm > 0 && <Circle center={branch} radius={radiusKm * 1000} className="map-delivery-area" />}
-        <Marker position={branch} icon={branchIcon} interactive={false} />
+        <Marker position={branch} icon={branchIcon} interactive={false} keyboard={false} />
       </MapContainer>
     </div>
   )
