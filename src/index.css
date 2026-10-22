@@ -3,10 +3,16 @@
 /* Regular weight only: Nastaliq has no real bold, and each weight is 156 KB. */
 @import '@fontsource/noto-nastaliq-urdu/arabic-400.css';
 @import '@fontsource/cormorant-garamond/latin-600.css';
+/* The home headline only (HomePage): a lighter cut than the other headings. */
+@import '@fontsource/cormorant-garamond/latin-500.css';
 @import '@fontsource/jost/latin-400.css';
 @import '@fontsource/jost/latin-500.css';
 /* Only the header wordmark, like the shop's signboard letters. */
 @import '@fontsource/jost/latin-800.css';
+/* Only on the home page (HomePage): Montserrat for the headline and the line under it, Amiri for the three Urdu words
+   under the hero. */
+@import '@fontsource/amiri/arabic-400.css';
+@import '@fontsource-variable/montserrat/wght.css';
 
 /*
   Design tokens. Colours are measured from the logo and the printed menu.

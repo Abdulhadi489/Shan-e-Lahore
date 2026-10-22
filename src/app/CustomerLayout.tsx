@@ -97,8 +97,16 @@ export function CustomerLayout() {
             </NavLink>
           </nav>
           <LanguageSwitch />
-          {/* The phone is in the hero and footer too; on phones the bar keeps to one row without it. */}
-          <div className="hidden sm:block">{phoneLink}</div>
+          {/* The number is in the hero and footer too, so the bar only needs the call button; hidden on phones to keep one row. */}
+          {phone && (
+            <a
+              href={`tel:+${phone}`}
+              aria-label={t('home.call')}
+              className="hidden size-12 shrink-0 items-center justify-center rounded-full bg-raised sm:flex"
+            >
+              <PhoneCall aria-hidden className="size-5 text-brand-deep" />
+            </a>
+          )}
         </div>
         <LaceTrim />
       </header>

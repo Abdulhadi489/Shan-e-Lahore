@@ -56,26 +56,24 @@ export function HomePage() {
       <div className="relative isolate -mx-(--page-pad) -mt-6 flex min-h-[max(560px,min(720px,85svh))] items-center justify-center overflow-hidden px-(--page-pad) py-16 text-center">
         <HeroVideo poster={heroDish?.image_path ? menuImageUrl(heroDish.image_path, 'full') : undefined} />
         <section className="flex w-full flex-col items-center">
-          {status && (
-            <p
-              className={`inline-flex items-center gap-2 rounded-full bg-raised px-3 py-1 text-sm font-medium ring-1 ring-line ${status.open ? 'text-success' : 'text-danger'}`}
-            >
-              <span aria-hidden className={`size-2 rounded-full ${status.open ? 'bg-success' : 'bg-danger'}`} />
-              {status.open
-                ? t('home.openNow', { time: timeLabel(lng, status.closesAt) })
-                : !status.opensAt
-                  ? t('home.closed')
-                  : status.opensAt.weekday === today
-                    ? t('home.closedOpensToday', { time: timeLabel(lng, status.opensAt.time) })
-                    : t('home.closedOpensOn', { day: dayLabel(lng, status.opensAt.weekday), time: timeLabel(lng, status.opensAt.time) })}
+          {/* Only shown when closed (the spec's "Closed now, opens at …"); nothing is said while open. */}
+          {status && !status.open && (
+            <p className="inline-flex items-center gap-2 rounded-full bg-raised px-3 py-1 text-sm font-medium text-danger ring-1 ring-line">
+              <span aria-hidden className="size-2 rounded-full bg-danger" />
+              {!status.opensAt
+                ? t('home.closed')
+                : status.opensAt.weekday === today
+                  ? t('home.closedOpensToday', { time: timeLabel(lng, status.opensAt.time) })
+                  : t('home.closedOpensOn', { day: dayLabel(lng, status.opensAt.weekday), time: timeLabel(lng, status.opensAt.time) })}
             </p>
           )}
 
           {/* The shadow keeps the cream text readable on the video's brightest frames. */}
-          <h1 className="mt-4 max-w-[900px] font-heading text-[clamp(2.25rem,1.4rem+3vw,5rem)] leading-[1.05] font-semibold text-raised [text-shadow:0_2px_16px_var(--color-ink)] rtl:text-[clamp(1.875rem,1.25rem+2vw,3.75rem)] rtl:leading-snug">
-            {t('home.headline')}
+          <h1 className="mt-4 max-w-[1100px] font-heading ltr:font-medium ltr:tracking-[0.03em] text-balance text-[clamp(2.25rem,1.4rem+3vw,4.5rem)] leading-[1.1] font-semibold text-raised [text-shadow:0_2px_16px_var(--color-ink)] rtl:text-[clamp(1.875rem,1.25rem+2vw,3.75rem)] rtl:leading-snug">
+            <span className="block">{t('home.headline')}</span>
+            <span className="block">{t('home.headlineLast')}</span>
           </h1>
-          <p className="mt-4 max-w-[560px] text-[clamp(1.0625rem,0.95rem+0.3vw,1.375rem)] text-surface [text-shadow:0_1px_10px_var(--color-ink)]">
+          <p className="mt-4 max-w-[560px] ltr:font-[Montserrat_Variable] text-[clamp(0.875rem,0.8rem+0.25vw,1rem)] text-surface [text-shadow:0_1px_10px_var(--color-ink)]">
             {t('home.subhead')}
           </p>
           {settings && !settings.delivery_enabled && (
@@ -101,6 +99,14 @@ export function HomePage() {
             )}
           </div>
         </section>
+      </div>
+
+      {/* Sits on the cream page under the video, over the faint masjid sketch, so nothing overlaps the footage. Artwork
+          like the shop's signboard, so the words stay Urdu in both languages. */}
+      <div lang="ur" dir="rtl" className="-mx-(--page-pad) mt-10 flex items-center justify-between px-(--page-pad) font-[Amiri] text-[clamp(1.5rem,1.1rem+1.6vw,2.5rem)] leading-[1.8] text-gold/75">
+        <span>ثقافت</span>
+        <span>اپنائیت</span>
+        <span>روایت</span>
       </div>
 
       {/* The admin's home banner or featured dish follows the hero. */}
