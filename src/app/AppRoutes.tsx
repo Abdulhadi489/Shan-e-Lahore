@@ -36,7 +36,6 @@ export function AppRoutes() {
         <Route path="contact" element={<ContactPage />} />
         <Route path="terms" element={<InfoPage page="terms" />} />
         <Route path="privacy" element={<InfoPage page="privacy" />} />
-        <Route path="refund-policy" element={<InfoPage page="refund" />} />
         <Route
           path="*"
           element={

@@ -2,7 +2,7 @@
 -- The menu (names, prices, Urdu) is transcribed from the restaurant's printed menu of 2026-08-29;
 -- the Super Admin enters the live menu through the admin panel.
 -- Branch pin: Google Maps listing "Shan-e-Lahore", Gulberg II (sent by the team, 2026-10-13).
--- Opening hours 05:00 to midnight every day (sent by the team, 2026-10-13).
+-- Opening hours 05:00 to 23:00 every day (05:00 to midnight sent by the team 2026-10-13; closing moved to 23:00 on 2026-10-22).
 -- Placeholders until the client sends real values: delivery tiers,
 -- and the Urdu for categories, Half/Full and deal contents
 -- (written by Claude; needs review by an Urdu speaker).
@@ -22,7 +22,7 @@ insert into public.delivery_tiers (branch_id, upper_km, charge) values
   ('b0000000-0000-0000-0000-000000000001', 7, 200);
 
 insert into public.opening_hours (branch_id, weekday, open_time, close_time)
-select 'b0000000-0000-0000-0000-000000000001', d, '05:00', '00:00' from generate_series(0, 6) d;
+select 'b0000000-0000-0000-0000-000000000001', d, '05:00', '23:00' from generate_series(0, 6) d;
 
 insert into public.categories (branch_id, name_en, name_ur, sort_order)
 select 'b0000000-0000-0000-0000-000000000001', name_en, name_ur, sort_order from (values

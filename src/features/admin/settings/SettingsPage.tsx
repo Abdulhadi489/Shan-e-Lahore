@@ -18,6 +18,7 @@ import {
   text,
   useDbMutation,
 } from '../ui'
+import { FontsSection } from './FontsSection'
 import { RidersSection } from './RidersSection'
 import { StaffSection } from './StaffSection'
 
@@ -296,6 +297,7 @@ export function SettingsPage() {
         <RestaurantSection branchId={branch.id} />
         <PaymentsSection branchId={branch.id} />
         <HoursSection branchId={branch.id} />
+        <FontsSection />
         <RidersSection />
         <StaffSection />
       </div>

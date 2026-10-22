@@ -39,7 +39,7 @@ export function TrackingPage() {
     return (
       <>
         <title>{`${t('pages.tracking')} · ${t('brand')}`}</title>
-        <PageTitle title={t('pages.tracking')} urdu={t('pages.tracking', { lng: 'ur' })} />
+        <PageTitle title={t('pages.tracking')} />
         <p role="alert" className="mt-3">{t(notFound ? 'tracking.notFound' : 'menu.error')}</p>
       </>
     )
@@ -52,7 +52,7 @@ export function TrackingPage() {
   return (
     <>
       <title>{`${t('tracking.heading', { number: o.orderNumber })} · ${t('brand')}`}</title>
-      <PageTitle title={t('tracking.heading', { number: o.orderNumber })} urdu={t('pages.tracking', { lng: 'ur' })} />
+      <PageTitle title={t('tracking.heading', { number: o.orderNumber })} />
       <p className="mt-1 text-ink-muted">{t('tracking.thanks', { name: o.firstName })}</p>
 
       <div className="mt-6 flex max-w-6xl flex-wrap items-start gap-8">

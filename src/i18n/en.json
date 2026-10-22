@@ -6,7 +6,9 @@
     "home": "Home",
     "info": "Information",
     "menu": "Menu",
-    "cart": "Cart"
+    "cart": "Cart",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu"
   },
   "pages": {
     "menu": "Menu",
@@ -221,7 +223,7 @@
     "about": [
       {
         "heading": "",
-        "body": "Shan-e-Lahore is a desi restaurant in Main Market, Gulberg II. Our day starts early with halwa puri, chanay and paye, and runs until midnight with karahi, handi, BBQ and tawa dishes."
+        "body": "Shan-e-Lahore is a desi restaurant in Main Market, Gulberg II. Our day starts early with halwa puri, chanay and paye, and runs until 11 pm with karahi, handi, BBQ and tawa dishes."
       },
       {
         "heading": "",
@@ -230,6 +232,18 @@
       {
         "heading": "",
         "body": "This website is for home delivery. Our own riders deliver, and we call every customer to check the order and the address before we start cooking. You can also order by phone, or visit us in Gulberg."
+      },
+      {
+        "heading": "",
+        "body": "Our mornings belong to halwa puri, chanay and paye. As the day goes on, the menu moves on to karahi, handi, BBQ and tawa dishes, and the kitchen stays open until 11 pm."
+      },
+      {
+        "heading": "",
+        "body": "Every order placed on this website is confirmed by a phone call. Before we start cooking, one of our staff calls you to go over what you ordered and the address, so we know we have it right."
+      },
+      {
+        "heading": "",
+        "body": "Our own riders bring your food to your door. You can follow your order with its tracking link, and you can pay cash to the rider or by bank transfer, JazzCash or Easypaisa. If you would rather talk to us, call, or come and see us in Main Market, Gulberg II."
       }
     ],
     "contactIntro": "Call us to order, to ask about an order, or with any question. If you've already ordered, keep your order number handy (it starts with SL).",
@@ -238,6 +252,10 @@
     "whatsapp": "WhatsApp",
     "hours": "Opening hours",
     "map": "Where we are",
+    "follow": "Follow us",
+    "email": "Email",
+    "instagram": "Instagram",
+    "tiktok": "TikTok",
     "terms": [
       {
         "heading": "Ordering",
@@ -270,6 +288,18 @@
       {
         "heading": "Refusing orders",
         "body": "We can refuse or cancel orders that look fake, and stop online orders from numbers that have placed fake orders before."
+      },
+      {
+        "heading": "How we confirm your order",
+        "body": "Every order waits for a phone call from our staff. On the call we go over your dishes and your address. An order paid by transfer is confirmed once the money has reached our account. We start cooking only after the order is confirmed."
+      },
+      {
+        "heading": "If we can't reach you",
+        "body": "We call the number you gave when you ordered. If nobody answers, we try again, and after three calls without an answer the order is cancelled. Please keep your phone nearby after you order."
+      },
+      {
+        "heading": "Questions about an order",
+        "body": "To ask about an order, call us and have your order number ready; it starts with SL. You can also use your tracking link to see the status of your order."
       }
     ],
     "privacy": [
@@ -292,6 +322,18 @@
       {
         "heading": "Services we use",
         "body": "The site runs on Supabase (database) and Render (hosting). Cloudflare Turnstile checks that orders come from real people, and the maps come from OpenStreetMap. Each of them handles only what it needs to do its job."
+      },
+      {
+        "heading": "What your rider sees",
+        "body": "Your rider gets your name, number, address and pin so that they can find you and bring your order. We deliver with our own riders."
+      },
+      {
+        "heading": "What the tracking link shows",
+        "body": "The tracking link shows the status of your order, your first name, the dishes and the total. It does not show your address or your full phone number. Please share the link only with people you trust."
+      },
+      {
+        "heading": "What stays in your browser",
+        "body": "The site keeps two things in your own browser: your language and the dishes in your cart. It does not keep your name, phone number or address there, and it uses no advertising cookies."
       },
       {
         "heading": "Questions",
@@ -509,6 +551,18 @@
         "opens": "Opens",
         "closes": "Closes",
         "closed": "Closed all day"
+      },
+      "fonts": {
+        "heading": "Fonts",
+        "help": "Choose the fonts of the customer website. The default fonts come with the site; any other font is loaded from Google Fonts, which means visitors' browsers contact Google (the privacy page does not say so yet). Staff pages are not affected.",
+        "heading_en": "English headings",
+        "body_en": "English body text",
+        "heading_ur": "Urdu headings",
+        "body_ur": "Urdu body text",
+        "default": "default",
+        "reset": "Reset to default",
+        "preview": "Font preview",
+        "previewNote": "Preview only. The website changes when you press Save."
       },
       "riders": {
         "heading": "Riders",

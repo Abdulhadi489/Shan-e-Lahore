@@ -89,6 +89,7 @@ Using an AI assistant? Point it at `AGENTS.md`; it reads `CLAUDE.md`, the projec
 | `CartBar.tsx` | Floating "View cart" bar (count, subtotal) while the cart has dishes; hidden on cart, checkout and tracking |
 | `Wordmark.tsx` | Header brand: the round emblem from the logo (redrawn in SVG) and the name; in English heavy off-white capitals with a fork-and-spoon "O", in Urdu the Urdu name |
 | `useHeaderHeight.ts` | Shares the sticky top bar's height as `--header-h` (customer and staff layouts); `--page-pad`, the fluid page edge, is in `index.css` |
+| `useSiteFonts.ts` | Reads the chosen fonts from `site_settings` in a query of its own and applies them |
 | `useBranch.ts` | Loads the restaurant's details, hours and delivery charges |
 | `OpeningHoursList.tsx` | The opening-hours table (home and contact pages) |
 | `EmptyPage.tsx` | Simple page with a heading, used for "page not found" |
@@ -139,6 +140,7 @@ Using an AI assistant? Point it at `AGENTS.md`; it reads `CLAUDE.md`, the projec
 | `discounts/DiscountsPage.tsx` | Discount codes |
 | `reports/report.ts` | Report sums and the Excel (CSV) file; tested in `report.test.ts` |
 | `reports/ReportsPage.tsx` | Reports screen and download |
+| `settings/FontsSection.tsx` | Fonts of the customer site: four dropdowns, reset buttons and a live preview |
 | `settings/SettingsPage.tsx` | Restaurant details, payments and WhatsApp, opening hours |
 | `settings/RidersSection.tsx` | Riders |
 | `settings/StaffSection.tsx` | Staff accounts (through the `admin-users` function) |
@@ -151,6 +153,8 @@ Using an AI assistant? Point it at `AGENTS.md`; it reads `CLAUDE.md`, the projec
 | `lib/format.ts` | Times, days, phone numbers, Lahore date conversions (tested in `format.test.ts`) |
 | `lib/money.ts` | Rupee amounts with thousands separators |
 | `lib/images.ts` | Address of a menu photo (large or card size) |
+| `lib/fonts.ts` | The fonts the Super Admin can choose (English and Urdu lists), defaults, and the rules that turn a choice into a Google Fonts address (tested in `fonts.test.ts`) |
+| `lib/siteFonts.ts` | Puts the chosen fonts on the page (CSS variables, one Google Fonts stylesheet, names remembered for the first paint) |
 | `lib/whatsapp.ts` | WhatsApp links and the prepared messages (tested in `whatsapp.test.ts`) |
 | `i18n/en.json`, `i18n/ur.json` | All text in English and Urdu |
 | `i18n/index.ts` | Language setup, Urdu right-to-left switch, remembers the choice |
@@ -187,6 +191,8 @@ Run in order by `supabase db reset` (local) and `supabase db push` (hosted). Nev
 | `…194933_customer_summaries.sql` | The customer totals view for the Customers screen |
 | `…195618_edit_order.sql` | `replace_order_contents`: saves an edited order |
 | `…165652_banner_dish_link.sql` | `banners.item_id`: the dish a banner opens (same branch; cleared if the dish is deleted) |
+| `…20261022150000_site_settings.sql` | `site_settings`: the one row of site fonts (allowed fonts by CHECK, public read, Super Admin write); rollback in `supabase/rollbacks/` |
+| `…20261022150100_menu_descriptions.sql` | Data only: fills empty `description_en` / `description_ur` of the dishes, never overwriting; rollback in `supabase/rollbacks/` |
 
 ### `supabase/tests/` (pgTAP: proves who can and can't do what)
 
