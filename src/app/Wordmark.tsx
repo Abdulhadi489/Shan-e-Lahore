@@ -23,7 +23,7 @@ function Emblem() {
   const { t } = useTranslation()
   const id = useId().replace(/\W/g, '')
   return (
-    <svg aria-hidden viewBox="0 0 100 100" className="size-12 shrink-0 sm:size-15">
+    <svg aria-hidden viewBox="0 0 100 100" className="size-12 shrink-0 max-[360px]:size-10 sm:size-15">
       <defs>
         <path id={`${id}-top`} d="M13 50A37 37 0 0 1 87 50" />
         <path id={`${id}-bottom`} d="M6.5 50A43.5 43.5 0 0 0 93.5 50" />
@@ -52,7 +52,8 @@ function Emblem() {
 }
 
 // Header brand: the round emblem, then the name. In English the name is styled after the shop's signboard
-// (heavy capitals with the fork-and-spoon "O"); in Urdu it is the Urdu name in Nastaliq.
+// (heavy capitals with the fork-and-spoon "O"); in Urdu it is the Urdu name in Nastaliq. Below 400 px the name
+// (and the emblem below 360 px) steps down so it stays on one line beside the cart and menu buttons.
 export function Wordmark() {
   const { t, i18n } = useTranslation()
   const brand = t('brand')
@@ -60,12 +61,12 @@ export function Wordmark() {
   const o = brand.toLowerCase().lastIndexOf('o')
 
   return (
-    <span className="flex items-center gap-3">
+    <span className="flex items-center gap-3 max-[360px]:gap-2">
       <Emblem />
       {i18n.language === 'ur' ? (
         <span className="font-heading text-2xl sm:text-3xl">{brand}</span>
       ) : (
-        <span className="font-[Jost] text-[22px] leading-none font-extrabold tracking-[0.03em] text-raised uppercase sm:text-[28px]">
+        <span className="font-[Jost] text-[22px] leading-none font-extrabold tracking-[0.03em] whitespace-nowrap text-raised uppercase max-[400px]:text-[19px] max-[360px]:text-[15px] sm:text-[28px]">
           {o < 0 ? brand : (
             <>
               {brand.slice(0, o)}

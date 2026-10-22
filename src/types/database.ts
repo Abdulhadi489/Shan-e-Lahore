@@ -549,6 +549,20 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
+                },"site_settings": {
+                  Row: {
+                    "font_body_en": string,"font_body_ur": string,"font_heading_en": string,"font_heading_ur": string,"id": boolean,"updated_at": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "font_body_en"?: string,"font_body_ur"?: string,"font_heading_en"?: string,"font_heading_ur"?: string,"id"?: boolean,"updated_at"?: string
+                  }
+                  Update: {
+                    "font_body_en"?: string,"font_body_ur"?: string,"font_heading_en"?: string,"font_heading_ur"?: string,"id"?: boolean,"updated_at"?: string
+                  }
+                  Relationships: [
+                    
+                  ]
                 }
           }
           Views: {

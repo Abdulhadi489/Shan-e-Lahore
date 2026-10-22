@@ -114,7 +114,7 @@ export function CheckoutPage() {
   return (
     <>
       <title>{`${t('pages.checkout')} · ${t('brand')}`}</title>
-      <PageTitle title={t('pages.checkout')} urdu={t('pages.checkout', { lng: 'ur' })} />
+      <PageTitle title={t('pages.checkout')} />
       <p className="mt-2 max-w-[60ch] font-medium text-brand-deep">{t('checkout.callNotice')}</p>
 
       <form onSubmit={handleSubmit(submit)} noValidate className="mt-6 flex max-w-6xl flex-wrap items-start gap-x-8 gap-y-8">

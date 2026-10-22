@@ -74,3 +74,16 @@ Deno.test('closing at exactly midnight', () => {
   assertEquals(openingStatus(fiveToMidnight, lahore('2026-10-13T00:00')), { open: false, opensAt: { weekday: 2, time: '05:00' } })
   assertEquals(openingStatus(fiveToMidnight, lahore('2026-10-13T04:59')), { open: false, opensAt: { weekday: 2, time: '05:00' } })
 })
+
+Deno.test('closing at 23:00, the current hours', () => {
+  const fiveToEleven: OpeningHours = [0, 1, 2, 3, 4, 5, 6].map((weekday) => ({
+    weekday,
+    open_time: '05:00:00',
+    close_time: '23:00:00',
+    is_closed: false,
+  }))
+  assertEquals(openingStatus(fiveToEleven, lahore('2026-10-12T22:59')), { open: true, closesAt: '23:00' })
+  assertEquals(openingStatus(fiveToEleven, lahore('2026-10-12T23:00')), { open: false, opensAt: { weekday: 2, time: '05:00' } })
+  assertEquals(openingStatus(fiveToEleven, lahore('2026-10-13T00:30')), { open: false, opensAt: { weekday: 2, time: '05:00' } })
+  assertEquals(openingStatus(fiveToEleven, lahore('2026-10-13T05:00')), { open: true, closesAt: '23:00' })
+})

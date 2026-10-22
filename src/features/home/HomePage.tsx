@@ -1,13 +1,11 @@
-import { lazy, Suspense, useState } from 'react'
+import { useState } from 'react'
 import { Link } from 'react-router'
 import { useTranslation } from 'react-i18next'
-import { ArrowRight, Bike, MapPin, PhoneCall, ShoppingBag } from 'lucide-react'
+import { ArrowRight, Bike, PhoneCall, ShoppingBag } from 'lucide-react'
 import { localized } from '../../i18n'
 import { formatAmount } from '../../lib/money'
 import { menuImageUrl } from '../../lib/images'
-import { dayLabel, phoneLabel, timeLabel } from '../../lib/format'
-import { OpeningHoursList } from '../../app/OpeningHoursList'
-import { karachiWeekMinute, openingStatus } from '../../../supabase/functions/_shared/opening-hours'
+import { phoneLabel } from '../../lib/format'
 import { useBranch } from '../../app/useBranch'
 import { ItemDialog } from '../menu/ItemDialog'
 import { ItemCard } from '../menu/MenuPage'
@@ -15,9 +13,6 @@ import { HeroPhoto } from './HeroPhoto'
 import { HeroVideo } from './HeroVideo'
 
 import { useMenu, type MenuItem } from '../menu/useMenu'
-
-// The map library is large, so the delivery-area map loads only when someone asks for it.
-const DeliveryAreaMap = lazy(() => import('../checkout/LocationPicker').then((module) => ({ default: module.DeliveryAreaMap })))
 
 const steps = [
   { icon: ShoppingBag, title: 'home.stepOrder', body: 'home.stepOrderBody' },
@@ -34,7 +29,6 @@ export function HomePage() {
   const branch = useBranch()
   const menu = useMenu()
   const [selected, setSelected] = useState<MenuItem | null>(null)
-  const [showMap, setShowMap] = useState(false)
 
   const featured = menu.data?.flatMap((c) => c.items).filter((item) => item.is_featured) ?? []
   const deals = featured.filter((item) => item.is_deal)
@@ -43,10 +37,6 @@ export function HomePage() {
   const allItems = menu.data?.flatMap((c) => c.items) ?? []
 
   const settings = branch.data?.branch_settings
-  const hours = branch.data?.opening_hours ?? []
-  const status = branch.data ? openingStatus(hours, new Date()) : null
-  const today = Math.floor(karachiWeekMinute(new Date()) / (24 * 60))
-  const tiers = [...(branch.data?.delivery_tiers ?? [])].sort((a, b) => a.upper_km - b.upper_km)
   const price = (amount: number) => t('price', { amount: formatAmount(amount) })
 
   return (
@@ -56,23 +46,8 @@ export function HomePage() {
       <div className="relative isolate -mx-(--page-pad) -mt-6 flex min-h-[max(560px,min(720px,85svh))] items-center justify-center overflow-hidden px-(--page-pad) py-16 text-center">
         <HeroVideo poster={heroDish?.image_path ? menuImageUrl(heroDish.image_path, 'full') : undefined} />
         <section className="flex w-full flex-col items-center">
-          {status && (
-            <p
-              className={`inline-flex items-center gap-2 rounded-full bg-raised px-3 py-1 text-sm font-medium ring-1 ring-line ${status.open ? 'text-success' : 'text-danger'}`}
-            >
-              <span aria-hidden className={`size-2 rounded-full ${status.open ? 'bg-success' : 'bg-danger'}`} />
-              {status.open
-                ? t('home.openNow', { time: timeLabel(lng, status.closesAt) })
-                : !status.opensAt
-                  ? t('home.closed')
-                  : status.opensAt.weekday === today
-                    ? t('home.closedOpensToday', { time: timeLabel(lng, status.opensAt.time) })
-                    : t('home.closedOpensOn', { day: dayLabel(lng, status.opensAt.weekday), time: timeLabel(lng, status.opensAt.time) })}
-            </p>
-          )}
-
           {/* The shadow keeps the cream text readable on the video's brightest frames. */}
-          <h1 className="mt-4 max-w-[900px] font-heading text-[clamp(2.25rem,1.4rem+3vw,5rem)] leading-[1.05] font-semibold text-raised [text-shadow:0_2px_16px_var(--color-ink)] rtl:text-[clamp(1.875rem,1.25rem+2vw,3.75rem)] rtl:leading-snug">
+          <h1 className="max-w-[900px] font-heading text-[clamp(2.25rem,1.4rem+3vw,5rem)] leading-[1.05] font-semibold text-raised [text-shadow:0_2px_16px_var(--color-ink)] rtl:text-[clamp(1.875rem,1.25rem+2vw,3.75rem)] rtl:leading-snug">
             {t('home.headline')}
           </h1>
           <p className="mt-4 max-w-[560px] text-[clamp(1.0625rem,0.95rem+0.3vw,1.375rem)] text-surface [text-shadow:0_1px_10px_var(--color-ink)]">
@@ -179,71 +154,6 @@ export function HomePage() {
             </li>
           ))}
         </ol>
-      </section>
-
-      {/* One off-white panel so the skyline never shows through; dividers run between the columns (stacked on phones). */}
-      <section className="surface-panel mt-20 flex flex-col divide-y divide-line md:flex-row md:divide-x md:divide-y-0">
-        <div className="min-w-0 flex-1 py-6 first:pt-0 last:pb-0 md:px-8 md:py-0 md:first:ps-0 md:last:pe-0">
-          <h2 className="font-heading text-xl font-semibold text-ink">{t('home.findUs')}</h2>
-          {branch.data && (
-            <>
-              <p className="mt-3 flex gap-2 text-ink-muted">
-                <MapPin aria-hidden className="mt-1 size-5 shrink-0 text-brand-deep" />
-                {localized(lng, branch.data.address_en, branch.data.address_ur)}
-              </p>
-              <p className="mt-2 flex gap-2">
-                <PhoneCall aria-hidden className="mt-1 size-5 shrink-0 text-brand-deep" />
-                <a href={`tel:+${branch.data.phone}`} dir="ltr" className="inline-flex min-h-11 items-center text-ink underline">
-                  {phoneLabel(branch.data.phone)}
-                </a>
-              </p>
-              {settings?.whatsapp_number && (
-                <a href={`https://wa.me/${encodeURIComponent(settings.whatsapp_number)}`} className="mt-2 inline-block font-medium text-brand-deep underline">
-                  {t('home.whatsapp')}
-                </a>
-              )}
-            </>
-          )}
-        </div>
-
-        <div className="min-w-0 flex-1 py-6 first:pt-0 last:pb-0 md:px-8 md:py-0 md:first:ps-0 md:last:pe-0">
-          <h2 className="font-heading text-xl font-semibold text-ink">{t('home.hours')}</h2>
-          <div className="mt-3 text-ink-muted">
-            <OpeningHoursList hours={hours} />
-          </div>
-        </div>
-
-        {tiers.length > 0 && (
-          <div className="min-w-0 flex-1 py-6 first:pt-0 last:pb-0 md:px-8 md:py-0 md:first:ps-0 md:last:pe-0">
-            <h2 className="font-heading text-xl font-semibold text-ink">{t('home.delivery')}</h2>
-            <dl className="mt-3 text-ink-muted">
-              {tiers.map((tier) => (
-                <div key={tier.upper_km} className="flex justify-between gap-4 py-0.5">
-                  <dt>{t('home.tier', { km: tier.upper_km })}</dt>
-                  <dd className="font-medium text-ink">{price(tier.charge)}</dd>
-                </div>
-              ))}
-            </dl>
-            <p className="mt-2 text-sm text-ink-muted">{t('home.beyond', { km: tiers.at(-1)?.upper_km })}</p>
-            {settings && settings.min_order_amount > 0 && (
-              <p className="mt-1 text-sm text-ink-muted">{t('home.minimumOrder', { amount: price(settings.min_order_amount) })}</p>
-            )}
-            <div className="mt-4">
-              {showMap && branch.data ? (
-                <Suspense fallback={<p className="text-sm text-ink-muted">{t('home.mapLoading')}</p>}>
-                  <DeliveryAreaMap
-                    branch={{ lat: Number(branch.data.lat), lng: Number(branch.data.lng) }}
-                    radiusKm={(tiers.at(-1)?.upper_km ?? 0) / Number(settings?.road_distance_factor ?? 1)}
-                  />
-                </Suspense>
-              ) : (
-                <button type="button" onClick={() => setShowMap(true)} className="min-h-11 text-sm font-medium text-brand-deep underline">
-                  {t('home.showMap')}
-                </button>
-              )}
-            </div>
-          </div>
-        )}
       </section>
 
       <ItemDialog item={selected} onClose={() => setSelected(null)} />

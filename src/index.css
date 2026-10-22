@@ -43,13 +43,24 @@
       transform: translateY(150%);
     }
   }
+
+  /* The mobile header menu drops in (also only for visitors who allow motion). */
+  --animate-menu-down: menu-down 0.2s ease-out;
+  @keyframes menu-down {
+    from {
+      opacity: 0;
+      transform: translateY(-0.5rem);
+    }
+  }
 }
 
 /* The customer site's fonts (the colours above are the whole site's: one orange, the top bar's, and one off-white).
-   Text on orange is espresso (ink); white or cream on this orange fails AA. */
+   Text on orange is espresso (ink); white or cream on this orange fails AA.
+   --font-heading-en, --font-body-en, --font-heading-ur and --font-body-ur are set from src/lib/fonts.ts when the
+   Super Admin picks other fonts in Settings; while they are unset, the fallbacks below are the original fonts. */
 .heritage {
-  --font-heading: 'Cormorant Garamond', ui-serif, Georgia, serif;
-  font-family: 'Jost', var(--font-sans);
+  --font-heading: var(--font-heading-en, 'Cormorant Garamond', ui-serif, Georgia, serif);
+  font-family: var(--font-body-en, 'Jost', var(--font-sans));
 }
 /* Espresso summary cards (cart, checkout, tracking): the same token names turned light, so the card's
    existing text, borders and inputs read on the dark background. Buttons on orange use text-espresso. */
@@ -65,8 +76,8 @@
   color: var(--color-ink);
 }
 html[lang='ur'] .heritage {
-  --font-heading: var(--font-sans);
-  font-family: var(--font-sans);
+  --font-heading: var(--font-heading-ur, var(--font-sans));
+  font-family: var(--font-body-ur, var(--font-sans));
 }
 
 @layer base {
@@ -154,6 +165,14 @@ html[lang='ur'] .heritage {
   scrollbar-width: none;
   &::-webkit-scrollbar {
     display: none;
+  }
+}
+
+/* Smooth scrolling for the Menu page's own jumps (MenuPage adds the class while it is open); visitors who ask their
+   system for reduced motion keep the instant jump. */
+@media (prefers-reduced-motion: no-preference) {
+  html.smooth-scroll {
+    scroll-behavior: smooth;
   }
 }
 

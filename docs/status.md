@@ -82,7 +82,10 @@ Tick items as they land. Items come from `CLAUDE.md` section 15 and `docs/spec.m
 - [x] Settings: restaurant info, opening hours, payment accounts, WhatsApp number, riders; staff accounts through the `admin-users` Edge Function (create, change role or active state, reset password; two active Super Admins always kept)
 - [x] Pushed and deployed to dev (17 Oct, approved by Arslan): migrations `20261016193031_staff_access`, `20261016194545_audit_branches`, `20261016194933_customer_summaries`, `20261016195618_edit_order`; functions `admin-users`, `edit-order` (both keep verify_jwt on and check the login themselves) and `place-order` (shared code moved). Security Advisor on dev: only the two accepted warnings
 - [x] Checked on dev with Arslan's real login (17 Oct, live site and CSP): every staff screen loads; photo upload saves both sizes and deleting the dish removes them; report and CSV download (BOM present); a discount code created and deleted; `admin-users` and `edit-order` answer with the real login; the Live orders page holds a branch-filtered Realtime subscription. Test data was removed
-- [ ] Still to try on dev during opening hours (05:00 to midnight): place a test order, edit it on the call, take it to delivered; the alarm on the order-station laptop
+- [x] Fonts of the customer site chosen in Settings > Fonts (22 Oct, **local database only so far**): migration `20261022150000_site_settings` (one-row `site_settings` table, fonts limited to the allowed lists by CHECK constraints, public read of the four font columns, Super Admin write), pgTAP `15_site_settings_test.sql`, rollback in `supabase/rollbacks/`. Until it is pushed to the hosted dev project the site simply keeps the built-in fonts and Settings > Fonts cannot save. Non-default fonts load from Google Fonts (CSP updated in `render.yaml`); the Privacy text does not mention Google yet. Steps to push: `docs/runbook-fonts-and-descriptions.md`
+- [x] One-line English and Urdu descriptions for all 104 dishes without one (the 2 deals keep theirs): data migration `20261022150100_menu_descriptions` (local only so far; the Urdu lines need a native speaker's review). Cards show them, clamped to two lines on phones
+- [x] Banners on all six pages from the restaurant's own photos (22 Oct; `src/assets/banners/`, two sizes each, Terms and Privacy are two crops of one photo; the Pexels photos and `IMAGE_CREDITS.md` are gone); closing time moved to 23:00 in the seed (hosted rows are changed in Settings > Opening hours)
+- [ ] Still to try on dev during opening hours (05:00 to 23:00): place a test order, edit it on the call, take it to delivered; the alarm on the order-station laptop
 
 ### Milestone 4: Hardening and launch
 
@@ -139,7 +142,7 @@ Tick items as they land. Items come from `CLAUDE.md` section 15 and `docs/spec.m
 
 ## Data in the dev project
 
-- Real: menu (106 dishes, from the printed menu of 2026-08-29), branch address, phone and map pin (31.523689, 74.344498), opening hours (05:00 to midnight daily).
+- Real: menu (106 dishes, from the printed menu of 2026-08-29), branch address, phone and map pin (31.523689, 74.344498), opening hours (05:00 to 23:00 daily; hosted rows must be changed in Settings > Opening hours).
 - Placeholder: delivery tiers (3/5/7 km at Rs 100/150/200), road factor 1.3. Minimum order is 0 (off, team decision).
 - Empty: payment accounts, WhatsApp number, riders, discount codes, banners, photos. While payment accounts are empty, the tracking page and the WhatsApp messages say the details come on the confirmation call. With no riders, orders can't be sent out for delivery on dev until someone adds riders in Settings > Riders. The local seed has two placeholder riders.
 

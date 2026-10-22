@@ -4,7 +4,8 @@ import { useTranslation } from 'react-i18next'
 import { localized } from '../../i18n'
 import { formatAmount } from '../../lib/money'
 import { menuImageUrl } from '../../lib/images'
-import { PageTitle } from '../../app/PageTitle'
+import { PageBanner } from '../../components/PageBanner'
+import { banners } from '../../assets/banners/banners'
 import { ItemDialog } from './ItemDialog'
 import { useMenu, type MenuItem } from './useMenu'
 
@@ -44,7 +45,7 @@ export function ItemCard({ item, onSelect }: { item: MenuItem; onSelect: (item: 
       <span className="flex flex-1 flex-col gap-1 p-4">
         <span className="font-heading text-xl leading-snug font-semibold">{localized(lng, item.name_en, item.name_ur)}</span>
         {item.description_en && (
-          <span className="text-sm text-ink-muted">{localized(lng, item.description_en, item.description_ur)}</span>
+          <span className="text-sm text-ink-muted max-sm:line-clamp-2">{localized(lng, item.description_en, item.description_ur)}</span>
         )}
         <span className="mt-auto flex flex-wrap items-center justify-between gap-2 pt-2 font-medium">
           {soldOut ? (
@@ -70,6 +71,13 @@ export function MenuPage() {
   const [selected, setSelected] = useState<MenuItem | null>(null)
   const { hash } = useLocation()
 
+  // The category chips and links from Home glide to their section while this page is open (index.css); other pages and
+  // route changes keep their instant behaviour.
+  useEffect(() => {
+    document.documentElement.classList.add('smooth-scroll')
+    return () => document.documentElement.classList.remove('smooth-scroll')
+  }, [])
+
   // Links like /menu#category-… arrive before the menu has loaded, so scroll once it has.
   useEffect(() => {
     if (menu.data && hash) document.getElementById(decodeURIComponent(hash.slice(1)))?.scrollIntoView()
@@ -78,7 +86,7 @@ export function MenuPage() {
   return (
     <>
       <title>{`${t('pages.menu')} · ${t('brand')}`}</title>
-      <PageTitle title={t('pages.menu')} urdu={t('pages.menu', { lng: 'ur' })} />
+      <PageBanner image={banners.menu} title={t('pages.menu')} />
 
       {menu.isPending && <p className="mt-4">{t('menu.loading')}</p>}
       {menu.isError && (

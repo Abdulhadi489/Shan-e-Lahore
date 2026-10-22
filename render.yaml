@@ -25,7 +25,7 @@ services:
         source: /*
         destination: /index.html
     headers:
-      # Only our own files, our Supabase project (data, Edge Functions, menu photos and the staff live-order connection), Cloudflare Turnstile and OpenStreetMap tiles.
+      # Only our own files, our Supabase project (data, Edge Functions, menu photos and the staff live-order connection), Cloudflare Turnstile and OpenStreetMap tiles, and Google Fonts (only used when the Super Admin picks a non-default font in Settings).
       - path: /*
         name: Content-Security-Policy
         value: >-
@@ -34,8 +34,8 @@ services:
           frame-src https://challenges.cloudflare.com;
           connect-src 'self' https://gdjvulhrumxwjmnaywnn.supabase.co wss://gdjvulhrumxwjmnaywnn.supabase.co;
           img-src 'self' https://gdjvulhrumxwjmnaywnn.supabase.co https://tile.openstreetmap.org;
-          style-src 'self';
-          font-src 'self';
+          style-src 'self' https://fonts.googleapis.com;
+          font-src 'self' https://fonts.gstatic.com;
           object-src 'none';
           base-uri 'self';
           form-action 'self';
