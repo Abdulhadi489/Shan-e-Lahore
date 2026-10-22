@@ -112,7 +112,7 @@ export function CartPage() {
                     </button>
                   </div>
                   <span className="w-24 text-end font-medium">{unit === null ? '' : price(unit * line.quantity)}</span>
-                  <button type="button" onClick={() => setQuantity(key, 0)} className="min-h-11 text-sm text-brand-deep underline">
+                  <button type="button" onClick={() => setQuantity(key, 0)} className="min-h-11 min-w-11 text-sm text-brand-deep underline">
                     {t('cart.remove')}
                   </button>
                 </li>

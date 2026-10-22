@@ -19,6 +19,9 @@ const steps = [
 
 const finished = (order: TrackedOrder | undefined) => order?.status === 'delivered' || order?.status === 'cancelled'
 
+// A mistyped or cut-off link fails the token check (INVALID_INPUT); retrying can't help, and it is a missing order.
+const isNotFound = (error: Error) => error instanceof OrderApiError && (error.code === 'ORDER_NOT_FOUND' || error.code === 'INVALID_INPUT')
+
 export function TrackingPage() {
   const { t, i18n } = useTranslation()
   const lng = i18n.language
@@ -28,19 +31,21 @@ export function TrackingPage() {
     queryKey: ['order', token],
     queryFn: () => getOrder(token),
     refetchInterval: (query) => (finished(query.state.data) ? false : 30_000),
-    retry: (count, error) => !(error instanceof OrderApiError && error.code === 'ORDER_NOT_FOUND') && count < 3,
+    retry: (count, error) => !isNotFound(error) && count < 3,
   })
   const cancel = useMutation({ mutationFn: () => cancelOrder(token), onSettled: () => order.refetch() })
   const price = (amount: number) => t('price', { amount: formatAmount(amount) })
 
   if (order.isPending) return <p>{t('tracking.loading')}</p>
   if (order.isError) {
-    const notFound = order.error instanceof OrderApiError && order.error.code === 'ORDER_NOT_FOUND'
+    const notFound = isNotFound(order.error)
+    const code = order.error instanceof OrderApiError ? order.error.code : 'NETWORK'
+    const message = notFound ? 'tracking.notFound' : code === 'RATE_LIMITED' || code === 'NETWORK' ? `errors.${code}` as const : 'errors.SERVER_ERROR'
     return (
       <>
         <title>{`${t('pages.tracking')} · ${t('brand')}`}</title>
         <PageTitle title={t('pages.tracking')} />
-        <p role="alert" className="mt-3">{t(notFound ? 'tracking.notFound' : 'menu.error')}</p>
+        <p role="alert" className="mt-3">{t(message)}</p>
       </>
     )
   }
