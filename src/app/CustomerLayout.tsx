@@ -48,7 +48,7 @@ const menuLinkClass = ({ isActive }: { isActive: boolean }) =>
   `flex min-h-12 w-full items-center justify-start rounded-full px-5 text-sm font-medium ltr:uppercase ltr:tracking-[0.15em] ${isActive ? 'bg-surface' : 'hover:bg-surface/50'}`
 
 const footerLinkClass = ({ isActive }: { isActive: boolean }) =>
-  `inline-flex min-h-11 items-center ${isActive ? 'font-medium underline underline-offset-4' : 'hover:underline'}`
+  `inline-flex min-h-11 items-center max-md:justify-center ${isActive ? 'font-medium underline underline-offset-4' : 'hover:underline'}`
 
 // Icon-only footer links: a 44 px tap area with the same hover tint as the language button.
 const socialLinkClass = 'flex size-11 items-center justify-center rounded-full hover:bg-surface/50'
@@ -213,32 +213,30 @@ export function CustomerLayout() {
       <InfoPanel />
 
       {/* Extra room at the bottom while the cart bar floats there, so it never covers the footer links. */}
-      <footer className={`border-t-8 border-dotted border-gold bg-brand [&_:focus-visible]:outline-ink ${showCartBar ? 'pb-24' : ''}`}>
-        <div className="mx-auto flex min-h-16 max-w-[120rem] flex-wrap items-center gap-x-6 gap-y-2 px-(--page-pad) py-3">
+      <footer className={`border-t-8 border-dotted border-gold bg-brand [&_:focus-visible]:outline-ink ${showCartBar ? 'pb-[calc(6rem+env(safe-area-inset-bottom))]' : 'pb-[env(safe-area-inset-bottom)]'}`}>
+        {/* Below 1024 px everything stacks and centres: name, links (two even columns on phones), then the icons. */}
+        <div className="mx-auto flex min-h-16 max-w-[120rem] flex-col items-center gap-y-3 px-(--page-pad) py-5 text-center lg:flex-row lg:flex-wrap lg:gap-x-6 lg:gap-y-2 lg:py-3 lg:text-start">
           {/* The English wordmark in both languages (no Urdu name here); lang and the fixed font keep it right on Urdu pages. */}
           <Link to="/" lang="en" className="inline-flex min-h-11 items-center font-[Cormorant_Garamond] text-xl font-semibold uppercase tracking-[0.12em]">
             {t('brand', { lng: 'en' })}
           </Link>
-          <nav aria-label={t('nav.info')} className="flex flex-wrap gap-x-5">
+          <nav aria-label={t('nav.info')} className="grid w-full max-w-sm grid-cols-2 gap-x-4 md:flex md:w-auto md:max-w-none md:flex-wrap md:justify-center md:gap-x-5 lg:justify-start">
             {infoPages.map((page) => (
               <NavLink key={page.path} to={`/${page.path}`} className={footerLinkClass}>
                 {t(page.title)}
               </NavLink>
             ))}
           </nav>
-          {/* Icons and phone wrap together as one group at the end of the row. */}
-          <div className="ms-auto flex flex-wrap items-center gap-x-2">
-            <div className="flex items-center">
-              {([['instagram', InstagramIcon], ['tiktok', TikTokIcon]] as const).map(([name, Icon]) => (
-                <a key={name} href={social[name].url} target="_blank" rel="noopener noreferrer" aria-label={t(`info.${name}`)} className={socialLinkClass}>
-                  <Icon className="size-5" />
-                </a>
-              ))}
-              <a href={`mailto:${social.email}`} aria-label={t('info.email')} className={socialLinkClass}>
-                <Mail aria-hidden className="size-5" />
+          {/* Centred under the links below 1024 px; at the end of the row from there. */}
+          <div className="flex items-center lg:ms-auto">
+            {([['instagram', InstagramIcon], ['tiktok', TikTokIcon]] as const).map(([name, Icon]) => (
+              <a key={name} href={social[name].url} target="_blank" rel="noopener noreferrer" aria-label={t(`info.${name}`)} className={socialLinkClass}>
+                <Icon className="size-5" />
               </a>
-            </div>
-            {phoneLink}
+            ))}
+            <a href={`mailto:${social.email}`} aria-label={t('info.email')} className={socialLinkClass}>
+              <Mail aria-hidden className="size-5" />
+            </a>
           </div>
         </div>
       </footer>

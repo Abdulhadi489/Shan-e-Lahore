@@ -89,9 +89,9 @@ export function InfoPanel() {
                 </div>
               ))}
             </dl>
-            <p className="mt-2 text-sm text-ink-muted">{t('home.beyond', { km: tiers.at(-1)?.upper_km })}</p>
+            <p className="mt-2 text-base text-ink-muted">{t('home.beyond', { km: tiers.at(-1)?.upper_km })}</p>
             {settings && settings.min_order_amount > 0 && (
-              <p className="mt-1 text-sm text-ink-muted">{t('home.minimumOrder', { amount: price(settings.min_order_amount) })}</p>
+              <p className="mt-1 text-base text-ink-muted">{t('home.minimumOrder', { amount: price(settings.min_order_amount) })}</p>
             )}
             <div className="mt-4">
               {showMap && branch.data ? (

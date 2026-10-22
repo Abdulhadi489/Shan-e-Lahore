@@ -20,7 +20,7 @@ export const banners = {
   cart: { large: cartLarge, small: cartSmall },
   contact: { large: contactLarge, small: contactSmall },
   menu: { large: menuLarge, small: menuSmall },
-  // Two crops of the same spices photo.
+  // Terms and privacy: crops of the spices photo and the rice photo; contact: a crop of the naan photo.
   privacy: { large: privacyLarge, small: privacySmall },
   terms: { large: termsLarge, small: termsSmall },
 } satisfies Record<string, Banner>
