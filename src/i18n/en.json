@@ -75,10 +75,6 @@
     "popular": "Popular dishes",
     "hours": "Opening hours",
     "closedDay": "Closed",
-    "delivery": "Delivery charges",
-    "tier": "Up to {{km}} km",
-    "beyond": "We don't deliver beyond {{km}} km.",
-    "minimumOrder": "Minimum order {{amount}}",
     "headline": "Halwa puri to karahi, delivered hot",
     "subhead": "Order online from our full menu. We call to confirm every order before the kitchen starts.",
     "browse": "Browse the menu",
@@ -92,7 +88,6 @@
     "stepDeliver": "Our rider delivers",
     "stepDeliverBody": "The restaurant's own riders bring your order to your door.",
     "findUs": "Find us",
-    "showMap": "Show the delivery area on a map",
     "mapLoading": "Loading the map…"
   },
   "checkout": {

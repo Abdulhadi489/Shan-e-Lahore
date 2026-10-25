@@ -85,7 +85,7 @@ Tick items as they land. Items come from `CLAUDE.md` section 15 and `docs/spec.m
 - [x] Fonts of the customer site chosen in Settings > Fonts (22 Oct, **local database only so far**): migration `20261022150000_site_settings` (one-row `site_settings` table, fonts limited to the allowed lists by CHECK constraints, public read of the four font columns, Super Admin write), pgTAP `15_site_settings_test.sql`, rollback in `supabase/rollbacks/`. Until it is pushed to the hosted dev project the site simply keeps the built-in fonts and Settings > Fonts cannot save. Non-default fonts load from Google Fonts (CSP updated in `render.yaml`); the Privacy text does not mention Google yet. Steps to push: `docs/runbook-fonts-and-descriptions.md`
 - [x] One-line English and Urdu descriptions for all 104 dishes without one (the 2 deals keep theirs): data migration `20261022150100_menu_descriptions` (local only so far; the Urdu lines need a native speaker's review). Cards show them, clamped to two lines on phones
 - [x] Banners on all six pages from the restaurant's own photos (22 Oct; `src/assets/banners/`, two sizes each, five photos from the zip are shared by crops; the Pexels photos and `IMAGE_CREDITS.md` are gone); closing time moved to 23:00 in the seed (hosted rows are changed in Settings > Opening hours)
-- [ ] Still to try on dev during opening hours (05:00 to 23:00): place a test order, edit it on the call, take it to delivered; the alarm on the order-station laptop
+- [ ] Still to try on dev during opening hours (04:00 to 03:00 once the hosted hours are updated): place a test order, edit it on the call, take it to delivered; the alarm on the order-station laptop
 
 ### Milestone 4: Hardening and launch
 
@@ -142,12 +142,24 @@ Tick items as they land. Items come from `CLAUDE.md` section 15 and `docs/spec.m
 
 ## Data in the dev project
 
-- Real: menu (106 dishes, from the printed menu of 2026-08-29), branch address, phone and map pin (31.523689, 74.344498), opening hours (05:00 to 23:00 daily; hosted rows must be changed in Settings > Opening hours).
-- Placeholder: delivery tiers (3/5/7 km at Rs 100/150/200), road factor 1.3. Minimum order is 0 (off, team decision).
+- Real: menu (106 dishes, from the printed menu of 2026-08-29), branch address, phone and map pin (31.523689, 74.344498), opening hours: the restaurant's real hours since 25 Oct are 04:00 to 03:00 every day (the hour in between is the switch from the main menu to nashta). The seed has them; **the hosted dev project still has 05:00 to 23:00 until a Super Admin changes Settings > Opening hours** (or a deployer runs the SQL below).
+- Real delivery charges (restaurant, 25 Oct): Rs 70 up to 1 km, then Rs 30 more for each started km (2 km Rs 100, 3 km Rs 130), delivering in the whole of Lahore. Stored as 45 tiers (1 to 45 km by road, about 35 km in a straight line with the 1.3 road factor). The seed has them; **the hosted dev project still has the old 3/5/7 km placeholder tiers** until a deployer runs the SQL below in the dashboard SQL editor (typing 45 tiers in Delivery is possible but slow). Road factor 1.3. Minimum order is 0 (off, team decision).
+
+  ```sql
+  -- Hosted dev project only, run once in Dashboard > SQL editor. Replaces the delivery tiers and hours of the active branch.
+  begin;
+  delete from public.delivery_tiers where branch_id = (select id from public.branches where is_active limit 1);
+  insert into public.delivery_tiers (branch_id, upper_km, charge)
+  select (select id from public.branches where is_active limit 1), km, 70 + 30 * (km - 1) from generate_series(1, 45) km;
+  update public.opening_hours set open_time = '04:00', close_time = '03:00', is_closed = false
+  where branch_id = (select id from public.branches where is_active limit 1);
+  commit;
+  ```
 - Empty: payment accounts, WhatsApp number, riders, discount codes, banners, photos. While payment accounts are empty, the tracking page and the WhatsApp messages say the details come on the confirmation call. With no riders, orders can't be sent out for delivery on dev until someone adds riders in Settings > Riders. The local seed has two placeholder riders.
 
 ## Known gaps and risks
 
+- **Redeploy all six Edge Functions after this merges** (Arslan or Sufyan): zod was raised to 4.6.6 on 25 Oct for a high security advisory, and the hosted functions keep the old zod until redeployed. vitest goes to 5.0.5 (moderate advisory, tests only) once it is 14 days old on 29 Oct. See `docs/decisions.md`.
 - Ten days for Milestones 3 and 4 is tight. Anything not ready by 21 October is listed here and decided with the team, not dropped silently.
 - All Urdu so far was written by Claude (except dish names, which are the restaurant's own) and needs review, including the customer WhatsApp messages (`whatsapp.*` in `src/i18n/ur.json`).
 - New-order alerts work only while the Live orders page is open and on a device that is awake; a locked phone never rings (no web push). See README "Setting up the order station".
