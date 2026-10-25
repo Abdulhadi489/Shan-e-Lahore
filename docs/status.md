@@ -159,6 +159,7 @@ Tick items as they land. Items come from `CLAUDE.md` section 15 and `docs/spec.m
 
 ## Known gaps and risks
 
+- **Redeploy all six Edge Functions after this merges** (Arslan or Sufyan): zod was raised to 4.6.6 on 25 Oct for a high security advisory, and the hosted functions keep the old zod until redeployed. vitest goes to 5.0.5 (moderate advisory, tests only) once it is 14 days old on 29 Oct. See `docs/decisions.md`.
 - Ten days for Milestones 3 and 4 is tight. Anything not ready by 21 October is listed here and decided with the team, not dropped silently.
 - All Urdu so far was written by Claude (except dish names, which are the restaurant's own) and needs review, including the customer WhatsApp messages (`whatsapp.*` in `src/i18n/ur.json`).
 - New-order alerts work only while the Live orders page is open and on a device that is awake; a locked phone never rings (no web push). See README "Setting up the order station".
