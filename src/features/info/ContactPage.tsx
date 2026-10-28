@@ -97,7 +97,7 @@ export function ContactPage() {
               <div className="mt-3">
                 <ArchFrame>
                   <Suspense fallback={<p className="p-6 pt-24 text-center text-sm">{t('home.mapLoading')}</p>}>
-                    <DeliveryAreaMap branch={{ lat: Number(b.lat), lng: Number(b.lng) }} radiusKm={0} zoom={15} boxClass="h-full" />
+                    <DeliveryAreaMap branch={{ lat: Number(b.lat), lng: Number(b.lng) }} zoom={15} boxClass="h-full" />
                   </Suspense>
                 </ArchFrame>
               </div>

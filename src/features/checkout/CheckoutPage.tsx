@@ -125,7 +125,6 @@ export function CheckoutPage() {
               <div className="mt-3">
                 <LocationPicker
                   branch={{ lat: Number(branch.data.lat), lng: Number(branch.data.lng) }}
-                  radiusKm={maxKm / Number(settings?.road_distance_factor ?? 1)}
                   pin={pin}
                   onChange={setPin}
                 />

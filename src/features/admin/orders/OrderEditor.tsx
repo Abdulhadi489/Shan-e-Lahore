@@ -69,7 +69,6 @@ function Editor({ order }: { order: LiveOrder }) {
   const number = `${branch.order_prefix}-${order.order_number}`
   const setQuantity = (key: string, quantity: number) =>
     setLines((all) => all.map((line) => (line.key === key ? { ...line, quantity: Math.min(50, Math.max(1, quantity)) } : line)))
-  const tiers = place.data?.delivery_tiers ?? []
 
   return (
     <>
@@ -175,7 +174,6 @@ function Editor({ order }: { order: LiveOrder }) {
             <Suspense fallback={<p>{t('admin.loading')}</p>}>
               <LocationPicker
                 branch={{ lat: place.data.lat, lng: place.data.lng }}
-                radiusKm={Math.max(0, ...tiers.map((tier) => tier.upper_km))}
                 pin={pin}
                 onChange={setPin}
               />

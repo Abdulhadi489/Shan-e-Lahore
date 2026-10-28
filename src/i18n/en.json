@@ -98,7 +98,7 @@
     "locating": "Finding you…",
     "locationError": "Couldn't get your location. Tap the map or drag the pin instead.",
     "pinAtCentre": "Put pin at map centre",
-    "mapHelp": "Tap the map to drop your pin, then drag it to your door. The circle shows our delivery area.",
+    "mapHelp": "Tap the map to drop your pin, then drag it to your door. We deliver across Lahore.",
     "dropPin": "Drop your pin on the map to see the delivery charge.",
     "calculating": "Working out the delivery charge…",
     "distance": "{{km}} km away · delivery {{charge}}",

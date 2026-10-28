@@ -75,7 +75,6 @@ export function DeliveryPage() {
   if (data.isPending) return <p>{t('admin.loading')}</p>
   if (data.isError) return <p role="alert">{t('admin.errors.loadFailed')}</p>
   const { place, tiers, settings, log, people } = data.data
-  const radiusKm = Math.max(0, ...tiers.map((tier) => tier.upper_km))
   const nameOf = (userId: string | null) => people.find((person) => person.user_id === userId)?.full_name ?? t('admin.delivery.log.unknown')
 
   const tierFields = (tier?: (typeof tiers)[number]) => (
@@ -212,7 +211,7 @@ export function DeliveryPage() {
           <h2 className={sectionHeading}>{t('admin.delivery.location.heading')}</h2>
           <p className="mb-3 text-ink-muted">{t('admin.delivery.location.help')}</p>
           <Suspense fallback={<p>{t('admin.loading')}</p>}>
-            <LocationPicker branch={{ lat: place.lat, lng: place.lng }} radiusKm={radiusKm} pin={pin} onChange={setPin} />
+            <LocationPicker branch={{ lat: place.lat, lng: place.lng }} pin={pin} onChange={setPin} />
           </Suspense>
           {pin ? (
             <button
