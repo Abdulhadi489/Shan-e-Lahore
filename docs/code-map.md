@@ -100,7 +100,6 @@ Using an AI assistant? Point it at `AGENTS.md`; it reads `CLAUDE.md`, the projec
 | --- | --- |
 | `home/HomePage.tsx` | Home: full-width video hero with the open/closed status, headline and buttons centred, the banner or featured dish photo, deals, categories, popular dishes, how ordering works, hours, delivery charges, map on request |
 | `home/HeroVideo.tsx` | The shop video filling the hero behind the centred headline, with a dark wash (poster for reduced motion or blocked autoplay) |
-| `home/HeroPhoto.tsx` | The photo below the headline: the first active banner, or the first featured dish photo; opens the linked dish when tapped |
 | `menu/useMenu.ts` | Loads the whole menu in one request |
 | `menu/MenuPage.tsx` | Menu with the sticky category bar and dish cards |
 | `menu/ItemDialog.tsx` | The dish pop-up: size and add-on choices, quantity, add to cart (staff reuse it when editing an order) |

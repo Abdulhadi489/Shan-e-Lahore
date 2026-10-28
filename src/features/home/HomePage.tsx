@@ -9,7 +9,6 @@ import { phoneLabel } from '../../lib/format'
 import { useBranch } from '../../app/useBranch'
 import { ItemDialog } from '../menu/ItemDialog'
 import { ItemCard } from '../menu/MenuPage'
-import { HeroPhoto } from './HeroPhoto'
 import { HeroVideo } from './HeroVideo'
 
 import { useMenu, type MenuItem } from '../menu/useMenu'
@@ -34,7 +33,6 @@ export function HomePage() {
   const deals = featured.filter((item) => item.is_deal)
   const popular = featured.filter((item) => !item.is_deal)
   const heroDish = [...deals, ...popular].find((item) => item.image_path)
-  const allItems = menu.data?.flatMap((c) => c.items) ?? []
 
   const settings = branch.data?.branch_settings
   const price = (amount: number) => t('price', { amount: formatAmount(amount) })
@@ -76,11 +74,6 @@ export function HomePage() {
             )}
           </div>
         </section>
-      </div>
-
-      {/* The admin's home banner or featured dish follows the hero. */}
-      <div className="mt-16 flex max-w-4xl">
-        <HeroPhoto items={allItems} featuredDish={heroDish} onOpen={setSelected} />
       </div>
 
       {deals.length > 0 && (
