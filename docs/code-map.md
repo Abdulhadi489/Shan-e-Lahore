@@ -98,7 +98,7 @@ Using an AI assistant? Point it at `AGENTS.md`; it reads `CLAUDE.md`, the projec
 
 | File | What it is |
 | --- | --- |
-| `home/HomePage.tsx` | Home: full-width video hero with the open/closed status, headline and buttons centred, the banner or featured dish photo, deals, categories, popular dishes, how ordering works, hours, delivery charges, map on request |
+| `home/HomePage.tsx` | Home: full-width video hero with the open/closed status, headline and buttons centred, deals, categories, popular dishes, how ordering works, hours, delivery charges, map on request |
 | `home/HeroVideo.tsx` | The shop video filling the hero behind the centred headline, with a dark wash (poster for reduced motion or blocked autoplay) |
 | `menu/useMenu.ts` | Loads the whole menu in one request |
 | `menu/MenuPage.tsx` | Menu with the sticky category bar and dish cards |
@@ -132,7 +132,6 @@ Using an AI assistant? Point it at `AGENTS.md`; it reads `CLAUDE.md`, the projec
 | `menu/MenuAdminPage.tsx` | Categories and their dishes; the Menu sub-menu |
 | `menu/ItemEditor.tsx` | Add or edit a dish: details, photo, sizes, add-on groups |
 | `menu/AddonGroupsPage.tsx` | Add-on groups and their choices |
-| `menu/BannersPage.tsx` | Home banners, each optionally linked to a dish |
 | `menu/photos.ts` | Shrinks photos in the browser and uploads them (two sizes) |
 | `delivery/DeliveryPage.tsx` | Distance charges, delivery rules, restaurant pin, change log |
 | `customers/CustomersPage.tsx` | Customer list, search, order history, block a number |

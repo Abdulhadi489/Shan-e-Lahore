@@ -598,8 +598,7 @@
       "heading": "Menu",
       "sections": {
         "dishes": "Dishes",
-        "addons": "Add-on groups",
-        "banners": "Home banners"
+        "addons": "Add-on groups"
       },
       "nameEn": "Name (English)",
       "nameUr": "Name (Urdu)",
@@ -661,16 +660,6 @@
         "addOption": "Add choice",
         "addGroup": "Add group",
         "none": "No add-on groups yet."
-      },
-      "banners": {
-        "help": "Pictures shown beside the headline on the home page. The first active one (lowest position) is shown; with none, the photo of the first dish marked for the home page is used. Pick a dish to let customers tap the picture and order it; otherwise it is just a picture.",
-        "titleEn": "Caption (English)",
-        "titleUr": "Caption (Urdu)",
-        "image": "Image",
-        "add": "Upload banner",
-        "none": "No banners yet. The home page shows the photo of the first dish marked for the home page.",
-        "dish": "Opens this dish when tapped (optional)",
-        "noDish": "No dish (just a picture)"
       }
     },
     "delivery": {

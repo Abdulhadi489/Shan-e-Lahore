@@ -51,9 +51,6 @@ export function MenuNav() {
         <NavLink to="/admin/menu/addons" className={link}>
           {t('admin.menu.sections.addons')}
         </NavLink>
-        <NavLink to="/admin/menu/banners" className={link}>
-          {t('admin.menu.sections.banners')}
-        </NavLink>
       </nav>
     </>
   )
