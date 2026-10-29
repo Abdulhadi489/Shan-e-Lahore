@@ -155,6 +155,7 @@ Tick items as they land. Items come from `CLAUDE.md` section 15 and `docs/spec.m
   where branch_id = (select id from public.branches where is_active limit 1);
   commit;
   ```
+- Test orders cleared (30 Oct, Arslan's request): all 11 test customers and their 19 orders (with items, status history and call attempts) were deleted on dev, and the order counter was reset so the next order is SL-1001.
 - Empty: payment accounts, WhatsApp number, riders, discount codes, banners, photos. While payment accounts are empty, the tracking page and the WhatsApp messages say the details come on the confirmation call. With no riders, orders can't be sent out for delivery on dev until someone adds riders in Settings > Riders. The local seed has two placeholder riders.
 
 ## Known gaps and risks
