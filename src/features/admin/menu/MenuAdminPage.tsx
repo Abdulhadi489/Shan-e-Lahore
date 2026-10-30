@@ -10,6 +10,7 @@ import {
   headingClass,
   inputClass,
   labelClass,
+  optional,
   primaryButton,
   SaveError,
   secondaryButton,
@@ -28,7 +29,7 @@ export function useAdminMenu(branchId: string) {
       const { data, error } = await supabase
         .from('categories')
         .select(
-          `id, name_en, name_ur, sort_order, is_active, is_side,
+          `id, name_en, name_ur, sort_order, is_active, is_side, available_from, available_until,
            items ( id, name_en, base_price, image_path, is_available, is_hidden, is_deal, is_featured, sort_order )`,
         )
         .eq('branch_id', branchId)
@@ -76,12 +77,27 @@ export function MenuAdminPage() {
         {t('admin.menu.sortOrder')}
         <input name="sort_order" type="number" required defaultValue={category?.sort_order ?? (menu.data?.length ?? 0) + 1} className={`${inputClass} w-24`} />
       </label>
+      <fieldset className="flex flex-wrap items-end gap-3">
+        <legend className="mb-1">{t('admin.menu.servedHours')}</legend>
+        <label className={labelClass}>
+          {t('admin.menu.servedFrom')}
+          <input name="available_from" type="time" defaultValue={category?.available_from?.slice(0, 5)} className={inputClass} />
+        </label>
+        <label className={labelClass}>
+          {t('admin.menu.servedUntil')}
+          <input name="available_until" type="time" defaultValue={category?.available_until?.slice(0, 5)} className={inputClass} />
+        </label>
+        <p className="w-full text-sm text-ink-muted">{t('admin.menu.servedHelp')}</p>
+      </fieldset>
     </>
   )
   const categoryValues = (form: FormData) => ({
     name_en: text(form, 'name_en'),
     name_ur: text(form, 'name_ur'),
     sort_order: Number(text(form, 'sort_order')),
+    // Both empty: served whenever the restaurant is open. One without the other is refused by the database.
+    available_from: optional(form, 'available_from'),
+    available_until: optional(form, 'available_until'),
   })
 
   return (

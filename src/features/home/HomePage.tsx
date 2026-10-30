@@ -91,7 +91,7 @@ export function HomePage() {
                   <span className="font-heading text-2xl font-semibold text-ink">{localized(lng, deal.name_en, deal.name_ur)}</span>
                   <span className="mt-2 max-w-[38ch] text-sm text-ink-muted">{localized(lng, deal.description_en, deal.description_ur)}</span>
                   <span className="mt-4 font-heading text-3xl font-semibold text-brand-deep">{price(deal.base_price)}</span>
-                  <span className="mt-4 rounded-control bg-brand px-5 py-2 text-sm font-medium text-ink">{t('item.add')}</span>
+                  <span className="mt-4 rounded-control bg-brand px-5 py-2 text-sm font-medium text-raised">{t('item.add')}</span>
                 </button>
               </li>
             ))}

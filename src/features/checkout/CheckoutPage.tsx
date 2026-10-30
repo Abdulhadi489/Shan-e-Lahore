@@ -269,7 +269,7 @@ export function CheckoutPage() {
           <button
             type="submit"
             disabled={!canPlace || order.isPending}
-            className="min-h-12 rounded-full bg-brand px-4 py-3 text-lg font-medium text-espresso hover:bg-peach active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60"
+            className="min-h-12 rounded-full bg-brand px-4 py-3 text-lg font-medium text-raised hover:bg-brand-deep active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60"
           >
             {order.isPending
               ? t('checkout.placing')

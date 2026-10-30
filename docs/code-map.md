@@ -191,6 +191,7 @@ Run in order by `supabase db reset` (local) and `supabase db push` (hosted). Nev
 | `…165652_banner_dish_link.sql` | `banners.item_id`: the dish a banner opens (same branch; cleared if the dish is deleted) |
 | `…20261022150000_site_settings.sql` | `site_settings`: the one row of site fonts (allowed fonts by CHECK, public read, Super Admin write); rollback in `supabase/rollbacks/` |
 | `…20261022150100_menu_descriptions.sql` | Data only: fills empty `description_en` / `description_ur` of the dishes, never overwriting; rollback in `supabase/rollbacks/` |
+| `…20261030120000_category_serving_hours.sql` | `categories.available_from` / `available_until`: daily serving hours (Desi Nashta 04:00 to 12:00); outside them the dishes count as unavailable |
 
 ### `supabase/tests/` (pgTAP: proves who can and can't do what)
 
@@ -200,6 +201,7 @@ Run in order by `supabase db reset` (local) and `supabase db push` (hosted). Nev
 | `00_security_baseline_test.sql` | Every table locked, nothing public except the menu, no unsafe functions |
 | `01_menu_test.sql` … `09_category_sides_test.sql` | Menu, accounts, customers, order access, order rules (statuses, payments, missed calls), admin tables, photo storage, order creation, sides |
 | `10_staff_access_test.sql` … `14_banner_dish_link_test.sql` | Staff role changes, pin audit, customer view, order editing, banner dish link |
+| `15_site_settings_test.sql`, `16_category_serving_hours_test.sql` | Site settings access; category serving hours (who may set them, half-set or empty hours refused) |
 
 ### `supabase/functions/` (server code, Deno)
 

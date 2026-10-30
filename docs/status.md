@@ -160,6 +160,7 @@ Tick items as they land. Items come from `CLAUDE.md` section 15 and `docs/spec.m
 
 ## Known gaps and risks
 
+- **Nashta serving hours (30 Oct) need three hosted steps after the merge** (Arslan or Sufyan): `supabase db push` (migration `20261030120000_category_serving_hours`), redeploy `quote-order`, `place-order` and `edit-order`, then set Desi Nashta to 04:00 to 12:00 in Menu (Serving hours). Until then the hosted menu shows nashta all day as before. The Urdu "روزانہ ... سے ... تک دستیاب" needs the Urdu review.
 - **Redeploy all six Edge Functions after this merges** (Arslan or Sufyan): zod was raised to 4.6.6 on 25 Oct for a high security advisory, and the hosted functions keep the old zod until redeployed. vitest goes to 5.0.5 (moderate advisory, tests only) once it is 14 days old on 29 Oct. See `docs/decisions.md`.
 - Ten days for Milestones 3 and 4 is tight. Anything not ready by 21 October is listed here and decided with the team, not dropped silently.
 - All Urdu so far was written by Claude (except dish names, which are the restaurant's own) and needs review, including the customer WhatsApp messages (`whatsapp.*` in `src/i18n/ur.json`).

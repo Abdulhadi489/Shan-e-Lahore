@@ -147,7 +147,7 @@ function ItemChoices({ item, onDone, onAdd }: { item: MenuItem; onDone: () => vo
       <button
         type="submit"
         disabled={'error' in result}
-        className="rounded-control bg-brand px-4 py-3 font-medium text-ink hover:bg-peach disabled:cursor-not-allowed disabled:opacity-60"
+        className="rounded-control bg-brand px-4 py-3 font-medium text-raised hover:bg-brand-deep disabled:cursor-not-allowed disabled:opacity-60"
       >
         {'error' in result ? t('item.add') : t('item.addWithPrice', { price: price(result.price * quantity) })}
       </button>
