@@ -41,6 +41,9 @@ select 'b0000000-0000-0000-0000-000000000001', name_en, name_ur, sort_order from
   ('Raita & Salad', 'رائتہ اور سلاد', 12)
 ) c(name_en, name_ur, sort_order);
 
+-- Nashta is served from opening until noon; the rest of the day the section shows blurred and can't be ordered.
+update public.categories set available_from = '04:00', available_until = '12:00' where name_en = 'Desi Nashta';
+
 -- One row per dish. variants: [name_en, name_ur, price] in display order; base_price is the lowest price.
 create temporary table seed_menu (
   sort_order serial,

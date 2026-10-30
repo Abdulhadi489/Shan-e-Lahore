@@ -45,7 +45,8 @@ serve(async (body, req) => {
     discount = { code: { ...(code as DiscountCode), is_active: true }, usage: { total: 0, byPhone: 0, phoneHasOrders: false } }
   }
 
-  const items = await loadItems(branch.id, edit.lines.map((line) => line.itemId))
+  // Serving hours as when the customer ordered, like the discount above: a nashta order placed at 11:58 stays editable.
+  const items = await loadItems(branch.id, edit.lines.map((line) => line.itemId), new Date(order.created_at))
   const price = (withDiscount: boolean) =>
     priceOrder({
       branch,

@@ -3,6 +3,7 @@ import { useLocation } from 'react-router'
 import { useTranslation } from 'react-i18next'
 import { localized } from '../../i18n'
 import { formatAmount } from '../../lib/money'
+import { timeLabel } from '../../lib/format'
 import { menuImageUrl } from '../../lib/images'
 import { PageBanner } from '../../components/PageBanner'
 import { banners } from '../../assets/banners/banners'
@@ -29,8 +30,12 @@ export function ItemCard({ item, onSelect }: { item: MenuItem; onSelect: (item: 
       className="flex h-full w-full flex-col overflow-hidden rounded-card border border-line bg-raised text-start hover:border-brand-deep disabled:cursor-not-allowed"
     >
       {item.image_path ? (
+        // The browser picks the 320 px card copy only where it stays sharp; on high-density screens and wide cards
+        // it takes the 1200 px copy the dish pop-up uses, instead of stretching the small one until it pixelates.
         <img
           src={menuImageUrl(item.image_path, 'card')}
+          srcSet={`${menuImageUrl(item.image_path, 'card')} 320w, ${menuImageUrl(item.image_path, 'full')} 1200w`}
+          sizes="(max-width: 40rem) 100vw, 20rem"
           alt=""
           width={400}
           height={220}
@@ -47,13 +52,14 @@ export function ItemCard({ item, onSelect }: { item: MenuItem; onSelect: (item: 
         {item.description_en && (
           <span className="text-base text-ink-muted max-sm:line-clamp-2 sm:text-sm">{localized(lng, item.description_en, item.description_ur)}</span>
         )}
-        <span className="mt-auto flex flex-wrap items-center justify-between gap-2 pt-2 font-medium">
+        {/* Price on its own line and the button under it on every card, so all cards line up the same way. */}
+        <span className="mt-auto flex flex-col items-start gap-2 pt-2 font-medium">
           {soldOut ? (
             <span className="text-danger">{t('menu.soldOut')}</span>
           ) : (
             <>
               {item.variants.length > 1 ? t('menu.from', { price }) : price}
-              <span aria-hidden className="rounded-full bg-brand px-4 py-1.5 text-sm ltr:uppercase ltr:tracking-[0.12em]">
+              <span aria-hidden className="rounded-full bg-brand px-4 py-1.5 text-sm text-raised ltr:uppercase ltr:tracking-[0.12em]">
                 {t('item.add')}
               </span>
             </>
@@ -120,13 +126,27 @@ export function MenuPage() {
           {menu.data.map((category) => (
             <section key={category.id} id={`category-${category.id}`} className="mt-8 scroll-mt-[calc(var(--header-h)+5rem)]">
               <h2 className="font-heading text-3xl font-semibold">{localized(lng, category.name_en, category.name_ur)}</h2>
-              <ul className="mt-4 grid grid-cols-[repeat(auto-fill,minmax(min(14rem,100%),1fr))] gap-4">
-                {category.items.map((item) => (
-                  <li key={item.id}>
-                    <ItemCard item={item} onSelect={setSelected} />
-                  </li>
-                ))}
-              </ul>
+              <div className="relative mt-4">
+                {/* Outside its serving hours the section stays visible but blurred and out of reach, with the hours on top. */}
+                <ul
+                  inert={!category.served}
+                  className={`grid grid-cols-[repeat(auto-fill,minmax(min(14rem,100%),1fr))] gap-4 ${category.served ? '' : 'pointer-events-none blur-sm select-none'}`}
+                >
+                  {category.items.map((item) => (
+                    <li key={item.id}>
+                      <ItemCard item={item} onSelect={setSelected} />
+                    </li>
+                  ))}
+                </ul>
+                {!category.served && category.available_from && category.available_until && (
+                  <p className="absolute inset-x-0 top-24 mx-auto w-fit max-w-[90%] rounded-card bg-espresso px-6 py-4 text-center font-medium text-raised shadow-lg">
+                    {t('menu.servedBetween', {
+                      from: timeLabel(lng, category.available_from.slice(0, 5)),
+                      until: timeLabel(lng, category.available_until.slice(0, 5)),
+                    })}
+                  </p>
+                )}
+              </div>
             </section>
           ))}
         </>
