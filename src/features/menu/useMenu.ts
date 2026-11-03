@@ -28,10 +28,14 @@ async function fetchMenu() {
       const served = servedNow(category.available_from, category.available_until, now)
       return {
       ...category,
-      served,
       items: category.items.sort(bySortOrder).map(({ item_variants, item_addon_groups, ...item }) => ({
         ...item,
         is_available: item.is_available && served,
+        // Set only while the category is outside its hours, so the card can say when the dish can be ordered.
+        servedHours:
+          served || !category.available_from || !category.available_until
+            ? null
+            : { from: category.available_from, until: category.available_until },
         variants: item_variants.sort(bySortOrder),
         addon_groups: item_addon_groups
           .sort(bySortOrder)

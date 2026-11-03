@@ -26,7 +26,8 @@ export function ItemCard({ item, onSelect }: { item: MenuItem; onSelect: (item: 
     <button
       type="button"
       onClick={() => onSelect(item)}
-      disabled={soldOut}
+      // Outside its serving hours the dish still opens, so the pop-up can say when it can be ordered.
+      disabled={soldOut && !item.servedHours}
       className="flex h-full w-full flex-col overflow-hidden rounded-card border border-line bg-raised text-start hover:border-brand-deep disabled:cursor-not-allowed"
     >
       {item.image_path ? (
@@ -54,7 +55,18 @@ export function ItemCard({ item, onSelect }: { item: MenuItem; onSelect: (item: 
         )}
         {/* Price on its own line and the button under it on every card, so all cards line up the same way. */}
         <span className="mt-auto flex flex-col items-start gap-2 pt-2 font-medium">
-          {soldOut ? (
+          {item.servedHours ? (
+            // Outside its serving hours (Desi Nashta): still on show with its price, but it can't be added yet.
+            <>
+              {item.variants.length > 1 ? t('menu.from', { price }) : price}
+              <span className="text-sm text-ink-muted">
+                {t('menu.servedBetween', {
+                  from: timeLabel(lng, item.servedHours.from.slice(0, 5)),
+                  until: timeLabel(lng, item.servedHours.until.slice(0, 5)),
+                })}
+              </span>
+            </>
+          ) : soldOut ? (
             <span className="text-danger">{t('menu.soldOut')}</span>
           ) : (
             <>
@@ -126,27 +138,14 @@ export function MenuPage() {
           {menu.data.map((category) => (
             <section key={category.id} id={`category-${category.id}`} className="mt-8 scroll-mt-[calc(var(--header-h)+5rem)]">
               <h2 className="font-heading text-3xl font-semibold">{localized(lng, category.name_en, category.name_ur)}</h2>
-              <div className="relative mt-4">
-                {/* Outside its serving hours the section stays visible but blurred and out of reach, with the hours on top. */}
-                <ul
-                  inert={!category.served}
-                  className={`grid grid-cols-[repeat(auto-fill,minmax(min(14rem,100%),1fr))] gap-4 ${category.served ? '' : 'pointer-events-none blur-sm select-none'}`}
-                >
-                  {category.items.map((item) => (
-                    <li key={item.id}>
-                      <ItemCard item={item} onSelect={setSelected} />
-                    </li>
-                  ))}
-                </ul>
-                {!category.served && category.available_from && category.available_until && (
-                  <p className="absolute inset-x-0 top-24 mx-auto w-fit max-w-[90%] rounded-card bg-espresso px-6 py-4 text-center font-medium text-raised shadow-lg">
-                    {t('menu.servedBetween', {
-                      from: timeLabel(lng, category.available_from.slice(0, 5)),
-                      until: timeLabel(lng, category.available_until.slice(0, 5)),
-                    })}
-                  </p>
-                )}
-              </div>
+              {/* Outside its serving hours a section stays fully readable; each card says when its dish can be ordered. */}
+              <ul className="mt-4 grid grid-cols-[repeat(auto-fill,minmax(min(14rem,100%),1fr))] gap-4">
+                {category.items.map((item) => (
+                  <li key={item.id}>
+                    <ItemCard item={item} onSelect={setSelected} />
+                  </li>
+                ))}
+              </ul>
             </section>
           ))}
         </>
