@@ -11,6 +11,7 @@ function keyPaths(value: object, prefix = ''): string[] {
 describe('translation dictionaries', () => {
   it('has an Urdu string for every customer-facing English string (the admin panel is English only)', () => {
     const customerKeys = keyPaths(en).filter((path) => !path.startsWith('admin.'))
-    expect(keyPaths(ur).sort()).toEqual(customerKeys.sort())
+    // Urdu may also carry admin keys: the Staff and riders screen is written in both languages.
+    expect(keyPaths(ur).filter((path) => !path.startsWith('admin.')).sort()).toEqual(customerKeys.sort())
   })
 })
