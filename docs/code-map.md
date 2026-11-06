@@ -140,8 +140,9 @@ Using an AI assistant? Point it at `AGENTS.md`; it reads `CLAUDE.md`, the projec
 | `reports/ReportsPage.tsx` | Reports screen and download |
 | `settings/FontsSection.tsx` | Fonts of the customer site: four dropdowns, reset buttons and a live preview |
 | `settings/SettingsPage.tsx` | Restaurant details, payments and WhatsApp, opening hours |
-| `settings/RidersSection.tsx` | Riders |
-| `settings/StaffSection.tsx` | Staff accounts (through the `admin-users` function) |
+| `people/PeoplePage.tsx` | Staff and riders (Super Admin): list with search and filters, add staff and riders, recent changes |
+| `people/PersonPage.tsx` | One person: every stored detail, edit, reset password, delete permanently |
+| `people/PeopleDialogs.tsx`, `AuditList.tsx`, `people.ts` | Login-details and type-the-name dialogs, read-only history, data hooks |
 
 ### `src/lib/` and `src/i18n/`
 
@@ -190,6 +191,8 @@ Run in order by `supabase db reset` (local) and `supabase db push` (hosted). Nev
 | `…195618_edit_order.sql` | `replace_order_contents`: saves an edited order |
 | `…165652_banner_dish_link.sql` | `banners.item_id`: the dish a banner opens (same branch; cleared if the dish is deleted) |
 | `…20261022150000_site_settings.sql` | `site_settings`: the one row of site fonts (allowed fonts by CHECK, public read, Super Admin write); rollback in `supabase/rollbacks/` |
+| `…20261106100000_staff_and_riders.sql` | Staff phone, created_by, must_change_password, deleted_at; rider vehicle details and deleted_at; rider audit trigger; `remove_account`, `remove_rider`, `end_sessions` (service_role only); rollback in `supabase/rollbacks/` |
+| `…20261106140000_staff_credentials.sql` | `staff_credentials`: encrypted copies of issued passwords, readable only by the `admin-users` function |
 | `…20261022150100_menu_descriptions.sql` | Data only: fills empty `description_en` / `description_ur` of the dishes, never overwriting; rollback in `supabase/rollbacks/` |
 | `…20261030120000_category_serving_hours.sql` | `categories.available_from` / `available_until`: daily serving hours (Desi Nashta 04:00 to 12:00); outside them the dishes count as unavailable |
 

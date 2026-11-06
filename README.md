@@ -95,7 +95,7 @@ Customers never write to the database directly. Four Edge Functions in `supabase
 | `get-order-by-token` | The tracking page's data, masked (first name, masked phone, no address) |
 | `cancel-order-by-token` | Cancels only while the order waits for the confirmation call |
 | `edit-order` | Staff only: changes an order's dishes or address on the confirmation call, re-prices it like `place-order` and saves it with `public.replace_order_contents()` |
-| `admin-users` | Super Admins only: creates staff logins, changes a role or active state (`public.set_staff_access()`, which keeps two active Super Admins) and resets passwords |
+| `admin-users` | Super Admins only (Staff and riders screen): lists, creates and updates staff logins, resets passwords (a generated temporary password, shown once), deactivates (ends sessions), removes staff and riders (`public.set_staff_access()`, `remove_account()`, `remove_rider()` keep two active Super Admins and keep order history); rate limited |
 
 The staff functions check the caller's login themselves, and the two database functions they call can't be reached from the browser; both act as the staff member, so the audit log records who made the change.
 
