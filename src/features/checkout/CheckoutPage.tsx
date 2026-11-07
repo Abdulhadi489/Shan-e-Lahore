@@ -187,8 +187,12 @@ export function CheckoutPage() {
               <div className="rounded-control border border-line bg-raised px-4 py-3">
                 <p className="font-medium">{t('payment.jazzcash')}</p>
                 <dl className="mt-2 grid grid-cols-[auto_1fr] gap-x-4 gap-y-1">
-                  <dt className="text-ink-muted">{t('tracking.accountTitle')}</dt>
-                  <dd>{settings.jazzcash_account_title}</dd>
+                  {settings.jazzcash_account_title && (
+                    <>
+                      <dt className="text-ink-muted">{t('tracking.accountTitle')}</dt>
+                      <dd>{settings.jazzcash_account_title}</dd>
+                    </>
+                  )}
                   <dt className="text-ink-muted">{t('tracking.accountNumber')}</dt>
                   <dd dir="ltr" className="font-medium rtl:text-end">{localPhone(settings.jazzcash_number)}</dd>
                 </dl>

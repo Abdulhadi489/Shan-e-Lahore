@@ -44,6 +44,7 @@ Tick items as they land. Items come from `CLAUDE.md` section 15 and `docs/spec.m
 - [x] Cart: quantities, re-pricing from the live menu, unavailable-dish warnings, kept in localStorage
 - [x] "Add with your order" one-tap sides (breads, raita/salad; drinks once listed)
 - [x] Checkout: map pin (tap, drag, use my location, pin at centre), address, landmark, name, phone, notes, payment method, discount code, Turnstile, server quote as the pin moves
+- [x] Checkout payment choices (7 Nov, requested by the owner): only "Cash on delivery" and "Pay online". "Pay online" is saved as a JazzCash order and shows the JazzCash account (title if set, and number) before the customer places the order. Bank transfer and Easypaisa are gone from checkout; the admin Settings fields and old orders are untouched. The Urdu "آن لائن ادائیگی" and the reworded help line were written by the assistant and **still need a human check**. Not yet tried with a real order on the live site
 - [x] Tracking page: status timeline, call notice, payment instructions, WhatsApp screenshot link, rider when out for delivery, cancel while pending
 - [x] Shared rules with Deno tests (`supabase/functions/_shared/`): pricing, delivery charge, discounts, opening hours (past midnight), phone numbers, input schemas, whole-order pricing
 - [x] Edge Functions `quote-order`, `place-order`, `get-order-by-token`, `cancel-order-by-token`; order creation and rate limits in SQL (`create_order`, `hit_rate_limit`)
