@@ -2,7 +2,7 @@
 -- The menu (names, prices, Urdu) is transcribed from the restaurant's printed menu of 2026-08-29;
 -- the Super Admin enters the live menu through the admin panel.
 -- Branch pin: Google Maps listing "Shan-e-Lahore", Gulberg II (sent by the team, 2026-10-13).
--- Opening hours 05:00 to midnight every day (sent by the team, 2026-10-13).
+-- Opening hours 05:00 to 23:00 every day (05:00 to midnight sent by the team 2026-10-13; closing moved to 23:00 on 2026-10-22).
 -- Placeholders until the client sends real values: delivery tiers,
 -- and the Urdu for categories, Half/Full and deal contents
 -- (written by Claude; needs review by an Urdu speaker).
@@ -16,13 +16,14 @@ insert into public.branches (id, name_en, name_ur, address_en, address_ur, phone
 insert into public.branch_settings (branch_id, min_order_amount, free_delivery_threshold) values
   ('b0000000-0000-0000-0000-000000000001', 0, null);
 
-insert into public.delivery_tiers (branch_id, upper_km, charge) values
-  ('b0000000-0000-0000-0000-000000000001', 3, 100),
-  ('b0000000-0000-0000-0000-000000000001', 5, 150),
-  ('b0000000-0000-0000-0000-000000000001', 7, 200);
+-- Rs 70 up to 1 km, then Rs 30 more for each started km (2 km Rs 100, 3 km Rs 130), up to 45 km by road:
+-- about 35 km in a straight line with the 1.3 road factor, which covers the whole of Lahore.
+insert into public.delivery_tiers (branch_id, upper_km, charge)
+select 'b0000000-0000-0000-0000-000000000001', km, 70 + 30 * (km - 1) from generate_series(1, 45) km;
 
+-- Open every day from 04:00 to 03:00 the next morning; the hour in between is the switch from the main menu to nashta.
 insert into public.opening_hours (branch_id, weekday, open_time, close_time)
-select 'b0000000-0000-0000-0000-000000000001', d, '05:00', '00:00' from generate_series(0, 6) d;
+select 'b0000000-0000-0000-0000-000000000001', d, '04:00', '03:00' from generate_series(0, 6) d;
 
 insert into public.categories (branch_id, name_en, name_ur, sort_order)
 select 'b0000000-0000-0000-0000-000000000001', name_en, name_ur, sort_order from (values
@@ -39,6 +40,9 @@ select 'b0000000-0000-0000-0000-000000000001', name_en, name_ur, sort_order from
   ('Tandoor', 'تندور', 11),
   ('Raita & Salad', 'رائتہ اور سلاد', 12)
 ) c(name_en, name_ur, sort_order);
+
+-- Nashta is served from opening until noon; the rest of the day the section shows blurred and can't be ordered.
+update public.categories set available_from = '04:00', available_until = '12:00' where name_en = 'Desi Nashta';
 
 -- One row per dish. variants: [name_en, name_ur, price] in display order; base_price is the lowest price.
 create temporary table seed_menu (

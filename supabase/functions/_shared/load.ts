@@ -2,6 +2,7 @@
 // apply the customer-visible rules themselves: active branch, visible items in active categories.
 import { db } from './db.ts'
 import type { DiscountCode, DiscountUsage } from './discount.ts'
+import { servedNow } from './opening-hours.ts'
 import type { OrderBranch, OrderItem } from './order.ts'
 
 type BranchRow = {
@@ -53,17 +54,18 @@ export async function loadBranch(): Promise<OrderBranch> {
 
 type ItemRow = Omit<OrderItem, 'variants' | 'addon_groups'> & {
   is_hidden: boolean
-  categories: { is_active: boolean } | null
+  categories: { is_active: boolean; available_from: string | null; available_until: string | null } | null
   item_variants: OrderItem['variants']
   item_addon_groups: { addon_groups: (Omit<OrderItem['addon_groups'][number], 'options'> & { addon_options: OrderItem['addon_groups'][number]['options'] }) | null }[]
 }
 
-export async function loadItems(branchId: string, itemIds: string[]) {
+// `now` decides category serving hours (Desi Nashta 04:00 to 12:00): outside them the dish counts as unavailable.
+export async function loadItems(branchId: string, itemIds: string[], now: Date) {
   const { data, error } = await db
     .from('items')
     .select(
       `id, name_en, name_ur, base_price, is_available, is_hidden,
-       categories ( is_active ),
+       categories ( is_active, available_from, available_until ),
        item_variants ( id, name_en, name_ur, price, is_available ),
        item_addon_groups ( addon_groups ( id, min_select, max_select,
          addon_options ( id, name_en, name_ur, extra_price, is_available ) ) )`,
@@ -82,7 +84,7 @@ export async function loadItems(branchId: string, itemIds: string[]) {
           name_en: row.name_en,
           name_ur: row.name_ur,
           base_price: row.base_price,
-          is_available: row.is_available,
+          is_available: row.is_available && servedNow(row.categories?.available_from ?? null, row.categories?.available_until ?? null, now),
           variants: row.item_variants,
           addon_groups: row.item_addon_groups.flatMap(({ addon_groups: group }) =>
             group ? [{ id: group.id, min_select: group.min_select, max_select: group.max_select, options: group.addon_options }] : [],

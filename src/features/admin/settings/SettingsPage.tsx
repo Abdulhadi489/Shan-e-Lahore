@@ -18,8 +18,7 @@ import {
   text,
   useDbMutation,
 } from '../ui'
-import { RidersSection } from './RidersSection'
-import { StaffSection } from './StaffSection'
+import { FontsSection } from './FontsSection'
 
 function RestaurantSection({ branchId }: { branchId: string }) {
   const { t } = useTranslation(undefined, { lng: 'en' })
@@ -296,8 +295,7 @@ export function SettingsPage() {
         <RestaurantSection branchId={branch.id} />
         <PaymentsSection branchId={branch.id} />
         <HoursSection branchId={branch.id} />
-        <RidersSection />
-        <StaffSection />
+        <FontsSection />
       </div>
     </>
   )

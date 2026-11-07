@@ -36,13 +36,12 @@ export function AppRoutes() {
         <Route path="contact" element={<ContactPage />} />
         <Route path="terms" element={<InfoPage page="terms" />} />
         <Route path="privacy" element={<InfoPage page="privacy" />} />
-        <Route path="refund-policy" element={<InfoPage page="refund" />} />
         <Route
           path="*"
           element={
             <EmptyPage title="pages.notFound">
               <p className="mt-2">{t('notFound.body')}</p>
-              <Link to="/" className="mt-4 inline-block text-brand-deep underline">
+              <Link to="/" className="mt-4 inline-flex min-h-11 items-center text-brand-deep underline">
                 {t('notFound.goHome')}
               </Link>
             </EmptyPage>

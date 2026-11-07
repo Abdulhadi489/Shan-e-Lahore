@@ -84,7 +84,7 @@ export function ItemEditor() {
   const [photoFailed, setPhotoFailed] = useState(false)
   const photo = useMutation({
     mutationFn: async (file: File) => {
-      const path = await uploadMenuPhoto(file, 'items')
+      const path = await uploadMenuPhoto(file)
       const { error } = await supabase.from('items').update({ image_path: path }).eq('id', id ?? '')
       if (error) throw error
       // The old files go only once the new ones are saved, so a failure never leaves a dish without a photo.

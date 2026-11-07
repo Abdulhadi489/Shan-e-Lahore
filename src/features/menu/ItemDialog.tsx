@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, type FormEvent } from 'react'
 import { useTranslation } from 'react-i18next'
 import { localized } from '../../i18n'
 import { formatAmount } from '../../lib/money'
+import { timeLabel } from '../../lib/format'
 import { menuImageUrl } from '../../lib/images'
 import { MAX_QUANTITY, unitPrice } from '../../../supabase/functions/_shared/pricing'
 import { addToCart, type CartLine } from '../checkout/cart'
@@ -144,10 +145,20 @@ function ItemChoices({ item, onDone, onAdd }: { item: MenuItem; onDone: () => vo
         </button>
       </div>
 
+      {/* Outside its serving hours (Desi Nashta) the dish can be looked at but not added; unitPrice refuses it too. */}
+      {item.servedHours && (
+        <p role="status" className="rounded-card bg-espresso px-4 py-3 text-center font-medium text-raised">
+          {t('menu.servedBetween', {
+            from: timeLabel(lng, item.servedHours.from.slice(0, 5)),
+            until: timeLabel(lng, item.servedHours.until.slice(0, 5)),
+          })}
+        </p>
+      )}
+
       <button
         type="submit"
         disabled={'error' in result}
-        className="rounded-control bg-brand px-4 py-3 font-medium text-ink hover:bg-peach disabled:cursor-not-allowed disabled:opacity-60"
+        className="rounded-control bg-brand px-4 py-3 font-medium text-raised hover:bg-brand-deep disabled:cursor-not-allowed disabled:opacity-60"
       >
         {'error' in result ? t('item.add') : t('item.addWithPrice', { price: price(result.price * quantity) })}
       </button>

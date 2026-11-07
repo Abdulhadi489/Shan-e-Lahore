@@ -114,7 +114,7 @@ export function CheckoutPage() {
   return (
     <>
       <title>{`${t('pages.checkout')} · ${t('brand')}`}</title>
-      <PageTitle title={t('pages.checkout')} urdu={t('pages.checkout', { lng: 'ur' })} />
+      <PageTitle title={t('pages.checkout')} />
       <p className="mt-2 max-w-[60ch] font-medium text-brand-deep">{t('checkout.callNotice')}</p>
 
       <form onSubmit={handleSubmit(submit)} noValidate className="mt-6 flex max-w-6xl flex-wrap items-start gap-x-8 gap-y-8">
@@ -125,7 +125,6 @@ export function CheckoutPage() {
               <div className="mt-3">
                 <LocationPicker
                   branch={{ lat: Number(branch.data.lat), lng: Number(branch.data.lng) }}
-                  radiusKm={maxKm / Number(settings?.road_distance_factor ?? 1)}
                   pin={pin}
                   onChange={setPin}
                 />
@@ -159,7 +158,7 @@ export function CheckoutPage() {
             <h2 className="font-heading text-2xl font-semibold">{t('checkout.details')}</h2>
             <label className="flex flex-col gap-1">
               {t('checkout.nameLabel')}
-              <input maxLength={60} autoComplete="name" className={inputClass} {...register('name')} />
+              <input maxLength={60} autoComplete="name" autoCapitalize="words" className={inputClass} {...register('name')} />
               {fieldError('name')}
             </label>
             <label className="flex flex-col gap-1">
@@ -217,6 +216,9 @@ export function CheckoutPage() {
               onChange={(event) => setCodeInput(event.target.value)}
               maxLength={20}
               dir="ltr"
+              autoCapitalize="characters"
+              autoComplete="off"
+              spellCheck={false}
               className={`${inputClass} uppercase`}
             />
             <button type="button" onClick={applyCode} className="min-h-11 shrink-0 rounded-full border border-ink-muted px-4 font-medium whitespace-nowrap">
@@ -267,7 +269,7 @@ export function CheckoutPage() {
           <button
             type="submit"
             disabled={!canPlace || order.isPending}
-            className="min-h-12 rounded-full bg-brand px-4 py-3 text-lg font-medium text-espresso hover:bg-peach active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60"
+            className="min-h-12 rounded-full bg-brand px-4 py-3 text-lg font-medium text-raised hover:bg-brand-deep active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60"
           >
             {order.isPending
               ? t('checkout.placing')

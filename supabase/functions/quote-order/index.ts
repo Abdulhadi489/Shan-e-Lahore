@@ -14,7 +14,7 @@ serve(async (body, req) => {
   const branch = await loadBranch()
   const priced = priceOrder({
     branch,
-    items: await loadItems(branch.id, lines.map((line) => line.itemId)),
+    items: await loadItems(branch.id, lines.map((line) => line.itemId), new Date()),
     lines,
     pin: { lat, lng },
     now: new Date(),

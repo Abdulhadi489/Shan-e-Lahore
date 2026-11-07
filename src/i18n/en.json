@@ -6,7 +6,9 @@
     "home": "Home",
     "info": "Information",
     "menu": "Menu",
-    "cart": "Cart"
+    "cart": "Cart",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu"
   },
   "pages": {
     "menu": "Menu",
@@ -41,6 +43,7 @@
     "categories": "Menu categories",
     "from": "from {{price}}",
     "soldOut": "Sold out",
+    "servedBetween": "Served daily from {{from}} to {{until}}",
     "loading": "Loading the menu…",
     "error": "Couldn't load the menu. Check your connection and try again.",
     "retry": "Try again",
@@ -64,6 +67,7 @@
     "order": "Order now",
     "call": "Call",
     "whatsapp": "WhatsApp",
+    "openNow": "Open now · closes at {{time}}",
     "closed": "Closed now",
     "closedOpensToday": "Closed now · opens today at {{time}}",
     "closedOpensOn": "Closed now · opens {{day}} at {{time}}",
@@ -72,13 +76,8 @@
     "popular": "Popular dishes",
     "hours": "Opening hours",
     "closedDay": "Closed",
-    "delivery": "Delivery charges",
-    "tier": "Up to {{km}} km",
-    "beyond": "We don't deliver beyond {{km}} km.",
-    "minimumOrder": "Minimum order {{amount}}",
-    "headline": "Sada Zaiqa. Sadi Riwayat.",
-    "headlineLast": "Sada Lahore.",
-    "subhead": "Honouring the food, culture, and traditions that have brought generations together around the Lahori dastarkhwan.",
+    "headline": "Halwa puri to karahi, delivered hot",
+    "subhead": "Order online from our full menu. We call to confirm every order before the kitchen starts.",
     "browse": "Browse the menu",
     "dishCount_one": "{{count}} dish",
     "dishCount_other": "{{count}} dishes",
@@ -90,7 +89,6 @@
     "stepDeliver": "Our rider delivers",
     "stepDeliverBody": "The restaurant's own riders bring your order to your door.",
     "findUs": "Find us",
-    "showMap": "Show the delivery area on a map",
     "mapLoading": "Loading the map…"
   },
   "checkout": {
@@ -101,7 +99,7 @@
     "locating": "Finding you…",
     "locationError": "Couldn't get your location. Tap the map or drag the pin instead.",
     "pinAtCentre": "Put pin at map centre",
-    "mapHelp": "Tap the map to drop your pin, then drag it to your door. The circle shows our delivery area.",
+    "mapHelp": "Tap the map to drop your pin, then drag it to your door. We deliver across Lahore.",
     "dropPin": "Drop your pin on the map to see the delivery charge.",
     "calculating": "Working out the delivery charge…",
     "distance": "{{km}} km away · delivery {{charge}}",
@@ -221,7 +219,7 @@
     "about": [
       {
         "heading": "",
-        "body": "Shan-e-Lahore is a desi restaurant in Main Market, Gulberg II. Our day starts early with halwa puri, chanay and paye, and runs until midnight with karahi, handi, BBQ and tawa dishes."
+        "body": "Shan-e-Lahore is a desi restaurant in Main Market, Gulberg II. Our day starts early with halwa puri, chanay and paye, and runs until 11 pm with karahi, handi, BBQ and tawa dishes."
       },
       {
         "heading": "",
@@ -230,6 +228,18 @@
       {
         "heading": "",
         "body": "This website is for home delivery. Our own riders deliver, and we call every customer to check the order and the address before we start cooking. You can also order by phone, or visit us in Gulberg."
+      },
+      {
+        "heading": "",
+        "body": "Our mornings belong to halwa puri, chanay and paye. As the day goes on, the menu moves on to karahi, handi, BBQ and tawa dishes, and the kitchen stays open until 11 pm."
+      },
+      {
+        "heading": "",
+        "body": "Every order placed on this website is confirmed by a phone call. Before we start cooking, one of our staff calls you to go over what you ordered and the address, so we know we have it right."
+      },
+      {
+        "heading": "",
+        "body": "Our own riders bring your food to your door. You can follow your order with its tracking link, and you can pay cash to the rider or by bank transfer, JazzCash or Easypaisa. If you would rather talk to us, call, or come and see us in Main Market, Gulberg II."
       }
     ],
     "contactIntro": "Call us to order, to ask about an order, or with any question. If you've already ordered, keep your order number handy (it starts with SL).",
@@ -238,6 +248,10 @@
     "whatsapp": "WhatsApp",
     "hours": "Opening hours",
     "map": "Where we are",
+    "follow": "Follow us",
+    "email": "Email",
+    "instagram": "Instagram",
+    "tiktok": "TikTok",
     "terms": [
       {
         "heading": "Ordering",
@@ -249,7 +263,7 @@
       },
       {
         "heading": "Delivery area and timing",
-        "body": "We deliver to the area shown on the map at checkout. Delivery times are estimates; traffic, weather and busy hours can make us late."
+        "body": "We deliver across Lahore. Delivery times are estimates; traffic, weather and busy hours can make us late."
       },
       {
         "heading": "Payment",
@@ -270,6 +284,18 @@
       {
         "heading": "Refusing orders",
         "body": "We can refuse or cancel orders that look fake, and stop online orders from numbers that have placed fake orders before."
+      },
+      {
+        "heading": "How we confirm your order",
+        "body": "Every order waits for a phone call from our staff. On the call we go over your dishes and your address. An order paid by transfer is confirmed once the money has reached our account. We start cooking only after the order is confirmed."
+      },
+      {
+        "heading": "If we can't reach you",
+        "body": "We call the number you gave when you ordered. If nobody answers, we try again, and after three calls without an answer the order is cancelled. Please keep your phone nearby after you order."
+      },
+      {
+        "heading": "Questions about an order",
+        "body": "To ask about an order, call us and have your order number ready; it starts with SL. You can also use your tracking link to see the status of your order."
       }
     ],
     "privacy": [
@@ -292,6 +318,18 @@
       {
         "heading": "Services we use",
         "body": "The site runs on Supabase (database) and Render (hosting). Cloudflare Turnstile checks that orders come from real people, and the maps come from OpenStreetMap. Each of them handles only what it needs to do its job."
+      },
+      {
+        "heading": "What your rider sees",
+        "body": "Your rider gets your name, number, address and pin so that they can find you and bring your order. We deliver with our own riders."
+      },
+      {
+        "heading": "What the tracking link shows",
+        "body": "The tracking link shows the status of your order, your first name, the dishes and the total. It does not show your address or your full phone number. Please share the link only with people you trust."
+      },
+      {
+        "heading": "What stays in your browser",
+        "body": "The site keeps two things in your own browser: your language and the dishes in your cart. It does not keep your name, phone number or address there, and it uses no advertising cookies."
       },
       {
         "heading": "Questions",
@@ -450,6 +488,7 @@
       "discounts": "Discount codes",
       "customers": "Customers",
       "reports": "Reports",
+      "people": "Staff and riders",
       "settings": "Settings"
     },
     "errors": {
@@ -473,6 +512,98 @@
       "addons": "Add-on choices",
       "noMatch": "No dishes match."
     },
+      "people": {
+        "heading": "Staff and riders",
+        "help": "Add, view, change and remove staff logins and riders. Riders do not log in; they are only assigned to orders.",
+        "addStaff": "Add a staff account",
+        "addRider": "Add a rider",
+        "fullName": "Full name",
+        "email": "Email (their login)",
+        "phone": "Phone",
+        "optional": "optional",
+        "role": "Role",
+        "create": "Create account",
+        "createNote": "A password is made for them and shown to you now. You can show it again later from their page.",
+        "createRider": "Add rider",
+        "riderAdded": "Rider added.",
+        "vehicleType": "Vehicle type",
+        "vehicleNumber": "Vehicle number",
+        "search": "Search",
+        "all": "All",
+        "status": "Status",
+        "active": "Active",
+        "inactive": "Inactive",
+        "none": "Nobody matches.",
+        "listHeading": "Everyone",
+        "updated": "Updated {{date}}",
+        "roles": {
+          "order_staff": "Order Staff",
+          "super_admin": "Super Admin",
+          "rider": "Rider"
+        },
+        "errors": {
+          "EMAIL_TAKEN": "An account with this email already exists.",
+          "CANNOT_CHANGE_OWN_ACCESS": "You can't do this to your own account. Ask another Super Admin.",
+          "TWO_SUPER_ADMINS_REQUIRED": "Keep at least two active Super Admins, so either can reset the other's password.",
+          "ACCOUNT_NOT_FOUND": "This account no longer exists. Go back and reload.",
+          "BRANCH_REQUIRED": "Order Staff need a branch.",
+          "TOO_MANY_REQUESTS": "Too many requests. Wait a few minutes and try again.",
+          "INVALID_INPUT": "Check the details: a name, a valid email and a Pakistani mobile number such as 0300 1234567.",
+          "other": "Couldn't save. Check your connection and try again.",
+          "phone": "Enter a Pakistani mobile number, for example 0300 1234567.",
+          "load": "Couldn't load the list. Reload the page.",
+          "NO_STORED_PASSWORD": "No password is stored for this account. Reset the password to issue one."
+        },
+        "passwordTitle": "Login details",
+        "passwordHelp": "Give these to the person. The password was made for them by the system; you can show it again from their page, and make a new one at any time.",
+        "loginEmail": "Login email",
+        "temporaryPassword": "Temporary password",
+        "copy": "Copy",
+        "copied": "Copied",
+        "done": "Done",
+        "deleteTitle": "Delete permanently",
+        "deleteHelp": "This removes {{name}}. If orders still point to them, their record stays on those orders as \"Deleted\", without name or phone, and they can never log in again.",
+        "deleteType": "Type {{name}} to confirm",
+        "deleteConfirm": "Delete permanently",
+        "cancel": "Cancel",
+        "details": "Details",
+        "password": "Password",
+        "passwordNote": "Anyone with the Super Admin login can show a password issued here. Keep that login private. If a person changes their own password outside this screen, the shown one no longer works: reset it to issue a new one.",
+        "lastSignIn": "Last signed in",
+        "createdAt": "Created",
+        "createdBy": "Created by",
+        "updatedAt": "Last updated",
+        "edit": "Change details",
+        "selfNote": "This is your own account. You can change your name and phone; another Super Admin changes your role and status.",
+        "save": "Save",
+        "saved": "Saved.",
+        "actions": {
+          "heading": "Actions",
+          "insert": "Created",
+          "update": "Changed",
+          "delete": "Deleted"
+        },
+        "resetPassword": "Reset password",
+        "resetNote": "Resetting makes a new password, signs them out everywhere, and shows the new password. To stop someone logging in, untick Active and save.",
+        "delete": "Delete permanently",
+        "riderNote": "Riders do not log in. Past orders keep showing the rider even after they are made inactive.",
+        "back": "Back to the list",
+        "historyHeading": "Recent changes",
+        "historyEmpty": "Nothing has changed yet.",
+        "someone": "Someone",
+        "system": "The system",
+        "by": "by {{name}}",
+        "events": {
+          "password_reset": "password reset",
+          "password_viewed": "password shown",
+          "account_deleted": "login removed",
+          "account_anonymised": "login locked, record anonymised"
+        },
+        "rider": "Rider",
+        "staff": "Staff",
+        "showPassword": "Show password",
+        "notStored": "Not available: reset the password to issue one"
+      },
     "settings": {
       "heading": "Settings",
       "save": "Save",
@@ -509,6 +640,18 @@
         "opens": "Opens",
         "closes": "Closes",
         "closed": "Closed all day"
+      },
+      "fonts": {
+        "heading": "Fonts",
+        "help": "Choose the fonts of the customer website. The default fonts come with the site; any other font is loaded from Google Fonts, which means visitors' browsers contact Google (the privacy page does not say so yet). Staff pages are not affected.",
+        "heading_en": "English headings",
+        "body_en": "English body text",
+        "heading_ur": "Urdu headings",
+        "body_ur": "Urdu body text",
+        "default": "default",
+        "reset": "Reset to default",
+        "preview": "Font preview",
+        "previewNote": "Preview only. The website changes when you press Save."
       },
       "riders": {
         "heading": "Riders",
@@ -549,13 +692,16 @@
       "heading": "Menu",
       "sections": {
         "dishes": "Dishes",
-        "addons": "Add-on groups",
-        "banners": "Home banners"
+        "addons": "Add-on groups"
       },
       "nameEn": "Name (English)",
       "nameUr": "Name (Urdu)",
       "sortOrder": "Position",
       "sortHelp": "Lower numbers come first.",
+      "servedHours": "Serving hours",
+      "servedFrom": "From",
+      "servedUntil": "Until",
+      "servedHelp": "Leave both empty to serve whenever the restaurant is open. Outside these hours the section shows blurred on the menu and its dishes cannot be ordered (for example Desi Nashta, 04:00 to 12:00).",
       "active": "Shown on the menu",
       "isSide": "Offer as a side with every dish",
       "save": "Save",
@@ -612,16 +758,6 @@
         "addOption": "Add choice",
         "addGroup": "Add group",
         "none": "No add-on groups yet."
-      },
-      "banners": {
-        "help": "Pictures shown beside the headline on the home page. The first active one (lowest position) is shown; with none, the photo of the first dish marked for the home page is used. Pick a dish to let customers tap the picture and order it; otherwise it is just a picture.",
-        "titleEn": "Caption (English)",
-        "titleUr": "Caption (Urdu)",
-        "image": "Image",
-        "add": "Upload banner",
-        "none": "No banners yet. The home page shows the photo of the first dish marked for the home page.",
-        "dish": "Opens this dish when tapped (optional)",
-        "noDish": "No dish (just a picture)"
       }
     },
     "delivery": {

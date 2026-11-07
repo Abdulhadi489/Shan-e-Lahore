@@ -51,16 +51,16 @@ Tick items as they land. Items come from `CLAUDE.md` section 15 and `docs/spec.m
 - [ ] First batch of real dish photos uploaded to dev (waiting on the team's photos)
 - [x] Static pages: about, contact (address, phone, hours and map from the database), terms, privacy, refund policy. **Draft text** written from facts we know (no invented promises such as refund deadlines); the restaurant must approve it
 - [x] Fluid, responsive layout (17 Oct): no size-specific rules on customer pages. Grids add columns as space allows, headline and text grow smoothly with the window, the hero photo sits beside the headline when both fit and below it when not, the page fills the window up to about 2,000 px. The top bar spans the window and stays visible while scrolling; the footer is centred. Checked by sliding the width from 320 to 2,600 px (what zooming does), English and Urdu: no sideways scrolling, nothing disappears
-- [x] Home hero photo: the first active Home banner (Menu > Home banners), otherwise the photo of the first featured dish that has one. A banner can link to a dish, which opens when tapped; without a link it is just a picture. Since the redesign it sits below the video hero
+- [x] ~~Home hero photo (Home banner or featured dish)~~ and the Menu > Home banners admin page removed 28 Oct (team request; banners showed nowhere after the redesign). The `banners` table and its migrations stay, unused
 - [x] Heritage redesign of the customer site (19-21 Oct, Talha, branch `Khan-Branch`, pull request open). Look only; no logic, database or Edge Function changes. Every text is the site's own. As it stands on 21 Oct:
-  - Orange top bar: the logo's round emblem (redrawn in SVG) and a signboard-style wordmark with a fork-and-spoon "O" (Jost 800), Home, Menu and Cart pills, language button, round call-icon button (hidden on phones; the number is in the hero and footer). Under it a folk-art flower-and-bird border (`src/assets/lace-folk-band.webp`, one true repeat, so no seams). Orange footer band with a gold dotted edge
+  - Orange top bar: the logo's round emblem (redrawn in SVG) and a signboard-style wordmark with a fork-and-spoon "O" (Jost 800), Home, Menu and Cart pills, language button, phone pill (hidden on phones). Under it a folk-art flower-and-bird border (`src/assets/lace-folk-band.webp`, one true repeat, so no seams). Orange footer band with a gold dotted edge
   - Faint gold Badshahi Masjid sketch behind every customer page (`src/assets/lahore-sketch.svg`, drawn by `scripts/lahore-sketch.ts`)
   - Home: the shop video (`src/assets/topvideo.mp4`) fills a full-width hero right under the border, with the open-now pill, headline, text and buttons centred on a dark wash (poster is the featured dish photo; reduced-motion visitors see the poster). The three-arch band and the `menu-arches-*.webp` images were removed on 21 Oct. The Find us / hours / delivery row sits in an off-white panel with dividers
   - Page titles show the Urdu page name beside the English one; Menu cards have arch-topped photos; Cart and Checkout columns sit in off-white panels next to an espresso summary card; Tracking shows numbered steps; the Contact map sits in the arch frame
   - Floating "View cart" bar (count and subtotal) on every customer page except cart, checkout and tracking
   - One palette for the whole site, staff screens included (21 Oct): orange #E5680F, off-white #FBF4E8; dark orange #A8480A only for small text on cream
   - Urdu spacing fixed (21 Oct): titles no longer overlap the text below, small Urdu text is one size larger, hours line up with their days, buttons fit their labels
-  - Fonts Cormorant Garamond (headings) and Jost (text), self-hosted; the home headline and the line under it use Amiri and Montserrat (22 Oct); Urdu stays Noto Nastaliq. Sideways rows hide their scrollbar
+  - Fonts Cormorant Garamond (headings) and Jost (text), self-hosted; Urdu stays Noto Nastaliq. Sideways rows hide their scrollbar
   - Checked: typecheck, lint, tests and build; Home, Menu, Cart, Checkout and Contact in English and Urdu at desktop and 375 px (no sideways scroll, tap targets 44 px+). **Not checked:** the Tracking page with a real order, and a real phone
 
 ### Milestone 3: Admin and order handling
@@ -74,15 +74,19 @@ Tick items as they land. Items come from `CLAUDE.md` section 15 and `docs/spec.m
 - [x] Refund-due list (cancelled paid orders; staff mark refunded)
 - [x] `edit-order` Edge Function: staff change dishes or the address during the confirmation call (only while it waits for the call); the server re-prices and `public.replace_order_contents()` saves and audits it
 - [x] Availability screen (Order Staff and Super Admin): sold-out switches for dishes, sizes and add-on choices; pause/resume delivery
-- [x] Menu management (Super Admin): categories (including the "sides" switch), items, variants, add-on groups, deals, photo upload compressed in the browser to WebP as two files (`<name>.webp` up to 1200 px and `<name>-card.webp` at 320 px, see `docs/decisions.md`), banners, ordering, sold-out and hide switches, English and Urdu side by side
-- [x] Delivery settings: branch pin on a map (moving it is now audited), km tiers, road factor, minimum order (currently 0, off), free-delivery threshold, change log; the delivery switch is on Availability
+- [x] Menu management (Super Admin): categories (including the "sides" switch), items, variants, add-on groups, deals, photo upload compressed in the browser to WebP as two files (`<name>.webp` up to 1200 px and `<name>-card.webp` at 320 px, see `docs/decisions.md`), ordering, sold-out and hide switches, English and Urdu side by side
+- [x] Delivery settings: branch pin on a map (moving it is now audited), km tiers, road factor, minimum order (Rs 600 on dev since 18 Oct), free-delivery threshold, change log; the delivery switch is on Availability
 - [x] Discount codes: add, edit, switch off, delete unused; usage count
 - [x] Customers: list with order count, cancellations, delivered spend and last order (`customer_summaries` view); search; order history; block switch
 - [x] Reports (Super Admin only): sales by period, status and cancel reasons, payment method, top items, distance tier, discount usage; CSV export (UTF-8 with BOM)
 - [x] Settings: restaurant info, opening hours, payment accounts, WhatsApp number, riders; staff accounts through the `admin-users` Edge Function (create, change role or active state, reset password; two active Super Admins always kept)
 - [x] Pushed and deployed to dev (17 Oct, approved by Arslan): migrations `20261016193031_staff_access`, `20261016194545_audit_branches`, `20261016194933_customer_summaries`, `20261016195618_edit_order`; functions `admin-users`, `edit-order` (both keep verify_jwt on and check the login themselves) and `place-order` (shared code moved). Security Advisor on dev: only the two accepted warnings
 - [x] Checked on dev with Arslan's real login (17 Oct, live site and CSP): every staff screen loads; photo upload saves both sizes and deleting the dish removes them; report and CSV download (BOM present); a discount code created and deleted; `admin-users` and `edit-order` answer with the real login; the Live orders page holds a branch-filtered Realtime subscription. Test data was removed
-- [ ] Still to try on dev during opening hours (05:00 to midnight): place a test order, edit it on the call, take it to delivered; the alarm on the order-station laptop
+- [x] Fonts of the customer site chosen in Settings > Fonts (22 Oct, **local database only so far**): migration `20261022150000_site_settings` (one-row `site_settings` table, fonts limited to the allowed lists by CHECK constraints, public read of the four font columns, Super Admin write), pgTAP `15_site_settings_test.sql`, rollback in `supabase/rollbacks/`. Until it is pushed to the hosted dev project the site simply keeps the built-in fonts and Settings > Fonts cannot save. Non-default fonts load from Google Fonts (CSP updated in `render.yaml`); the Privacy text does not mention Google yet. Steps to push: `docs/runbook-fonts-and-descriptions.md`
+- [x] One-line English and Urdu descriptions for all 104 dishes without one (the 2 deals keep theirs): data migration `20261022150100_menu_descriptions` (local only so far; the Urdu lines need a native speaker's review). Cards show them, clamped to two lines on phones
+- [x] Banners on all six pages from the restaurant's own photos (22 Oct; `src/assets/banners/`, two sizes each, five photos from the zip are shared by crops; the Pexels photos and `IMAGE_CREDITS.md` are gone); closing time moved to 23:00 in the seed (hosted rows are changed in Settings > Opening hours)
+- [x] Staff and riders screen (6 Nov, **local database only so far**): migration `20261106100000_staff_and_riders`, extended `admin-users` function, `/admin/people` (list, search, details, edit, Show password, deactivate ends sessions, delete permanently, audit list), migration `20261106140000_staff_credentials` (encrypted password copies; not on hosted yet), pgTAP `16_staff_and_riders_test.sql`. Steps to push: `docs/runbook-staff-and-riders.md`
+- [ ] Still to try on dev during opening hours (04:00 to 03:00 once the hosted hours are updated): place a test order, edit it on the call, take it to delivered; the alarm on the order-station laptop
 
 ### Milestone 4: Hardening and launch
 
@@ -131,7 +135,7 @@ Tick items as they land. Items come from `CLAUDE.md` section 15 and `docs/spec.m
 | --- | --- | --- |
 | GitHub | Private repo `Abdulhadi489/Shan-e-Lahore`, default branch `main` | Hadi owns it; Arslan has push access. CI minutes come from Hadi's free account (2,000 a month) |
 | Render | Blueprint `shan-e-lahore`, static site https://shan-e-lahore.onrender.com, deploys `main` after CI passes | Arslan's Render workspace; Hadi installed Render's GitHub app on his account for this repo only |
-| Supabase dev | Project `shan-e-lahore-dev` (ref `gdjvulhrumxwjmnaywnn`, Mumbai, free plan): 14 migrations (latest 17 Oct: banner dish link), 6 Edge Functions (4 for customers, `admin-users` and `edit-order` for staff) | Super Admins on dev: Arslan and Sufyan. Edge Function secrets: `TURNSTILE_SECRET_KEY`, `ALLOWED_ORIGINS` (Render URL, localhost:5173, 127.0.0.1:5173) |
+| Supabase dev | Project `shan-e-lahore-dev` (ref `gdjvulhrumxwjmnaywnn`, Mumbai, free plan): 17 migrations (latest `20261030120000_category_serving_hours`, pushed 1 Nov by Talha after the live menu failed with "column categories.available_from does not exist"; `db push --dry-run` now reports the remote up to date), 6 Edge Functions (4 for customers, `admin-users` and `edit-order` for staff); all 6 redeployed on 28 Oct from `main` (zod 4.6.6 security fix live). **Not yet redeployed with the 30 Oct Nashta change** (`place-order`, `quote-order`, `edit-order`, `_shared`), so the server does not yet refuse Nashta dishes outside their hours. Desi Nashta's `available_from`/`available_until` are still empty on dev (served all day) until a Super Admin sets 04:00 to 12:00 | Super Admins on dev: Arslan and Sufyan. Edge Function secrets: `TURNSTILE_SECRET_KEY`, `ALLOWED_ORIGINS` (Render URL, localhost:5173, 127.0.0.1:5173) |
 | Supabase production | Not created yet (Milestone 4) | |
 | Supabase organisation | "Shan-e-Lahore" (free plan), holds the dev project | Members (16 Oct): Arslan, Sufyan (joined); Hadi, Talha, Umair (invited). All five are Owners for now; recommended: Arslan and Sufyan Owners, the rest Developers (README "Joining the team"). MFA is off for every member; each should switch it on |
 | Cloudflare Turnstile | Widget "Shan-e-Lahore", site key `0x4AAAAAAFUjrlxajrhVCE3G`; hostnames `localhost` and `shan-e-lahore.onrender.com` | Arslan's Cloudflare account. The secret key is set in Supabase Auth (Attack Protection) and as the `TURNSTILE_SECRET_KEY` function secret |
@@ -139,12 +143,26 @@ Tick items as they land. Items come from `CLAUDE.md` section 15 and `docs/spec.m
 
 ## Data in the dev project
 
-- Real: menu (106 dishes, from the printed menu of 2026-08-29), branch address, phone and map pin (31.523689, 74.344498), opening hours (05:00 to midnight daily).
-- Placeholder: delivery tiers (3/5/7 km at Rs 100/150/200), road factor 1.3. Minimum order is 0 (off, team decision).
+- Real: menu (106 dishes, from the printed menu of 2026-08-29), branch address, phone and map pin (31.523689, 74.344498), opening hours: the restaurant's real hours since 25 Oct are 04:00 to 03:00 every day (the hour in between is the switch from the main menu to nashta). The seed and the hosted dev project have them (dev updated 28 Oct with the SQL below).
+- Real delivery charges (restaurant, 25 Oct): Rs 70 up to 1 km, then Rs 30 more for each started km (2 km Rs 100, 3 km Rs 130), delivering in the whole of Lahore. Stored as 45 tiers (1 to 45 km by road, about 35 km in a straight line with the 1.3 road factor). The seed and the hosted dev project have them (dev updated 28 Oct with the SQL below; checked: 2.5 km quotes Rs 130, 11.2 km Rs 400). The SQL bypasses the admin panel, so the change log has no name for it. Road factor 1.3. Minimum order is Rs 600 (set on 18 Oct in the Supabase dashboard, so the change log has no name; kept by the team on 19 Oct). The local seed still has no minimum. Change settings from the admin panel (Delivery), not the dashboard, so the log records who did it.
+
+  ```sql
+  -- Hosted dev project only; already run on 28 Oct. Keep for the production project. Replaces the delivery tiers and hours of the active branch.
+  begin;
+  delete from public.delivery_tiers where branch_id = (select id from public.branches where is_active limit 1);
+  insert into public.delivery_tiers (branch_id, upper_km, charge)
+  select (select id from public.branches where is_active limit 1), km, 70 + 30 * (km - 1) from generate_series(1, 45) km;
+  update public.opening_hours set open_time = '04:00', close_time = '03:00', is_closed = false
+  where branch_id = (select id from public.branches where is_active limit 1);
+  commit;
+  ```
+- Test orders cleared (30 Oct, Arslan's request): all 11 test customers and their 19 orders (with items, status history and call attempts) were deleted on dev, and the order counter was reset so the next order is SL-1001.
 - Empty: payment accounts, WhatsApp number, riders, discount codes, banners, photos. While payment accounts are empty, the tracking page and the WhatsApp messages say the details come on the confirmation call. With no riders, orders can't be sent out for delivery on dev until someone adds riders in Settings > Riders. The local seed has two placeholder riders.
 
 ## Known gaps and risks
 
+- **Nashta serving hours (30 Oct) need three hosted steps after the merge** (Arslan or Sufyan): `supabase db push` (migration `20261030120000_category_serving_hours`), redeploy `quote-order`, `place-order` and `edit-order`, then set Desi Nashta to 04:00 to 12:00 in Menu (Serving hours). Until then the hosted menu shows nashta all day as before. The Urdu "روزانہ ... سے ... تک دستیاب" needs the Urdu review.
+- **Redeploy all six Edge Functions after this merges** (Arslan or Sufyan): zod was raised to 4.6.6 on 25 Oct for a high security advisory, and the hosted functions keep the old zod until redeployed. vitest goes to 5.0.5 (moderate advisory, tests only) once it is 14 days old on 29 Oct. See `docs/decisions.md`.
 - Ten days for Milestones 3 and 4 is tight. Anything not ready by 21 October is listed here and decided with the team, not dropped silently.
 - All Urdu so far was written by Claude (except dish names, which are the restaurant's own) and needs review, including the customer WhatsApp messages (`whatsapp.*` in `src/i18n/ur.json`).
 - New-order alerts work only while the Live orders page is open and on a device that is awake; a locked phone never rings (no web push). See README "Setting up the order station".

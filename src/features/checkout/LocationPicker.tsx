@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
-import { Circle, MapContainer, Marker, TileLayer, useMap, useMapEvents } from 'react-leaflet'
+import { MapContainer, Marker, TileLayer, useMap, useMapEvents } from 'react-leaflet'
 
 export type Pin = { lat: number; lng: number }
 
@@ -52,12 +52,10 @@ function CentreButton({ onChange }: { onChange: (pin: Pin) => void }) {
 
 export function LocationPicker({
   branch,
-  radiusKm,
   pin,
   onChange,
 }: {
   branch: Pin
-  radiusKm: number
   pin: Pin | null
   onChange: (pin: Pin) => void
 }) {
@@ -100,7 +98,6 @@ export function LocationPicker({
       <div dir="ltr" className="relative isolate h-80 overflow-hidden rounded-card border border-line">
         <MapContainer center={pin ?? branch} zoom={12} scrollWheelZoom={false} className="h-full w-full">
           <TileLayer url={tiles} attribution={attribution} />
-          <Circle center={branch} radius={radiusKm * 1000} className="map-delivery-area" />
           <Marker position={branch} icon={branchIcon} interactive={false} />
           {pin && (
             <Marker
@@ -125,17 +122,14 @@ export function LocationPicker({
   )
 }
 
-// Read-only map of the delivery area for the home page.
-// radiusKm 0 shows just the restaurant (contact page).
+// Read-only map of the restaurant's location (contact page).
 // boxClass sizes the map: a bordered 18 rem box by default; the contact page's arch frame passes h-full.
 export function DeliveryAreaMap({
   branch,
-  radiusKm,
   zoom = 11,
   boxClass = 'h-72 rounded-card border border-line',
 }: {
   branch: Pin
-  radiusKm: number
   zoom?: number
   boxClass?: string
 }) {
@@ -143,7 +137,6 @@ export function DeliveryAreaMap({
     <div dir="ltr" className={`isolate overflow-hidden ${boxClass}`}>
       <MapContainer center={branch} zoom={zoom} scrollWheelZoom={false} className="h-full w-full">
         <TileLayer url={tiles} attribution={attribution} />
-        {radiusKm > 0 && <Circle center={branch} radius={radiusKm * 1000} className="map-delivery-area" />}
         <Marker position={branch} icon={branchIcon} interactive={false} />
       </MapContainer>
     </div>

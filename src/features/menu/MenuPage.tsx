@@ -3,8 +3,10 @@ import { useLocation } from 'react-router'
 import { useTranslation } from 'react-i18next'
 import { localized } from '../../i18n'
 import { formatAmount } from '../../lib/money'
+import { timeLabel } from '../../lib/format'
 import { menuImageUrl } from '../../lib/images'
-import { PageTitle } from '../../app/PageTitle'
+import { PageBanner } from '../../components/PageBanner'
+import { banners } from '../../assets/banners/banners'
 import { ItemDialog } from './ItemDialog'
 import { useMenu, type MenuItem } from './useMenu'
 
@@ -24,12 +26,17 @@ export function ItemCard({ item, onSelect }: { item: MenuItem; onSelect: (item: 
     <button
       type="button"
       onClick={() => onSelect(item)}
-      disabled={soldOut}
+      // Outside its serving hours the dish still opens, so the pop-up can say when it can be ordered.
+      disabled={soldOut && !item.servedHours}
       className="flex h-full w-full flex-col overflow-hidden rounded-card border border-line bg-raised text-start hover:border-brand-deep disabled:cursor-not-allowed"
     >
       {item.image_path ? (
+        // The browser picks the 320 px card copy only where it stays sharp; on high-density screens and wide cards
+        // it takes the 1200 px copy the dish pop-up uses, instead of stretching the small one until it pixelates.
         <img
           src={menuImageUrl(item.image_path, 'card')}
+          srcSet={`${menuImageUrl(item.image_path, 'card')} 320w, ${menuImageUrl(item.image_path, 'full')} 1200w`}
+          sizes="(max-width: 40rem) 100vw, 20rem"
           alt=""
           width={400}
           height={220}
@@ -44,15 +51,27 @@ export function ItemCard({ item, onSelect }: { item: MenuItem; onSelect: (item: 
       <span className="flex flex-1 flex-col gap-1 p-4">
         <span className="font-heading text-xl leading-snug font-semibold">{localized(lng, item.name_en, item.name_ur)}</span>
         {item.description_en && (
-          <span className="text-sm text-ink-muted">{localized(lng, item.description_en, item.description_ur)}</span>
+          <span className="text-base text-ink-muted max-sm:line-clamp-2 sm:text-sm">{localized(lng, item.description_en, item.description_ur)}</span>
         )}
-        <span className="mt-auto flex flex-wrap items-center justify-between gap-2 pt-2 font-medium">
-          {soldOut ? (
+        {/* Price on its own line and the button under it on every card, so all cards line up the same way. */}
+        <span className="mt-auto flex flex-col items-start gap-2 pt-2 font-medium">
+          {item.servedHours ? (
+            // Outside its serving hours (Desi Nashta): still on show with its price, but it can't be added yet.
+            <>
+              {item.variants.length > 1 ? t('menu.from', { price }) : price}
+              <span className="text-sm text-ink-muted">
+                {t('menu.servedBetween', {
+                  from: timeLabel(lng, item.servedHours.from.slice(0, 5)),
+                  until: timeLabel(lng, item.servedHours.until.slice(0, 5)),
+                })}
+              </span>
+            </>
+          ) : soldOut ? (
             <span className="text-danger">{t('menu.soldOut')}</span>
           ) : (
             <>
               {item.variants.length > 1 ? t('menu.from', { price }) : price}
-              <span aria-hidden className="rounded-full bg-brand px-4 py-1.5 text-sm ltr:uppercase ltr:tracking-[0.12em]">
+              <span aria-hidden className="rounded-full bg-brand px-4 py-1.5 text-sm text-raised ltr:uppercase ltr:tracking-[0.12em]">
                 {t('item.add')}
               </span>
             </>
@@ -70,6 +89,13 @@ export function MenuPage() {
   const [selected, setSelected] = useState<MenuItem | null>(null)
   const { hash } = useLocation()
 
+  // The category chips and links from Home glide to their section while this page is open (index.css); other pages and
+  // route changes keep their instant behaviour.
+  useEffect(() => {
+    document.documentElement.classList.add('smooth-scroll')
+    return () => document.documentElement.classList.remove('smooth-scroll')
+  }, [])
+
   // Links like /menu#category-… arrive before the menu has loaded, so scroll once it has.
   useEffect(() => {
     if (menu.data && hash) document.getElementById(decodeURIComponent(hash.slice(1)))?.scrollIntoView()
@@ -78,9 +104,10 @@ export function MenuPage() {
   return (
     <>
       <title>{`${t('pages.menu')} · ${t('brand')}`}</title>
-      <PageTitle title={t('pages.menu')} urdu={t('pages.menu', { lng: 'ur' })} />
+      <PageBanner image={banners.menu} title={t('pages.menu')} />
 
-      {menu.isPending && <p className="mt-4">{t('menu.loading')}</p>}
+      {/* Tall while loading, so the footer is not on screen to be pushed down when the dishes arrive. */}
+      {menu.isPending && <p className="mt-4 min-h-[80svh]">{t('menu.loading')}</p>}
       {menu.isError && (
         <div role="alert" className="mt-4">
           <p>{t('menu.error')}</p>
@@ -111,6 +138,7 @@ export function MenuPage() {
           {menu.data.map((category) => (
             <section key={category.id} id={`category-${category.id}`} className="mt-8 scroll-mt-[calc(var(--header-h)+5rem)]">
               <h2 className="font-heading text-3xl font-semibold">{localized(lng, category.name_en, category.name_ur)}</h2>
+              {/* Outside its serving hours a section stays fully readable; each card says when its dish can be ordered. */}
               <ul className="mt-4 grid grid-cols-[repeat(auto-fill,minmax(min(14rem,100%),1fr))] gap-4">
                 {category.items.map((item) => (
                   <li key={item.id}>

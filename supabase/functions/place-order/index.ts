@@ -23,7 +23,7 @@ serve(async (body, req) => {
   const discount = order.discountCode ? await loadDiscount(branch.id, order.discountCode, order.phone) : undefined
   const priced = priceOrder({
     branch,
-    items: await loadItems(branch.id, order.lines.map((line) => line.itemId)),
+    items: await loadItems(branch.id, order.lines.map((line) => line.itemId), new Date()),
     lines: order.lines,
     pin: { lat: order.lat, lng: order.lng },
     now: new Date(),

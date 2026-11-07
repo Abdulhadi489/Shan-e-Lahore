@@ -52,3 +52,13 @@ export function openingStatus(hours: OpeningHours, now: Date): OpeningStatus {
     .sort((a, b) => a - b)[0]
   return { open: false, opensAt: next === undefined ? null : { weekday: Math.floor(next / DAY) % 7, time: clock(next) } }
 }
+
+// A category's daily serving hours, such as Desi Nashta from 04:00 to 12:00 (Lahore time). An end earlier than the
+// start runs past midnight; no hours means served whenever the branch is open.
+export function servedNow(from: string | null, until: string | null, now: Date) {
+  if (!from || !until) return true
+  const minute = karachiWeekMinute(now) % DAY
+  const start = minutes(from)
+  const end = minutes(until)
+  return start < end ? minute >= start && minute < end : minute >= start || minute < end
+}

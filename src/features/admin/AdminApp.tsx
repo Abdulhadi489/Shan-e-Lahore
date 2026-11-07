@@ -8,10 +8,11 @@ import { supabase } from '../../lib/supabase'
 import { LoginPage } from './LoginPage'
 import { StaffLayout, SuperAdminOnly } from './StaffLayout'
 import { SettingsPage } from './settings/SettingsPage'
+import { PeoplePage } from './people/PeoplePage'
+import { PersonPage } from './people/PersonPage'
 import { MenuAdminPage } from './menu/MenuAdminPage'
 import { ItemEditor } from './menu/ItemEditor'
 import { AddonGroupsPage } from './menu/AddonGroupsPage'
-import { BannersPage } from './menu/BannersPage'
 import { DeliveryPage } from './delivery/DeliveryPage'
 import { CustomerPage, CustomersPage } from './customers/CustomersPage'
 import { DiscountsPage } from './discounts/DiscountsPage'
@@ -61,10 +62,11 @@ export function AdminApp() {
         <Route path="availability" element={<AvailabilityPage />} />
         <Route element={<SuperAdminOnly />}>
           <Route path="settings" element={<SettingsPage />} />
+          <Route path="people" element={<PeoplePage />} />
+          <Route path="people/:kind/:id" element={<PersonPage />} />
           <Route path="menu" element={<MenuAdminPage />} />
           <Route path="menu/items/:id" element={<ItemEditor />} />
           <Route path="menu/addons" element={<AddonGroupsPage />} />
-          <Route path="menu/banners" element={<BannersPage />} />
           <Route path="delivery" element={<DeliveryPage />} />
           <Route path="customers" element={<CustomersPage />} />
           <Route path="discounts" element={<DiscountsPage />} />

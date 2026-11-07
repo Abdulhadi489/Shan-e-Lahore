@@ -1,5 +1,5 @@
 import { assertEquals } from '@std/assert'
-import { type OpeningHours, openingStatus } from './opening-hours.ts'
+import { type OpeningHours, openingStatus, servedNow } from './opening-hours.ts'
 
 // Lahore is UTC+5. 2026-10-12 is a Monday (weekday 1).
 const lahore = (iso: string) => new Date(`${iso}+05:00`)
@@ -73,4 +73,31 @@ Deno.test('closing at exactly midnight', () => {
   assertEquals(openingStatus(fiveToMidnight, lahore('2026-10-12T23:59')), { open: true, closesAt: '00:00' })
   assertEquals(openingStatus(fiveToMidnight, lahore('2026-10-13T00:00')), { open: false, opensAt: { weekday: 2, time: '05:00' } })
   assertEquals(openingStatus(fiveToMidnight, lahore('2026-10-13T04:59')), { open: false, opensAt: { weekday: 2, time: '05:00' } })
+})
+
+Deno.test('closing at 23:00, the current hours', () => {
+  const fiveToEleven: OpeningHours = [0, 1, 2, 3, 4, 5, 6].map((weekday) => ({
+    weekday,
+    open_time: '05:00:00',
+    close_time: '23:00:00',
+    is_closed: false,
+  }))
+  assertEquals(openingStatus(fiveToEleven, lahore('2026-10-12T22:59')), { open: true, closesAt: '23:00' })
+  assertEquals(openingStatus(fiveToEleven, lahore('2026-10-12T23:00')), { open: false, opensAt: { weekday: 2, time: '05:00' } })
+  assertEquals(openingStatus(fiveToEleven, lahore('2026-10-13T00:30')), { open: false, opensAt: { weekday: 2, time: '05:00' } })
+  assertEquals(openingStatus(fiveToEleven, lahore('2026-10-13T05:00')), { open: true, closesAt: '23:00' })
+})
+
+Deno.test('nashta served 04:00 to 12:00', () => {
+  assertEquals(servedNow('04:00:00', '12:00:00', lahore('2026-10-12T03:59')), false)
+  assertEquals(servedNow('04:00:00', '12:00:00', lahore('2026-10-12T04:00')), true)
+  assertEquals(servedNow('04:00:00', '12:00:00', lahore('2026-10-12T11:59')), true)
+  assertEquals(servedNow('04:00:00', '12:00:00', lahore('2026-10-12T12:00')), false)
+})
+
+Deno.test('serving hours past midnight, and no hours at all', () => {
+  assertEquals(servedNow('20:00:00', '02:00:00', lahore('2026-10-12T23:00')), true)
+  assertEquals(servedNow('20:00:00', '02:00:00', lahore('2026-10-13T01:59')), true)
+  assertEquals(servedNow('20:00:00', '02:00:00', lahore('2026-10-12T19:59')), false)
+  assertEquals(servedNow(null, null, lahore('2026-10-12T03:00')), true)
 })

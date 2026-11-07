@@ -165,14 +165,14 @@ isOneToOne: false
                   ]
                 },"categories": {
                   Row: {
-                    "branch_id": string,"created_at": string,"id": string,"is_active": boolean,"is_side": boolean,"name_en": string,"name_ur": string,"sort_order": number,"updated_at": string
+                    "available_from": string | null,"available_until": string | null,"branch_id": string,"created_at": string,"id": string,"is_active": boolean,"is_side": boolean,"name_en": string,"name_ur": string,"sort_order": number,"updated_at": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "branch_id": string,"created_at"?: string,"id"?: string,"is_active"?: boolean,"is_side"?: boolean,"name_en": string,"name_ur"?: string,"sort_order"?: number,"updated_at"?: string
+                    "available_from"?: string | null,"available_until"?: string | null,"branch_id": string,"created_at"?: string,"id"?: string,"is_active"?: boolean,"is_side"?: boolean,"name_en": string,"name_ur"?: string,"sort_order"?: number,"updated_at"?: string
                   }
                   Update: {
-                    "branch_id"?: string,"created_at"?: string,"id"?: string,"is_active"?: boolean,"is_side"?: boolean,"name_en"?: string,"name_ur"?: string,"sort_order"?: number,"updated_at"?: string
+                    "available_from"?: string | null,"available_until"?: string | null,"branch_id"?: string,"created_at"?: string,"id"?: string,"is_active"?: boolean,"is_side"?: boolean,"name_en"?: string,"name_ur"?: string,"sort_order"?: number,"updated_at"?: string
                   }
                   Relationships: [
                     {
@@ -497,14 +497,14 @@ isOneToOne: false
                   ]
                 },"profiles": {
                   Row: {
-                    "branch_id": string | null,"created_at": string,"full_name": string,"is_active": boolean,"role": Database["public"]['Enums']["user_role"],"updated_at": string,"user_id": string
+                    "branch_id": string | null,"created_at": string,"created_by": string | null,"deleted_at": string | null,"full_name": string,"is_active": boolean,"must_change_password": boolean,"phone": string | null,"role": Database["public"]['Enums']["user_role"],"updated_at": string,"user_id": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "branch_id"?: string | null,"created_at"?: string,"full_name": string,"is_active"?: boolean,"role"?: Database["public"]['Enums']["user_role"],"updated_at"?: string,"user_id": string
+                    "branch_id"?: string | null,"created_at"?: string,"created_by"?: string | null,"deleted_at"?: string | null,"full_name": string,"is_active"?: boolean,"must_change_password"?: boolean,"phone"?: string | null,"role"?: Database["public"]['Enums']["user_role"],"updated_at"?: string,"user_id": string
                   }
                   Update: {
-                    "branch_id"?: string | null,"created_at"?: string,"full_name"?: string,"is_active"?: boolean,"role"?: Database["public"]['Enums']["user_role"],"updated_at"?: string,"user_id"?: string
+                    "branch_id"?: string | null,"created_at"?: string,"created_by"?: string | null,"deleted_at"?: string | null,"full_name"?: string,"is_active"?: boolean,"must_change_password"?: boolean,"phone"?: string | null,"role"?: Database["public"]['Enums']["user_role"],"updated_at"?: string,"user_id"?: string
                   }
                   Relationships: [
                     {
@@ -513,6 +513,12 @@ isOneToOne: false
 isOneToOne: false
       referencedRelation: "branches"
       referencedColumns: ["id"]
+    },{
+      foreignKeyName: "profiles_created_by_fkey"
+      columns: ["created_by"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["user_id"]
     }
                   ]
                 },"rate_limits": {
@@ -531,14 +537,14 @@ isOneToOne: false
                   ]
                 },"riders": {
                   Row: {
-                    "branch_id": string,"created_at": string,"id": string,"is_active": boolean,"name": string,"phone": string,"updated_at": string
+                    "branch_id": string,"created_at": string,"created_by": string | null,"deleted_at": string | null,"id": string,"is_active": boolean,"name": string,"phone": string,"updated_at": string,"vehicle_number": string | null,"vehicle_type": string | null
                   }
                   ComputedFields: never
                   Insert: {
-                    "branch_id": string,"created_at"?: string,"id"?: string,"is_active"?: boolean,"name": string,"phone": string,"updated_at"?: string
+                    "branch_id": string,"created_at"?: string,"created_by"?: string | null,"deleted_at"?: string | null,"id"?: string,"is_active"?: boolean,"name": string,"phone": string,"updated_at"?: string,"vehicle_number"?: string | null,"vehicle_type"?: string | null
                   }
                   Update: {
-                    "branch_id"?: string,"created_at"?: string,"id"?: string,"is_active"?: boolean,"name"?: string,"phone"?: string,"updated_at"?: string
+                    "branch_id"?: string,"created_at"?: string,"created_by"?: string | null,"deleted_at"?: string | null,"id"?: string,"is_active"?: boolean,"name"?: string,"phone"?: string,"updated_at"?: string,"vehicle_number"?: string | null,"vehicle_type"?: string | null
                   }
                   Relationships: [
                     {
@@ -547,7 +553,27 @@ isOneToOne: false
 isOneToOne: false
       referencedRelation: "branches"
       referencedColumns: ["id"]
+    },{
+      foreignKeyName: "riders_created_by_fkey"
+      columns: ["created_by"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["user_id"]
     }
+                  ]
+                },"site_settings": {
+                  Row: {
+                    "font_body_en": string,"font_body_ur": string,"font_heading_en": string,"font_heading_ur": string,"id": boolean,"updated_at": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "font_body_en"?: string,"font_body_ur"?: string,"font_heading_en"?: string,"font_heading_ur"?: string,"id"?: boolean,"updated_at"?: string
+                  }
+                  Update: {
+                    "font_body_en"?: string,"font_body_ur"?: string,"font_heading_en"?: string,"font_heading_ur"?: string,"id"?: boolean,"updated_at"?: string
+                  }
+                  Relationships: [
+                    
                   ]
                 }
           }
@@ -566,8 +592,17 @@ isOneToOne: false
             "create_order":
 { Args: { "lines": Json,"order_data": Json }; Returns: Json
                            },
+"end_sessions":
+{ Args: { "target_user_id": string }; Returns: undefined
+                           },
 "hit_rate_limit":
 { Args: { "limit_key": string,"max_count": number,"window_seconds": number }; Returns: boolean
+                           },
+"remove_account":
+{ Args: { "actor_id": string,"target_user_id": string }; Returns: string
+                           },
+"remove_rider":
+{ Args: { "actor_id": string,"rider": string }; Returns: string
                            },
 "replace_order_contents":
 { Args: { "actor_id": string,"lines": Json,"order_data": Json,"target_order_id": string }; Returns: undefined

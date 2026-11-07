@@ -3,16 +3,10 @@
 /* Regular weight only: Nastaliq has no real bold, and each weight is 156 KB. */
 @import '@fontsource/noto-nastaliq-urdu/arabic-400.css';
 @import '@fontsource/cormorant-garamond/latin-600.css';
-/* The home headline only (HomePage): a lighter cut than the other headings. */
-@import '@fontsource/cormorant-garamond/latin-500.css';
 @import '@fontsource/jost/latin-400.css';
 @import '@fontsource/jost/latin-500.css';
 /* Only the header wordmark, like the shop's signboard letters. */
 @import '@fontsource/jost/latin-800.css';
-/* Only on the home page (HomePage): Montserrat for the headline and the line under it, Amiri for the three Urdu words
-   under the hero. */
-@import '@fontsource/amiri/arabic-400.css';
-@import '@fontsource-variable/montserrat/wght.css';
 
 /*
   Design tokens. Colours are measured from the logo and the printed menu.
@@ -49,13 +43,24 @@
       transform: translateY(150%);
     }
   }
+
+  /* The mobile header menu drops in (also only for visitors who allow motion). */
+  --animate-menu-down: menu-down 0.2s ease-out;
+  @keyframes menu-down {
+    from {
+      opacity: 0;
+      transform: translateY(-0.5rem);
+    }
+  }
 }
 
 /* The customer site's fonts (the colours above are the whole site's: one orange, the top bar's, and one off-white).
-   Text on orange is espresso (ink); white or cream on this orange fails AA. */
+   Text on orange is espresso (ink); white or cream on this orange fails AA.
+   --font-heading-en, --font-body-en, --font-heading-ur and --font-body-ur are set from src/lib/fonts.ts when the
+   Super Admin picks other fonts in Settings; while they are unset, the fallbacks below are the original fonts. */
 .heritage {
-  --font-heading: 'Cormorant Garamond', ui-serif, Georgia, serif;
-  font-family: 'Jost', var(--font-sans);
+  --font-heading: var(--font-heading-en, 'Cormorant Garamond', ui-serif, Georgia, serif);
+  font-family: var(--font-body-en, 'Jost', var(--font-sans));
 }
 /* Espresso summary cards (cart, checkout, tracking): the same token names turned light, so the card's
    existing text, borders and inputs read on the dark background. Buttons on orange use text-espresso. */
@@ -71,8 +76,8 @@
   color: var(--color-ink);
 }
 html[lang='ur'] .heritage {
-  --font-heading: var(--font-sans);
-  font-family: var(--font-sans);
+  --font-heading: var(--font-heading-ur, var(--font-sans));
+  font-family: var(--font-body-ur, var(--font-sans));
 }
 
 @layer base {
@@ -81,7 +86,8 @@ html[lang='ur'] .heritage {
   html {
     font-size: clamp(1rem, 0.25vw + 0.75rem, 1.125rem);
     /* Shared by the customer and staff layouts; --header-h is set by useHeaderHeight. */
-    --page-pad: clamp(1rem, 3vw, 2.5rem);
+    /* Never less than a notch's inset, so landscape phones keep content out from under it. */
+    --page-pad: max(clamp(1rem, 3vw, 2.5rem), env(safe-area-inset-left), env(safe-area-inset-right));
     --header-h: 0px;
   }
 
@@ -136,17 +142,20 @@ html[lang='ur'] .heritage {
   border-radius: 9999px;
   background: var(--color-ink);
 }
-.map-delivery-area {
-  stroke: var(--color-brand-deep);
-  stroke-width: 2;
-  fill: var(--color-brand);
-  fill-opacity: 0.08;
-}
 
 /* Kitchen tickets (KitchenTicket.tsx) are the only staff page meant for printing: 80 mm thermal paper. */
 @page {
   size: 80mm auto;
   margin: 4mm;
+}
+
+/* Leaflet's zoom buttons are 30 px; on touch screens they get a 44 px tap area. */
+@media (pointer: coarse) {
+  .leaflet-touch .leaflet-bar a {
+    width: 44px;
+    height: 44px;
+    line-height: 44px;
+  }
 }
 
 /* Card grids add a column whenever there is room (like a video site's grid); one column on small phones. */
@@ -160,6 +169,14 @@ html[lang='ur'] .heritage {
   scrollbar-width: none;
   &::-webkit-scrollbar {
     display: none;
+  }
+}
+
+/* Smooth scrolling for the Menu page's own jumps (MenuPage adds the class while it is open); visitors who ask their
+   system for reduced motion keep the instant jump. */
+@media (prefers-reduced-motion: no-preference) {
+  html.smooth-scroll {
+    scroll-behavior: smooth;
   }
 }
 

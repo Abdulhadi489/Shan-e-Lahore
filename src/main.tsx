@@ -4,6 +4,7 @@ import { BrowserRouter } from 'react-router'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import './index.css'
 import './i18n'
+import './lib/siteFonts'
 import { AppRoutes } from './app/AppRoutes'
 
 const rootElement = document.getElementById('root')
