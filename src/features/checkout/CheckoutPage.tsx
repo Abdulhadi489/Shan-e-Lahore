@@ -8,6 +8,7 @@ import { useTranslation } from 'react-i18next'
 import type { ParseKeys } from 'i18next'
 import type { z } from 'zod'
 import { localized } from '../../i18n'
+import { localPhone } from '../../lib/format'
 import { formatAmount } from '../../lib/money'
 import { customerDetails, discountCode } from '../../../supabase/functions/_shared/schemas'
 import { unitPrice } from '../../../supabase/functions/_shared/pricing'
@@ -21,7 +22,8 @@ import { getQuote, OrderApiError, placeOrder } from './orderApi'
 type Details = z.input<typeof customerDetails>
 type DetailsOutput = z.output<typeof customerDetails>
 
-const paymentMethods = ['cod', 'bank_transfer', 'jazzcash', 'easypaisa'] as const
+// "Pay online" is stored as a JazzCash order, so the order functions, staff screens and tracking page need no change.
+const paymentMethods = ['cod', 'jazzcash'] as const
 
 // Every code the order functions can return has a sentence; anything else falls back to a generic one.
 const knownErrors = new Set([
@@ -178,9 +180,20 @@ export function CheckoutPage() {
             {paymentMethods.map((method) => (
               <label key={method} className="flex min-h-12 items-center gap-3 rounded-control border border-line bg-raised px-4 py-3">
                 <input type="radio" value={method} {...register('paymentMethod')} />
-                <span className="font-medium">{t(`payment.${method}`)}</span>
+                <span className="font-medium">{method === 'cod' ? t('payment.cod') : t('checkout.payOnline')}</span>
               </label>
             ))}
+            {paymentMethod === 'jazzcash' && settings?.jazzcash_number && (
+              <div className="rounded-control border border-line bg-raised px-4 py-3">
+                <p className="font-medium">{t('payment.jazzcash')}</p>
+                <dl className="mt-2 grid grid-cols-[auto_1fr] gap-x-4 gap-y-1">
+                  <dt className="text-ink-muted">{t('tracking.accountTitle')}</dt>
+                  <dd>{settings.jazzcash_account_title}</dd>
+                  <dt className="text-ink-muted">{t('tracking.accountNumber')}</dt>
+                  <dd dir="ltr" className="font-medium rtl:text-end">{localPhone(settings.jazzcash_number)}</dd>
+                </dl>
+              </div>
+            )}
             <p className="text-sm text-ink-muted">
               {paymentMethod === 'cod' ? t('checkout.codHelp') : t('checkout.transferHelp')}
             </p>
