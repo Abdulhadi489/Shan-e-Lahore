@@ -1,0 +1,35 @@
+# Copied into dist/ by Vite and uploaded with the site. Mirrors the routes and headers in render.yaml.
+Options -Indexes
+
+# The deploy tool's bookkeeping file lists every filename; nobody needs to read it.
+<Files ".ftp-deploy-sync-state.json">
+  Require all denied
+</Files>
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  # Always HTTPS.
+  RewriteCond %{HTTPS} !=on
+  RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+  # Every address that isn't a real file loads index.html, and React Router shows the page.
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule ^ index.html [L]
+</IfModule>
+
+<IfModule mod_headers.c>
+  Header always set Content-Security-Policy "default-src 'self'; script-src 'self' https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; connect-src 'self' https://gdjvulhrumxwjmnaywnn.supabase.co wss://gdjvulhrumxwjmnaywnn.supabase.co; img-src 'self' https://gdjvulhrumxwjmnaywnn.supabase.co https://tile.openstreetmap.org; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'"
+  Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+  Header always set Permissions-Policy "geolocation=(self), camera=(), microphone=()"
+
+  # Vite puts a content hash in every asset filename, so these can be cached forever.
+  # index.html must always be re-checked so visitors get the newest version.
+  <If "%{REQUEST_URI} =~ m#^/assets/#">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </If>
+  <Else>
+    Header set Cache-Control "no-cache"
+  </Else>
+</IfModule>
