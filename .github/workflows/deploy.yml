@@ -40,7 +40,7 @@ jobs:
           VITE_SUPABASE_PUBLISHABLE_KEY: sb_publishable_vdR90ilK1jg4EfUNQQmh9Q_9H15xcSV
           VITE_TURNSTILE_SITE_KEY: 0x4AAAAAAFUjrlxajrhVCE3G
       # Uploads only the built site in dist/. Files from earlier uploads that no longer exist are removed.
-      - uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+      - uses: SamKirkland/FTP-Deploy-Action@8e83cea8672e3fbcbb9fdafff34debf6ae4c5f65 # v4.3.5
         with:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
