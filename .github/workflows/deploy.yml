@@ -1,23 +1,50 @@
-name: Deploy to cPanel          # The name shown in the Actions tab
+name: Deploy to cPanel
 
+# Runs only after CI passes on main, so a commit that fails its checks never goes live.
+# "Run workflow" on the Actions tab deploys the latest main by hand.
 on:
-  push:
-    branches: [main]            # Run every time something is pushed to main
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# One deploy at a time; a newer push waits instead of uploading over a running one.
+concurrency:
+  group: deploy-cpanel
+  cancel-in-progress: false
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest      # GitHub runs this on a temporary server it provides
-
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v4      # Step 1: download your repo's files onto that temporary server
-
-      # (Commented-out lines starting with # are only needed
-      #  for React/Vite sites that need "npm run build" first)
-
-      - uses: SamKirkland/FTP-Deploy-Action@v4.3.5   # Step 2: a ready-made tool that uploads over FTP
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          server: ${{ secrets.FTP_SERVER }}       # Reads the secrets you added,
-          username: ${{ secrets.FTP_USERNAME }}   # so the password never appears
-          password: ${{ secrets.FTP_PASSWORD }}   # in the file itself
-          local-dir: ./     # Which folder in the repo to upload (./ = all of it)
-          server-dir: ./    # Where to put it on the hosting (./ = the FTP account's folder, i.e. your site root)
+          # The exact commit CI tested, not whatever is on main by now.
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - run: npm run build
+        env:
+          # Public values (same as render.yaml): Vite bundles them into the website.
+          VITE_SUPABASE_URL: https://gdjvulhrumxwjmnaywnn.supabase.co
+          VITE_SUPABASE_PUBLISHABLE_KEY: sb_publishable_vdR90ilK1jg4EfUNQQmh9Q_9H15xcSV
+          VITE_TURNSTILE_SITE_KEY: 0x4AAAAAAFUjrlxajrhVCE3G
+      # Uploads only the built site in dist/. Files from earlier uploads that no longer exist are removed.
+      - uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          protocol: ftps
+          local-dir: ./dist/
+          server-dir: ./
