@@ -55,7 +55,7 @@ Shan-e-Lahore is a desi food restaurant in Lahore, Pakistan. We are building its
 | Image compression | browser-image-compression | Keeps storage and bandwidth inside free limits |
 | Spreadsheet export | CSV (UTF-8 with BOM so Excel shows Urdu), no dependency | npm SheetJS has unpatched high advisories |
 | Tests | Vitest (frontend logic), Deno test (Edge Function shared logic), pgTAP via `supabase test db` (RLS) | |
-| CI | GitHub Actions: typecheck, lint, tests, `supabase db lint`, `npm audit --audit-level=high` | Free |
+| CI | GitHub Actions: typecheck, lint, tests, `supabase db lint`, `npm audit --audit-level=high --omit=dev` (packages that ship to customers; build-tool advisories are fixed as soon as a fix is 14 days old) | Free |
 | Dependency updates | Dependabot | Free |
 | Hosting | Render **static site** (does not sleep). Never a free Render web service (sleeps when idle). | |
 | Migrations | Supabase CLI, committed in `supabase/migrations/` | |

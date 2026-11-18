@@ -45,7 +45,8 @@ jobs:
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version-file: .nvmrc
-      - run: npm audit --audit-level=high
+      # Only the packages that ship to customers: build and test tools (Vite, Vitest, ESLint) never reach the site.
+      - run: npm audit --audit-level=high --omit=dev
 
   secrets:
     name: Secret scan (whole history)
