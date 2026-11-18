@@ -151,7 +151,7 @@ Using an AI assistant? Point it at `AGENTS.md`; it reads `CLAUDE.md`, the projec
 | `lib/supabase.ts` | The one Supabase connection the website uses |
 | `lib/format.ts` | Times, days, phone numbers, Lahore date conversions (tested in `format.test.ts`) |
 | `lib/money.ts` | Rupee amounts with thousands separators |
-| `lib/metaPixel.ts` | Meta Pixel: page views and the four ordering events (ViewContent, AddToCart, InitiateCheckout, Purchase, in PKR) for ad measurement, never on tracking links or staff pages (tested in `metaPixel.test.ts`) |
+| `lib/adTags.ts` | Meta Pixel and Google Analytics 4: page views and the four ordering events (ViewContent / view_item, AddToCart / add_to_cart, InitiateCheckout / begin_checkout, Purchase / purchase, in PKR), never on tracking links or staff pages (tested in `adTags.test.ts`) |
 | `lib/images.ts` | Address of a menu photo (large or card size) |
 | `lib/fonts.ts` | The fonts the Super Admin can choose (English and Urdu lists), defaults, and the rules that turn a choice into a Google Fonts address (tested in `fonts.test.ts`) |
 | `lib/siteFonts.ts` | Puts the chosen fonts on the page (CSS variables, one Google Fonts stylesheet, names remembered for the first paint) |

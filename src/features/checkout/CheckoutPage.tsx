@@ -10,7 +10,7 @@ import type { z } from 'zod'
 import { localized } from '../../i18n'
 import { localPhone } from '../../lib/format'
 import { formatAmount } from '../../lib/money'
-import { pixelCartParams, trackEvent, type PixelLine } from '../../lib/metaPixel'
+import { trackEvent, type PixelLine } from '../../lib/adTags'
 import { customerDetails, discountCode } from '../../../supabase/functions/_shared/schemas'
 import { unitPrice } from '../../../supabase/functions/_shared/pricing'
 import { useBranch } from '../../app/useBranch'
@@ -82,16 +82,16 @@ export function CheckoutPage() {
   useEffect(() => {
     if (checkoutCounted.current || !menu.data || lines.length === 0) return
     checkoutCounted.current = true
-    trackEvent('InitiateCheckout', pixelCartParams(pixelLines, cartSubtotal(lines, items)))
+    trackEvent('InitiateCheckout', pixelLines, cartSubtotal(lines, items))
   })
 
   const order = useMutation({
     mutationFn: placeOrder,
     onSuccess: ({ trackingToken }) => {
-      // Sent here, before moving to the tracking page: Meta adds the page address to every event, and the tracking
-      // link must never reach it. A mutation succeeds once, so each order counts once; refreshing the tracking page
+      // Sent here, before moving to the tracking page: Meta and Google add the page address to every event, and
+      // the tracking link must never reach them. A mutation succeeds once, so each order counts once; refreshing the tracking page
       // sends nothing.
-      trackEvent('Purchase', pixelCartParams(pixelLines, quote.data?.total ?? cartSubtotal(lines, items)))
+      trackEvent('Purchase', pixelLines, quote.data?.total ?? cartSubtotal(lines, items))
       clearCart()
       navigate(`/track/${trackingToken}`, { replace: true })
     },
