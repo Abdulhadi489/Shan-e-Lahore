@@ -1,5 +1,5 @@
 import { PageTitle } from '../../app/PageTitle'
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link, Navigate, useNavigate } from 'react-router'
 import { useForm, useWatch } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -10,12 +10,13 @@ import type { z } from 'zod'
 import { localized } from '../../i18n'
 import { localPhone } from '../../lib/format'
 import { formatAmount } from '../../lib/money'
+import { pixelCartParams, trackEvent, type PixelLine } from '../../lib/metaPixel'
 import { customerDetails, discountCode } from '../../../supabase/functions/_shared/schemas'
 import { unitPrice } from '../../../supabase/functions/_shared/pricing'
 import { useBranch } from '../../app/useBranch'
 import { Turnstile } from '../../components/Turnstile'
 import { useMenu } from '../menu/useMenu'
-import { clearCart, useCart } from './cart'
+import { cartSubtotal, clearCart, useCart } from './cart'
 import { LocationPicker, type Pin } from './LocationPicker'
 import { getQuote, OrderApiError, placeOrder } from './orderApi'
 
@@ -69,9 +70,28 @@ export function CheckoutPage() {
     placeholderData: keepPreviousData,
   })
 
+  const items = new Map(menu.data?.flatMap((c) => c.items).map((item) => [item.id, item]))
+  const pixelLines = lines.flatMap((line): PixelLine[] => {
+    const item = items.get(line.itemId)
+    const unit = item ? unitPrice(item, line) : null
+    return unit && 'price' in unit ? [{ id: line.itemId, quantity: line.quantity, price: unit.price }] : []
+  })
+
+  // Once per visit to checkout, as soon as the menu prices are known.
+  const checkoutCounted = useRef(false)
+  useEffect(() => {
+    if (checkoutCounted.current || !menu.data || lines.length === 0) return
+    checkoutCounted.current = true
+    trackEvent('InitiateCheckout', pixelCartParams(pixelLines, cartSubtotal(lines, items)))
+  })
+
   const order = useMutation({
     mutationFn: placeOrder,
     onSuccess: ({ trackingToken }) => {
+      // Sent here, before moving to the tracking page: Meta adds the page address to every event, and the tracking
+      // link must never reach it. A mutation succeeds once, so each order counts once; refreshing the tracking page
+      // sends nothing.
+      trackEvent('Purchase', pixelCartParams(pixelLines, quote.data?.total ?? cartSubtotal(lines, items)))
       clearCart()
       navigate(`/track/${trackingToken}`, { replace: true })
     },
@@ -89,7 +109,6 @@ export function CheckoutPage() {
   const tiers = branch.data?.delivery_tiers ?? []
   const maxKm = tiers.length > 0 ? Math.max(...tiers.map((tier) => tier.upper_km)) : 0
   const problems = quote.data?.problems ?? []
-  const items = new Map(menu.data?.flatMap((c) => c.items).map((item) => [item.id, item]))
   const canPlace = pin !== null && quote.data !== undefined && problems.length === 0 && captchaToken !== null && !quote.isFetching
 
   function applyCode() {

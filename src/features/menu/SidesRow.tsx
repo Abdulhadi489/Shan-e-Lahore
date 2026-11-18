@@ -1,6 +1,7 @@
 import { useId } from 'react'
 import { useTranslation } from 'react-i18next'
 import { localized } from '../../i18n'
+import { pixelCartParams, trackEvent } from '../../lib/metaPixel'
 import { formatAmount } from '../../lib/money'
 import { addToCart, useCart } from '../checkout/cart'
 import { useMenu } from './useMenu'
@@ -46,7 +47,10 @@ export function SidesRow({ excludeItemId }: { excludeItemId?: string }) {
               <button
                 type="button"
                 aria-label={t('sides.add', { name, price })}
-                onClick={() => addToCart({ itemId: item.id, variantId: null, addonOptionIds: [], quantity: 1 })}
+                onClick={() => {
+                  addToCart({ itemId: item.id, variantId: null, addonOptionIds: [], quantity: 1 })
+                  trackEvent('AddToCart', pixelCartParams([{ id: item.id, quantity: 1, price: item.base_price }], item.base_price))
+                }}
                 className="flex h-full w-36 flex-col gap-1 rounded-control border border-line bg-raised p-2 text-start text-sm hover:border-brand-deep active:scale-[0.98]"
               >
                 <span className="font-medium">{name}</span>
