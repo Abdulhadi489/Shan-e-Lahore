@@ -5,6 +5,7 @@ import { Mail, Menu, PhoneCall, ShoppingBag, X } from 'lucide-react'
 import { InstagramIcon, social, TikTokIcon } from '../components/SocialIcons'
 import { useCart } from '../features/checkout/cart'
 import { phoneLabel } from '../lib/format'
+import { trackPageView } from '../lib/metaPixel'
 import laceBand from '../assets/lace-folk-band.webp'
 import { CartBar } from './CartBar'
 import { InfoPanel } from './InfoPanel'
@@ -72,6 +73,7 @@ export function CustomerLayout() {
   const phone = useBranch().data?.phone
   useSiteFonts()
   const { pathname } = useLocation()
+  useEffect(() => trackPageView(pathname), [pathname])
   // Not where the cart already is, or where the order is placed or followed.
   const showCartBar = cartCount > 0 && pathname !== '/cart' && pathname !== '/checkout' && !pathname.startsWith('/track/')
 
@@ -239,6 +241,19 @@ export function CustomerLayout() {
             </a>
           </div>
         </div>
+        {/* Credit for the studio that built the site; the company name stays in English on Urdu pages. */}
+        <p className="border-t border-ink/20 px-(--page-pad) py-2 text-center text-sm">
+          {t('footer.builtBy')}{' '}
+          <a
+            href="https://techbrewplus.vercel.app/"
+            target="_blank"
+            rel="noopener noreferrer"
+            lang="en"
+            className="inline-flex min-h-11 items-center font-semibold underline underline-offset-4 hover:no-underline"
+          >
+            TechBrewPlus
+          </a>
+        </p>
       </footer>
       {showCartBar && <CartBar />}
     </div>

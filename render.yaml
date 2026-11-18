@@ -19,21 +19,24 @@ services:
         value: sb_publishable_vdR90ilK1jg4EfUNQQmh9Q_9H15xcSV
       - key: VITE_TURNSTILE_SITE_KEY
         value: 0x4AAAAAAFUjrlxajrhVCE3G
+      # Meta Pixel for measuring Facebook and Instagram ads (src/lib/metaPixel.ts). Empty turns it off.
+      - key: VITE_META_PIXEL_ID
+        value: "1166036079293217"
     routes:
       # Every address loads index.html and React Router shows the page. Render serves real files (assets) first.
       - type: rewrite
         source: /*
         destination: /index.html
     headers:
-      # Only our own files, our Supabase project (data, Edge Functions, menu photos and the staff live-order connection), Cloudflare Turnstile and OpenStreetMap tiles, and Google Fonts (only used when the Super Admin picks a non-default font in Settings).
+      # Only our own files, our Supabase project (data, Edge Functions, menu photos and the staff live-order connection), Cloudflare Turnstile, OpenStreetMap tiles, the Meta Pixel (connect.facebook.net loads it, www.facebook.com receives page views), and Google Fonts (only used when the Super Admin picks a non-default font in Settings).
       - path: /*
         name: Content-Security-Policy
         value: >-
           default-src 'self';
-          script-src 'self' https://challenges.cloudflare.com;
+          script-src 'self' https://challenges.cloudflare.com https://connect.facebook.net;
           frame-src https://challenges.cloudflare.com;
-          connect-src 'self' https://gdjvulhrumxwjmnaywnn.supabase.co wss://gdjvulhrumxwjmnaywnn.supabase.co;
-          img-src 'self' https://gdjvulhrumxwjmnaywnn.supabase.co https://tile.openstreetmap.org;
+          connect-src 'self' https://gdjvulhrumxwjmnaywnn.supabase.co wss://gdjvulhrumxwjmnaywnn.supabase.co https://www.facebook.com;
+          img-src 'self' https://gdjvulhrumxwjmnaywnn.supabase.co https://tile.openstreetmap.org https://www.facebook.com;
           style-src 'self' https://fonts.googleapis.com;
           font-src 'self' https://fonts.gstatic.com;
           object-src 'none';
