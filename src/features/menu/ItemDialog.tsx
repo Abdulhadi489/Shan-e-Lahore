@@ -4,6 +4,7 @@ import { localized } from '../../i18n'
 import { formatAmount } from '../../lib/money'
 import { timeLabel } from '../../lib/format'
 import { menuImageUrl } from '../../lib/images'
+import { pixelCartParams, trackEvent } from '../../lib/metaPixel'
 import { MAX_QUANTITY, unitPrice } from '../../../supabase/functions/_shared/pricing'
 import { addToCart, type CartLine } from '../checkout/cart'
 import { SidesRow } from './SidesRow'
@@ -25,6 +26,15 @@ function ItemChoices({ item, onDone, onAdd }: { item: MenuItem; onDone: () => vo
   const [quantity, setQuantity] = useState(1)
   const result = unitPrice(item, { variantId, addonOptionIds: addonIds })
   const price = (amount: number) => t('price', { amount: formatAmount(amount) })
+  // Staff editing an order on the call pass their own onAdd; only customers count for the restaurant's ads.
+  const forCustomer = onAdd === addToCart
+
+  useEffect(() => {
+    if (!forCustomer) return
+    const opening = unitPrice(item, { variantId: item.variants.find((v) => v.is_available)?.id ?? null, addonOptionIds: [] })
+    const amount = 'price' in opening ? opening.price : item.base_price
+    trackEvent('ViewContent', pixelCartParams([{ id: item.id, quantity: 1, price: amount }], amount))
+  }, [forCustomer, item])
 
   function toggleOption(group: AddonGroup, optionId: string) {
     const inGroup = new Set(group.options.map((o) => o.id))
@@ -41,6 +51,9 @@ function ItemChoices({ item, onDone, onAdd }: { item: MenuItem; onDone: () => vo
     event.preventDefault()
     if ('error' in result) return
     onAdd({ itemId: item.id, variantId, addonOptionIds: addonIds, quantity })
+    if (forCustomer) {
+      trackEvent('AddToCart', pixelCartParams([{ id: item.id, quantity, price: result.price }], result.price * quantity))
+    }
     onDone()
   }
 
@@ -163,7 +176,7 @@ function ItemChoices({ item, onDone, onAdd }: { item: MenuItem; onDone: () => vo
         {'error' in result ? t('item.add') : t('item.addWithPrice', { price: price(result.price * quantity) })}
       </button>
 
-      {onAdd === addToCart && <SidesRow excludeItemId={item.id} />}
+      {forCustomer && <SidesRow excludeItemId={item.id} />}
     </form>
   )
 }
