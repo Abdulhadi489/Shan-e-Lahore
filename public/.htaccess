@@ -18,7 +18,7 @@ Options -Indexes
 </IfModule>
 
 <IfModule mod_headers.c>
-  Header always set Content-Security-Policy "default-src 'self'; script-src 'self' https://challenges.cloudflare.com https://connect.facebook.net; frame-src https://challenges.cloudflare.com; connect-src 'self' https://gdjvulhrumxwjmnaywnn.supabase.co wss://gdjvulhrumxwjmnaywnn.supabase.co https://www.facebook.com; img-src 'self' https://gdjvulhrumxwjmnaywnn.supabase.co https://tile.openstreetmap.org https://www.facebook.com; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'"
+  Header always set Content-Security-Policy "default-src 'self'; script-src 'self' https://challenges.cloudflare.com https://connect.facebook.net https://www.googletagmanager.com; frame-src https://challenges.cloudflare.com; connect-src 'self' https://gdjvulhrumxwjmnaywnn.supabase.co wss://gdjvulhrumxwjmnaywnn.supabase.co https://www.facebook.com https://www.googletagmanager.com https://*.google-analytics.com https://*.google.com; img-src 'self' https://gdjvulhrumxwjmnaywnn.supabase.co https://tile.openstreetmap.org https://www.facebook.com https://www.googletagmanager.com https://*.google-analytics.com; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'"
   Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
   Header always set X-Content-Type-Options "nosniff"
   Header always set Referrer-Policy "strict-origin-when-cross-origin"

@@ -4,7 +4,7 @@ import { localized } from '../../i18n'
 import { formatAmount } from '../../lib/money'
 import { timeLabel } from '../../lib/format'
 import { menuImageUrl } from '../../lib/images'
-import { pixelCartParams, trackEvent } from '../../lib/metaPixel'
+import { trackEvent } from '../../lib/adTags'
 import { MAX_QUANTITY, unitPrice } from '../../../supabase/functions/_shared/pricing'
 import { addToCart, type CartLine } from '../checkout/cart'
 import { SidesRow } from './SidesRow'
@@ -33,7 +33,7 @@ function ItemChoices({ item, onDone, onAdd }: { item: MenuItem; onDone: () => vo
     if (!forCustomer) return
     const opening = unitPrice(item, { variantId: item.variants.find((v) => v.is_available)?.id ?? null, addonOptionIds: [] })
     const amount = 'price' in opening ? opening.price : item.base_price
-    trackEvent('ViewContent', pixelCartParams([{ id: item.id, quantity: 1, price: amount }], amount))
+    trackEvent('ViewContent', [{ id: item.id, quantity: 1, price: amount }], amount)
   }, [forCustomer, item])
 
   function toggleOption(group: AddonGroup, optionId: string) {
@@ -52,7 +52,7 @@ function ItemChoices({ item, onDone, onAdd }: { item: MenuItem; onDone: () => vo
     if ('error' in result) return
     onAdd({ itemId: item.id, variantId, addonOptionIds: addonIds, quantity })
     if (forCustomer) {
-      trackEvent('AddToCart', pixelCartParams([{ id: item.id, quantity, price: result.price }], result.price * quantity))
+      trackEvent('AddToCart', [{ id: item.id, quantity, price: result.price }], result.price * quantity)
     }
     onDone()
   }
