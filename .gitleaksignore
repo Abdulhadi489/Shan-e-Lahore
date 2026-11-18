@@ -1,3 +1,7 @@
 # The Supabase publishable key is public by design (Vite bundles it into the website; see render.yaml).
 # gitleaks flagged it once, in deploy.yml at this commit.
 6ca2ace81b0a4c647ec3c1ac33d1775543449355:.github/workflows/deploy.yml:generic-api-key:40
+# The same public key as seen by the pre-commit hook, which scans staged files without a commit id.
+# Careful: without a commit id this skips ANY generic-api-key finding on line 40 of deploy.yml, now and later.
+# If that line changes, remove this entry and check the new line by hand.
+.github/workflows/deploy.yml:generic-api-key:40
