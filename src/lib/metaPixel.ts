@@ -22,8 +22,9 @@ declare global {
 }
 
 // A tracking link (/track/<token>) opens that order for whoever has it, so its address never goes to Meta.
-// Staff pages use StaffLayout, which never calls the pixel.
-export const pixelMayTrack = (path: string) => !path.startsWith('/track/')
+// Staff pages use StaffLayout, which never calls the pixel. Lower-cased because React Router matches routes
+// case-insensitively, so /Track/<token> opens the order too.
+export const pixelMayTrack = (path: string) => !path.toLowerCase().startsWith('/track/')
 
 function loadPixel(id: string): Fbq {
   if (window.fbq) return window.fbq
