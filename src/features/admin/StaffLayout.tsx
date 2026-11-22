@@ -27,6 +27,7 @@ const staffSections = [
   { to: '/admin/customers', key: 'customers', superAdmin: true },
   { to: '/admin/reports', key: 'reports', superAdmin: true },
   { to: '/admin/people', key: 'people', superAdmin: true },
+  { to: '/admin/performance', key: 'performance', superAdmin: true },
   { to: '/admin/settings', key: 'settings', superAdmin: true },
 ] as const
 

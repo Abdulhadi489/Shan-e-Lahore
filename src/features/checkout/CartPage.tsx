@@ -3,7 +3,7 @@ import { ArrowLeft } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { localized } from '../../i18n'
 import { formatAmount } from '../../lib/money'
-import { menuImageUrl } from '../../lib/images'
+import { DishThumb } from '../../components/DishThumb'
 import { PageBanner } from '../../components/PageBanner'
 import { banners } from '../../assets/banners/banners'
 import { MAX_QUANTITY, unitPrice } from '../../../supabase/functions/_shared/pricing'
@@ -70,18 +70,7 @@ export function CartPage() {
               const options = item?.addon_groups.flatMap((g) => g.options).filter((o) => line.addonOptionIds.includes(o.id)) ?? []
               return (
                 <li key={key} className="flex flex-wrap items-center gap-x-4 gap-y-3 py-4">
-                  {item?.image_path ? (
-                    <img
-                      src={menuImageUrl(item.image_path, 'card')}
-                      alt=""
-                      width={64}
-                      height={72}
-                      loading="lazy"
-                      className="h-18 w-16 shrink-0 rounded-t-full rounded-b-control bg-espresso object-cover"
-                    />
-                  ) : (
-                    <span aria-hidden className="h-18 w-16 shrink-0 rounded-t-full rounded-b-control bg-linear-to-b from-brand-deep to-espresso" />
-                  )}
+                  <DishThumb imagePath={item?.image_path} className="h-18 w-16 sm:h-22.5 sm:w-20" />
                   <div className="min-w-40 flex-1">
                     <p className="font-heading text-xl leading-snug font-semibold">{item ? localized(lng, item.name_en, item.name_ur) : t('cart.unknownItem')}</p>
                     {(variant || options.length > 0) && (

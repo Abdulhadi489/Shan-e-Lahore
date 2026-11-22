@@ -140,6 +140,9 @@ Using an AI assistant? Point it at `AGENTS.md`; it reads `CLAUDE.md`, the projec
 | `reports/ReportsPage.tsx` | Reports screen and download |
 | `settings/FontsSection.tsx` | Fonts of the customer site: four dropdowns, reset buttons and a live preview |
 | `settings/SettingsPage.tsx` | Restaurant details, payments and WhatsApp, opening hours |
+| `orders/OrderTimeline.tsx`, `orders/timeline.ts` | Order page timeline from the status log, with the time between steps (tested in `timeline.test.ts`) |
+| `customers/CustomerOrders.tsx` | One customer's orders: filters, pages, items per order |
+| `performance/PerformancePage.tsx`, `performance.ts` | Super Admin staff and rider performance and CSV (tested in `performance.test.ts`) |
 | `people/PeoplePage.tsx` | Staff and riders (Super Admin): list with search and filters, add staff and riders, recent changes |
 | `people/PersonPage.tsx` | One person: every stored detail, edit, reset password, delete permanently |
 | `people/PeopleDialogs.tsx`, `AuditList.tsx`, `people.ts` | Login-details and type-the-name dialogs, read-only history, data hooks |
@@ -194,6 +197,7 @@ Run in order by `supabase db reset` (local) and `supabase db push` (hosted). Nev
 | `…20261022150000_site_settings.sql` | `site_settings`: the one row of site fonts (allowed fonts by CHECK, public read, Super Admin write); rollback in `supabase/rollbacks/` |
 | `…20261106100000_staff_and_riders.sql` | Staff phone, created_by, must_change_password, deleted_at; rider vehicle details and deleted_at; rider audit trigger; `remove_account`, `remove_rider`, `end_sessions` (service_role only); rollback in `supabase/rollbacks/` |
 | `…20261106140000_staff_credentials.sql` | `staff_credentials`: encrypted copies of issued passwords, readable only by the `admin-users` function |
+| `…20261122100000_customer_history.sql` | Customer totals view and two indexes; rollback in `supabase/rollbacks/` |
 | `…20261022150100_menu_descriptions.sql` | Data only: fills empty `description_en` / `description_ur` of the dishes, never overwriting; rollback in `supabase/rollbacks/` |
 | `…20261030120000_category_serving_hours.sql` | `categories.available_from` / `available_until`: daily serving hours (Desi Nashta 04:00 to 12:00); outside them the dishes count as unavailable |
 
