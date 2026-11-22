@@ -11,6 +11,7 @@ import { Constants, type Enums, type TablesUpdate } from '../../../types/databas
 import { useStaff } from '../StaffLayout'
 import { card, dangerButton, inputClass, primaryButton, secondaryButton, useDbMutation } from '../ui'
 import type { EditResult } from './OrderEditor'
+import { OrderTimeline } from './OrderTimeline'
 
 // wa.me and Google Maps open in a new tab so this page, and its new-order alarm, stays open.
 const newTab = { target: '_blank', rel: 'noopener noreferrer' }
@@ -141,6 +142,8 @@ export function OrderPage() {
               </p>
             )}
           </section>
+
+          <OrderTimeline orderId={o.id} cancelReason={o.cancel_reason} />
         </div>
 
         <div className="flex flex-col gap-4 lg:sticky lg:top-[calc(var(--header-h)+1rem)] lg:self-start">

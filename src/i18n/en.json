@@ -472,7 +472,21 @@
       "saveFailed": "Couldn't save. Check your connection. If someone else changed this order, the screen now shows the latest.",
       "edit": "Edit dishes or address",
       "edited": "Order updated. New total {{total}}. Tell the customer.",
-      "discountRemoved": "The discount no longer applies to the new dishes, so it was removed."
+      "discountRemoved": "The discount no longer applies to the new dishes, so it was removed.",
+      "timeline": {
+        "heading": "Timeline",
+        "notRecorded": "Not recorded",
+        "placed": "Order placed",
+        "customer": "Customer",
+        "system": "System",
+        "staff": "Staff member",
+        "by": "by {{name}}",
+        "afterPrevious": "{{duration}} after the step before",
+        "total": "Placed to finish: {{duration}}",
+        "underMinute": "under 1 min",
+        "minutes": "{{minutes}} min",
+        "hoursMinutes": "{{hours}} h {{minutes}} min"
+      }
     },
     "whatsapp": {
       "order": "Order {{number}}",
@@ -493,6 +507,7 @@
       "customers": "Customers",
       "reports": "Reports",
       "people": "Staff and riders",
+      "performance": "Performance",
       "settings": "Settings"
     },
     "errors": {
@@ -515,6 +530,32 @@
       "hidden": "hidden from the menu",
       "addons": "Add-on choices",
       "noMatch": "No dishes match."
+    },
+    "performance": {
+      "heading": "Staff and rider performance",
+      "help": "Times come from the order status log, set by the database. Each number says which step it measures. Cancelled orders are never counted in a time.",
+      "from": "From",
+      "to": "To",
+      "csv": "Download CSV",
+      "error": "Couldn't load the numbers. Reload the page.",
+      "notes": "{{outside}} orders placed while closed are left out of time to confirm. {{cancelled}} orders cancelled by the customer are not counted.",
+      "truncated": "Only the latest {{count}} orders of this range are included; choose a shorter range.",
+      "shop": "Whole shop",
+      "steps": {
+        "confirm": "Time to confirm (order placed to confirmed)",
+        "toKitchen": "Time to send to kitchen (confirmed to preparing)",
+        "kitchen": "Kitchen and dispatch (preparing to out for delivery)",
+        "delivery": "Delivery (out for delivery to delivered)"
+      },
+      "staff": "Staff",
+      "staffHelp": "Each time belongs to the person who finished that step. The kitchen is shown for the whole shop, not per person. Listed by name, not by speed.",
+      "riders": "Riders",
+      "handled": "Orders handled and cancelled",
+      "handledLine": "{{handled}} handled, {{cancelled}} cancelled by them",
+      "statLine": "{{count}} orders · average {{avg}} · median {{median}} · slowest {{max}}",
+      "noData": "Nothing recorded in this range.",
+      "minutes": "{{value}} min",
+      "unknown": "Unknown"
     },
       "people": {
         "heading": "Staff and riders",
@@ -822,7 +863,19 @@
       "blockedHelp": "This number can't place orders.",
       "history": "Order history",
       "noOrders": "No orders.",
-      "showing": "Showing the 100 most recent customers. Search to find others."
+      "showing": "Showing the 100 most recent customers. Search to find others.",
+      "filterStatus": "Status",
+      "allStatuses": "All statuses",
+      "filterFrom": "From date",
+      "filterTo": "To date",
+      "pages": "Pages",
+      "previous": "Previous",
+      "next": "Next",
+      "pageOf": "Page {{page}} of {{pages}} ({{count}} in all)",
+      "firstOrder": "First order {{date}}",
+      "spentTotal": "{{amount}} spent in all (cancelled orders left out)",
+      "namesUsed": "Names used",
+      "addresses": "Addresses used"
     },
     "discounts": {
       "heading": "Discount codes",

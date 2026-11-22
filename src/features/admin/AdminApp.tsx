@@ -9,6 +9,7 @@ import { LoginPage } from './LoginPage'
 import { StaffLayout, SuperAdminOnly } from './StaffLayout'
 import { SettingsPage } from './settings/SettingsPage'
 import { PeoplePage } from './people/PeoplePage'
+import { PerformancePage } from './performance/PerformancePage'
 import { PersonPage } from './people/PersonPage'
 import { MenuAdminPage } from './menu/MenuAdminPage'
 import { ItemEditor } from './menu/ItemEditor'
@@ -63,6 +64,7 @@ export function AdminApp() {
         <Route element={<SuperAdminOnly />}>
           <Route path="settings" element={<SettingsPage />} />
           <Route path="people" element={<PeoplePage />} />
+          <Route path="performance" element={<PerformancePage />} />
           <Route path="people/:kind/:id" element={<PersonPage />} />
           <Route path="menu" element={<MenuAdminPage />} />
           <Route path="menu/items/:id" element={<ItemEditor />} />

@@ -578,6 +578,15 @@ isOneToOne: false
                 }
           }
           Views: {
+            "customer_order_totals": {
+                  Row: {
+                    "cancelled_count": number | null,"customer_id": string | null,"first_order_at": string | null,"last_order_at": string | null,"spent_total": number | null
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    
+                  ]
+                }
             "customer_summaries": {
                   Row: {
                     "cancelled_count": number | null,"delivered_spend": number | null,"id": string | null,"is_blocked": boolean | null,"last_order_at": string | null,"name": string | null,"order_count": number | null,"phone": string | null

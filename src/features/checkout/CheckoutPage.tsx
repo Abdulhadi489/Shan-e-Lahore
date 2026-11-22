@@ -14,6 +14,7 @@ import { trackEvent, type PixelLine } from '../../lib/adTags'
 import { customerDetails, discountCode } from '../../../supabase/functions/_shared/schemas'
 import { unitPrice } from '../../../supabase/functions/_shared/pricing'
 import { useBranch } from '../../app/useBranch'
+import { DishThumb } from '../../components/DishThumb'
 import { Turnstile } from '../../components/Turnstile'
 import { useMenu } from '../menu/useMenu'
 import { cartSubtotal, clearCart, useCart } from './cart'
@@ -232,8 +233,9 @@ export function CheckoutPage() {
               const unit = item ? unitPrice(item, line) : null
               const broken = quote.data?.lineErrors.some((e) => e.index === index)
               return (
-                <li key={index} className="flex justify-between gap-3 text-sm">
-                  <span>
+                <li key={index} className="flex items-center gap-3 text-sm">
+                  <DishThumb imagePath={item?.image_path} className="h-11 w-10" />
+                  <span className="min-w-0 flex-1">
                     {line.quantity} × {item ? localized(lng, item.name_en, item.name_ur) : '…'}
                     {variant && ` (${localized(lng, variant.name_en, variant.name_ur)})`}
                     {broken && <span className="block font-medium text-danger">{t('cart.unavailable')}</span>}
