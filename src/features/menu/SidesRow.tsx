@@ -1,5 +1,6 @@
 import { useId } from 'react'
 import { useTranslation } from 'react-i18next'
+import { DishThumb } from '../../components/DishThumb'
 import { localized } from '../../i18n'
 import { trackEvent } from '../../lib/adTags'
 import { formatAmount } from '../../lib/money'
@@ -53,6 +54,7 @@ export function SidesRow({ excludeItemId }: { excludeItemId?: string }) {
                 }}
                 className="flex h-full w-36 flex-col gap-1 rounded-control border border-line bg-raised p-2 text-start text-sm hover:border-brand-deep active:scale-[0.98]"
               >
+                <DishThumb imagePath={item.image_path} className="h-20 w-full" />
                 <span className="font-medium">{name}</span>
                 <span className="mt-auto flex w-full items-center justify-between gap-2">
                   <span>{price}</span>
